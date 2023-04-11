@@ -1,0 +1,124 @@
+<!-- <button class="btn btn-link p-0" (click)="volver()">
+    <i style="font-size: 33px;" class="fas fa-arrow-left fw-bold"></i>
+</button> -->
+
+<form [formGroup]="pagoForm">
+
+    <div class="forumularioCard card card-default rounded-0 mb-0">
+
+        <div class="card-header bg-primary">
+            <h5 class="card-title">
+                <b>
+                    <span *ngIf="!editingPago else editPago">Crear pago</span>
+                    <ng-template #editPago>
+                        <span>Detalles del pago</span>
+                    </ng-template>
+                </b>
+            </h5>
+        </div>
+
+        <div class="card-body mb-4" style="display: block;">
+
+            <div class="row">
+
+                <div class="col-sm-12 col-md-2">
+                    <div class="form-group">
+                        <label>Folio</label>
+                        <div class="input-group">
+                            <input #inputFolio readonly="true" type="text" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-8 col-md-6">
+                    <div class="form-group">
+                        <label for="inputCredito">Número de Credito</label>
+                        <ng-select (change)="onChangeCredito($event)" class="text-uppercase" [items]="creditos"
+                            formControlName="credito_id" bindLabel="nombre" [clearable]="false"
+                            placeholder="Seleccione un crédito" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label for="inputWeekyear">N. de Semana</label>
+                        <ng-select [items]="weeksyear"
+                            bindLabel="nombre" formControlName="weekyear" [clearable]="false"
+                            placeholder="Seleccione una semana correspondiente" bindValue="num_semana">
+                        </ng-select>
+                    </div>
+                </div>
+
+                <!-- <div class="col-sm-8 col-md-3">
+                    <div class="form-group">
+                        <label for="inputCredito">Método de pago</label>
+                        <ng-select class="text-uppercase" [items]="metodosPago"
+                            (change)="onChangeMetodoPago($event)"
+                            bindLabel="nombre" formControlName="metodo_pago" [clearable]="false"
+                            placeholder="Seleccione un método de pago" bindValue="nombre">
+                        </ng-select>
+                    </div>
+                </div> -->
+
+            </div>
+
+            <div class="row">
+
+                
+
+                <div class="col-sm-12 col-md-2">
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <div class="input-group">
+                            <input formControlName="fecha" type="date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="col-sm-12 col-md-2">
+                    <div class="form-group">
+                        <label>Hora</label>
+                        <div class="input-group">
+                            <input #inputHora readonly="true" formControlName="hora" type="time" class="form-control text-right">
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="col-sm-6 col-md-2">
+                    <div class="form-group">
+                        <label for="inputMontoTotal">Monto</label>
+
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                            </div>
+
+                            <input type="number" placeholder="0.00" formControlName="monto"
+                                class="form-control text-right">
+                        </div>
+                    </div>
+                </div>
+
+                
+
+            </div>
+
+            <div *ngIf="editingPago" class="row">
+
+                <div class="col-sm-8 col-md-9">
+                    <div class="form-group">
+                        <label for="inputCredito">Motivo de la cancelación</label>
+                        <textarea formControlName="observaciones" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</form>

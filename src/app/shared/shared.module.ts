@@ -15,8 +15,6 @@ import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
     SidebarComponent,
     BreadcrumbsComponent,
     FooterComponent,
-
-
   ],
   exports: [
     HeaderComponent,

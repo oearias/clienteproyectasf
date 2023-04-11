@@ -1,0 +1,88 @@
+
+
+<!-- <button class="btn btn-link p-0" (click)="volver()">
+    <i style="font-size: 33px;" class="fas fa-arrow-left fw-bold"></i>
+</button> -->
+
+<form [formGroup]="usuarioForm">
+
+    <div class="formularioCard card card-default rounded-0 mb-0">
+
+        <div class="card-header bg-primary">
+            <h5  class="card-title">
+                <b>
+                    <span *ngIf="!editingUsuario else editUsuario">Crear usuario</span>
+                    <ng-template #editUsuario>
+                        <span>Editar usuario</span>
+                    </ng-template>
+                </b>
+            </h5>
+        </div>
+
+        <div class="card-body mb-4" style="display: block;">
+
+            <div class="row">
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label for="nombreInput">Nombre</label>
+                        <input id="nombreInput" formControlName="nombre" 
+                            type="text" class="form-control text-uppercase">
+                    </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label for="apellidoPaternoInput">Apellido paterno</label>
+                        <input id="apellidoMaternoInput" formControlName="apellido_paterno" 
+                            type="text" class="form-control text-uppercase">
+                    </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label for="apellidoPaternoInput">Apellido paterno</label>
+                        <input id="apellidoMaternoInput" formControlName="apellido_materno" 
+                            type="text" class="form-control text-uppercase">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label for="nombreInput">Email</label>
+                        <input id="nombreInput" formControlName="email" 
+                            type="text" class="form-control text-lowercase">
+                    </div>
+                </div>
+
+                <div *ngIf="!editingUsuario?.id" class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label for="passwordInput">Contraseña</label>
+                        <input id="passwordInput" formControlName="password" 
+                            type="text" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label for="cpInput">Rol</label>
+                        <ng-select bindLabel="nombre" bindValue="id" formControlName="role_id" [items]="roles"
+                            placeholder="Seleccione un rol"></ng-select>
+                    </div>
+                </div>
+
+            </div>
+
+            <button type="button" [disabled]="!usuarioForm.valid" (click)="saveUsuario()" class="btn btn-success mt-4">
+                <i class="fas fa-save"></i>
+                Guardar</button>
+
+        </div>
+
+    </div>
+
+</form>

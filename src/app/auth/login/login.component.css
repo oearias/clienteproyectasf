@@ -1,15 +1,21 @@
 .login-page {
-    background-image: url('../../../assets/dist/img/fondo-login.png');
+    /* background-image: url('../../../assets/dist/img/fondo-login.png'); */
     background-position: center center;
     background-size: cover;
 }
 
 .login-card-body,
 .login-box {
-    background-image: url('../../../assets/dist/img/fondo-plomo.jpg');
+    /*background-image: url('../../../assets/dist/img/fondo-plomo.jpg');*/
     background-position: center center;
     background-size: cover;
     color: white
+}
+
+.login-logo{
+    background-color: #2F5ADE;
+    margin: 0;
+    padding: 20px;
 }
 
 .login-box,

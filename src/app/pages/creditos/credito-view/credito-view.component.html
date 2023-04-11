@@ -1,0 +1,466 @@
+
+<div>
+    <form [formGroup]="creditoForm">
+        <div class="card card-default rounded-0 mb-0">
+    
+            <div class="card-header bg-primary">
+                <h5 class="card-title">
+                    <b>
+                        <span *ngIf="!editingCredito else editCredito">Crear crédito</span>
+                        <ng-template #editCredito>
+                            <span>Detalles del crédito</span>
+                        </ng-template>
+                    </b>
+                </h5>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+    
+            <div class="card-body" style="display: block;">
+    
+    
+                <div class="row">
+    
+                    <div class="col-sm-12 col-md-2">
+                        <div class="form-group">
+                            <label>N. de crédito</label>
+                            <input type="number" formControlName="num_contrato" type="number" class="form-control">
+                            <input type="hidden" formControlName="id" class="form-control">
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label>(N.de solicitud | Cliente)</label>
+                            <ng-select (change)="onChangeSolicitud($event)" class="text-uppercase" [items]="creditos"
+                                formControlName="solicitud_credito_id" bindLabel="nombre"
+                                placeholder="Seleccione una solicitud" bindValue="id">
+                            </ng-select>
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-sm-6 col-md-2">
+    
+                        <div class="form-group">
+                            <label for="btnPrinContrato">&nbsp;</label>
+                            <div class="d-flex justify-content-center align-items-center" >
+                                <button (click)="printAllDocumentation()" class="btn btn-block btn-primary">
+                                    <i class="fas fa-print"></i>
+                                    Imprimir documentación
+                                </button>
+                            </div>
+                        </div>
+    
+                    </div>
+
+                    <div class="col-sm-6 col-md-2">
+    
+    
+                        <div class="form-group">
+                            <label for="btnCheckEntregado">&nbsp;</label>
+                            <div class="d-flex justify-content-center align-items-center" >
+                                <button [disabled]="!creditoForm.valid" *ngIf="editingCredito?.locked != 1"
+                                    (click)="checkEntregado()" class="btn btn-success">
+                                    <i class="fas fa-check-circle"></i>
+                                    Marcar como entregado
+                                </button>
+                            </div>
+                        </div>
+    
+                    </div> -->
+    
+                    <!-- <div class="col-sm-6 col-md-3">
+    
+                        <div *ngIf="editingCredito?.locked == 1" class="form-group">
+                            <label>Cambios permitidos</label>
+                            <div>
+                                <span class="badge badge-primary labelStatus">NO</span>
+                            </div>
+                        </div>
+    
+                        <div class="d-flex justify-content-center align-items-center form-group" style="height:100%">
+                            <button *ngIf="editingCredito?.locked != 1" (click)="lockCredito()" class="btn btn-success">
+                                <i class="fas fa-print"></i>
+                                Imprimir contrato
+                            </button>
+                        </div>
+    
+                    </div> -->
+    
+                    
+    
+                </div>
+    
+                <div class="row">
+    
+                    <div class="col-sm-8 col-md-2">
+                        <div class="form-group">
+                            <label for="inputTarifa">Tarifa</label>
+                            <ng-select (change)="onChangeTarifa($event)" class="text-uppercase" [items]="tarifas"
+                                formControlName="tarifa_id" bindLabel="nombre" [clearable]="false"
+                                placeholder="Seleccione una tarifa" bindValue="id">
+                            </ng-select>
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-8 col-md-4">
+                        <div class="form-group">
+                            <label for="inputTipoCredito">Tipo de Crédito</label>
+                            <ng-select class="text-uppercase" [items]="tipoCreditos" formControlName="tipo_credito_id"
+                                bindLabel="nombre" [clearable]="false" placeholder="Seleccione un tipo de crédito"
+                                bindValue="id">
+                            </ng-select>
+                        </div>
+                    </div>
+    
+                    <!-- <div class="col-sm-8 col-md-4">
+                        <div class="form-group">
+                            <label for="inputTipoContrato">Tipo de Contrato</label>
+                            <ng-select class="text-uppercase" [items]="tipoContratos" formControlName="tipo_contrato_id"
+                                bindLabel="nombre" [clearable]="false" placeholder="Seleccione un tipo de crédito"
+                                bindValue="id">
+                            </ng-select>
+                        </div>
+                    </div> -->
+    
+                    <div class="col-sm-6 col-md-2">
+                        <div class="form-group">
+                            <label for="inputRenovacion">N. de renovación</label>
+                            <input type="number" formControlName="renovacion" class="form-control">
+                        </div>
+                    </div>
+    
+                </div>
+    
+                <div class="row">
+    
+                    <div class="col-sm-6 col-md-2">
+                        <div class="form-group">
+                            <label for="inputFechaInicio">Fecha de inicio</label>
+                            <input #fechaInicio type="date" formControlName="fecha_inicio_prog"
+                                (change)="onChangeFechaInicio()" class="form-control">
+    
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-6 col-md-2">
+                        <div class="form-group">
+                            <label for="inputFechaFin">Fecha finalización</label>
+                            <input type="date" formControlName="fecha_fin_prog" class="form-control">
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-6 col-md-2">
+                        <div class="form-group">
+                            <label for="inputFechaEntrega">Fecha de entrega</label>
+                            <input #fechaInicio type="date" formControlName="fecha_entrega_prog" class="form-control">
+    
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-6 col-md-2">
+                        <div class="form-group">
+                            <label for="inputMontoOtorgado">Monto otorgado</label>
+    
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+    
+                                <input type="number" formControlName="monto_otorgado" class="form-control text-right"
+                                    style="font-weight: bold;">
+    
+                                <input type="hidden" formControlName="cliente_id" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-6 col-md-2">
+                        <div class="form-group">
+                            <label for="inputMontoTotal">Monto total a pagar</label>
+    
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+    
+                                <input type="number" formControlName="monto_total" class="form-control text-right"
+                                    style="font-weight: bold;">
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-6 col-md-2">
+                        <div class="form-group">
+                            <label for="inputMontoSemanal">Monto semanal</label>
+    
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+    
+                                <input type="number" formControlName="monto_semanal" class="form-control text-right"
+                                    style="font-weight: bold;">
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+    
+    
+                <!-- <button (click)="saveCredito()" class="btn btn-success mt-4">Guardar</button> -->
+    
+            </div>
+    
+        </div>
+    
+        <!-- <div *ngIf="editingCredito?.locked == 1" class="card card-default rounded-0 mb-0">
+    
+            <div class="card-header rounded-0 bg-primary">
+                <h3 class="card-title"><b>Balance</b></h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+    
+            <div class="card-body" style="display: block;">
+    
+                <div class="row">
+    
+                    <div class="col-sm-6 col-md-3">
+                        <div class="form-group">
+                            <label for="inputMontoSemanal">Adeudo sin Recargos</label>
+    
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+    
+                                <input type="text" style="font-weight: bold; font-size: 20px;"
+                                    formControlName="adeudo_restante" class="form-control text-right text-primary">
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-6 col-md-3">
+                        <div class="form-group">
+                            <label for="inputMontoSemanal">Total Pagado</label>
+    
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+    
+                                <input type="text" style="font-weight: bold; font-size: 20px;"
+                                    formControlName="total_pagado" class="form-control text-right text-primary">
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-6 col-md-3">
+                        <div class="form-group">
+                            <label for="inputMontoSemanal">Total de Recargos</label>
+    
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+    
+                                <input type="text" style="font-weight: bold; font-size: 20px;"
+                                    formControlName="total_recargos" class="form-control text-right text-primary">
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-sm-6 col-md-3">
+                        <div class="form-group">
+                            <label for="inputAdeudoTotal">Adeudo Total</label>
+    
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+    
+                                <input type="text" style="font-weight: bold; font-size: 20px;"
+                                    formControlName="total_adeudo" class="form-control text-right text-primary">
+                            </div>
+                        </div>
+                    </div>
+    
+                </div>
+    
+            </div>
+    
+        </div> -->
+    
+        <div *ngIf="editingCredito?.entregado === 1 && pagos.length > 0 " class="card card-default rounded-0 mb-0">
+    
+            <div class="card-header rounded-0 bg-primary">
+                <h3 class="card-title"><b>Pagos realizados</b></h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+    
+            <div class="card-body" style="display: block;">
+    
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <th class="text-center">Folio</th>
+                        <th class="text-center">Fecha del pago</th>
+                        <th class="text-center">Monto</th>
+                        <th style="width: 50px;" class="text-center"></th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let pago of pagos">
+                            <td class="text-center">{{pago?.folio}}</td>
+                            <td class="text-center">
+                                {{pago?.fecha | date:'EEEE, dd-MM-yyyy'}}
+                            </td>
+                            <td class="text-center">${{pago?.monto}}</td>
+                            <td class="text-center">
+                                <!-- <button class="btn btn-danger btn-sm" (click)="confirmDeletePago(pago)">
+                                        <i class="fas fa-times"></i>
+                                </button> -->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+    
+            </div>
+    
+        </div>
+    
+        
+        <!--TODO: Esto hay que moverlo a otro lugar/ pudiera ser clientes o créditos 
+            Estado de cuenta-->
+
+        <div *ngIf="editingCredito?.entregado === 1" class="card card-default rounded-0 mb-0">
+    
+            <div class="card-header rounded-0 bg-primary">
+                <h3 class="card-title"><b>Estado de cuenta</b></h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+    
+            <div class="card-body pt-0" >
+    
+                <table class="table table-hover table-sm" style="font-size: 14px;">
+                    <thead>
+                        <th style="width: 30px;"></th>
+                        <!-- <th>Sem anio</th> -->
+                        <th style="width: 20px;" class="text-center align-middle">N. de semana</th>
+                        <th class="text-center align-middle">Fecha prog. de pago</th>
+                        <th class="text-center align-middle">Monto semanal</th>
+                        <th class="text-center align-middle">Fecha real de pago</th>
+                        <th class="text-center align-middle">Pago realizado</th>
+                        <th class="text-center align-middle">Días de penal.</th>
+                        <th class="text-center align-middle">Penal. semanal</th>
+                        <th class="text-center align-middle">Adeudo semanal</th>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let am of amortizacion; let i = index">
+                            <tr style="background-color: rgb(240, 243, 249);">
+
+                                <td class="text-center">
+                                    <button (click)="colapsa(am, i)" *ngIf="am?.pagos.length > 0 " class="btn btn-link ">
+                                        <i [ngClass]=" !am.expanded ? 'fas fa-plus-circle' : 'fas fa-minus-circle' "></i>
+                                    </button>
+                                </td>
+                                <!-- <td class="text-center">{{am?.weekyear}}</td> -->
+                                <td class="text-center align-middle fw-bold">{{am?.num_semana}}</td>
+
+                                <td class="align-middle text-center programado">
+                                    <span style="font-size: 14px; font-style: italic;">
+                                        {{am?.fecha_inicio | date:'EEEE'}}, {{am?.fecha_inicio | date:'dd/MM/yyyy'}}
+                                    </span>
+                                </td>
+                                <td class="text-center align-middle fw-bold programado">
+                                    ${{am?.monto_semanal | number:'1.2-2':'en-US'}}
+                                </td>
+                                <td class="text-right align-middle real"></td>
+                                <td class="text-right align-middle real">
+                                    <span *ngIf="am?.suma_monto_pagado?.length > 0" style="font-weight: bold;">
+                                        ${{am?.suma_monto_pagado |
+                                        number:'1.2-2':'en-US'}}</span>
+                                </td>
+                                <td class="text-center align-middle" style="font-weight: bold;">
+                                    <span *ngIf="am?.dias_penalizacion > 0" class="text-danger">
+                                        {{am?.dias_penalizacion}}
+                                    </span>
+                                </td>
+                                <td class="text-right align-middle fw-bold">${{am?.penalizacion_semanal | number:'1.2-2':'en-US'}}
+                                </td>
+                                <td class="text-right align-middle" style="font-weight: bold;">${{am?.adeudo_semanal |
+                                    number:'1.2-2':'en-US'}}</td>
+                            </tr>
+                            <tr *ngFor="let item of am.pagos" [@fadeInOut]="am.expanded?'in':'out'">
+                                <ng-container *ngIf="am.expanded">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-center">
+
+                                        <span *ngIf="item?.bonificacion != true" style="font-style: italic;">Folio: </span>
+                                        <span style="font-weight: bold; font-style: italic;">{{item?.folio}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        </span>
+
+                                        <span *ngIf="item?.bonificacion === true" style="font-style: italic; font-weight: bold;" class="text-success">
+                                            {{item?.concepto}}
+                                        </span>
+
+                                        <span *ngIf="item?.bonificacion != true" style="font-style: italic;">
+                                            {{item?.fecha_pago| date:'EEEE'}}, {{item?.fecha_pago |
+                                            date:'dd/MM/yyyy'}}
+                                        </span>
+                                    </td>
+                                    <td class="text-right align-middle">
+
+                                        <span *ngIf="item?.bonificacion === true" class="text-success" style="font-weight: bold; text-decoration: line-through;">
+                                            ${{item?.monto_pagado | number:'1.2-2':'en-US'}}
+                                        </span>
+
+                                        <span *ngIf="item?.monto_pagado > 0 && item?.bonificacion != true" class="text-primary" style="font-weight: bold;">
+                                            ${{item?.monto_pagado | number:'1.2-2':'en-US'}}
+                                        </span>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </ng-container>
+                            </tr>
+                        </ng-container>
+    
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4"></td>
+                            <td></td>
+                            <td class="text-right" style="font-weight: bold; font-size: 18px;">${{total_pagado |
+                                number:'1.2-2':'en-US'}}</td>
+                            <td></td>
+                            <td class="text-right" style="font-weight: bold; font-size: 18px;">${{total_penalizaciones |
+                                number:'1.2-2':'en-US'}}</td>
+                            <td class="text-right" style="font-weight: bold; font-size: 18px;">${{grand_total |
+                                number:'1.2-2':'en-US'}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+    
+            </div>
+    
+        </div>
+    
+    </form>
+</div>

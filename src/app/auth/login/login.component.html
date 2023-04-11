@@ -1,24 +1,29 @@
 <div class="hold-transition login-page">
   <div class="login-box animate__animated animate__backInLeft">
     <div class="login-logo">
-      <a href="../../index2.html"><b>Admin</b>LTE</a>
+      <!-- <a href="#">
+        <b>Proyecta</b>LTE</a> -->
+
+        <img src="../../../assets/images/proyecta_logo2.png" style="width: 250px;" alt="">
     </div>
     <!-- /.login-logo -->
     <div class="card">
       <div class="card-body login-card-body">
-        <p class="login-box-msg">Sign in to start your session</p>
+        <p class="login-box-msg">Inicia sesión</p>
 
-        <form>
+        <form (submit)="login()" [formGroup]="loginForm">
           <div class="input-group mb-3">
-            <input type="email" class="form-control" placeholder="Email">
+
+            <input type="email" (keydown.enter)="login()" formControlName="email" class="form-control" placeholder="Usuario">
+
             <div class="input-group-append">
               <div class="input-group-text">
-                <span class="fas fa-envelope" style="color: rgb(48, 37, 37);"></span>
+                <span class="fas fa-user" style="color: rgb(48, 37, 37);"></span>
               </div>
             </div>
           </div>
           <div class="input-group mb-3">
-            <input type="password" class="form-control" placeholder="Password">
+            <input type="password" (keydown.enter)="login()" formControlName="password" class="form-control" placeholder="Contraseña">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-lock" style="color: rgb(48, 37, 37);"></span>
@@ -26,17 +31,17 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-8">
+
+            <!-- <div class="col-8">
               <div class="icheck-primary">
-                <input type="checkbox" id="remember">
-                <label for="remember" class="ml-2">
-                  Remember Me
-                </label>
               </div>
-            </div>
+            </div> -->
             <!-- /.col -->
-            <div class="col-4">
-              <button type="submit" class="btn btn-outline-secondary btn-block" (click)="onLogin()">Sign In</button>
+            <div class="col mt-4">
+              <button type="button" class="btn btn-primary btn-block" (click)="login()">
+                <span *ngIf="isLoading$ | async " class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Entrar
+              </button>
             </div>
             <!-- /.col -->
           </div>
@@ -47,12 +52,12 @@
         </div>
         <!-- /.social-auth-links -->
 
-        <p class="mb-1">
+        <!-- <p class="mb-1">
           <a href="forgot-password.html" class="link-pass"> forgot my password</a>
         </p>
         <p class="mb-0">
           <a routerLink="/register" class="text-center link-reg cursor">Register a new membership</a>
-        </p>
+        </p> -->
       </div>
       <!-- /.login-card-body -->
     </div>

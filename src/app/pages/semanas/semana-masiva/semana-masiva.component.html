@@ -1,0 +1,62 @@
+
+
+
+<div class="d-flex justify-content-end">
+
+    <button (click)="addSemana()" class="btn btn-primary">
+        <i class="fas fa-plus-circle"></i>
+        Añadir semana
+    </button>
+
+    <button (click)="saveSemana()" class="btn btn-success ml-3">
+        <i class="fas fa-save"></i>
+        Guardar
+    </button>
+
+</div>
+
+<form [formGroup]="semanasMasivasForm">
+
+    <div class="formularioCard card card-default rounded-0 mb-0">
+
+        <div class="card-header bg-primary">
+            <h5  class="card-title">
+
+                <span>Semanas masivas</span>
+                
+            </h5>
+        </div>
+
+        <div class="card-body mb-4" style="display: block;">
+
+            <table class="table">
+                <thead *ngIf="semanas.length > 0">
+                    <tr>
+                        <th>Semana del año</th>
+                        <th>Fecha inicio</th>
+                        <th>Fecha fin</th>
+                        <th>Año</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr formArrayName="semanas" *ngFor="let semana of semanas.controls; let i = index">
+                        <td><input class="form-control" type="number"></td>
+                        <td><input class="form-control" type="date"></td>
+                        <td><input class="form-control" type="date"></td>
+                        <td><input class="form-control" type="number"></td>
+                        <td>
+                            <button (click)="removeSemana(i)" class="btn btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+           
+        </div>
+
+    </div>
+
+</form>

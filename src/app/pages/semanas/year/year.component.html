@@ -1,0 +1,55 @@
+
+
+
+
+<form [formGroup]="yearForm">
+
+    <div class="formularioCard card card-default rounded-0 mb-0">
+
+        <div class="card-header bg-primary">
+            <h5  class="card-title">
+                <b>
+                    <span>Crear Año</span>
+                </b>
+            </h5>
+        </div>
+
+        <div class="card-body mb-4" style="display: block;">
+
+            <div class="row">
+
+                <div class="col-sm-3 col-md-3">
+                    <div class="form-group">
+                        <label for="yearInput">Año</label>
+                        <input id="yearInput" formControlName="year" 
+                            type="number" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-sm-3 col-md-3">
+                    <div class="form-group">
+                        <label for="weekyearInput">N. Semanas</label>
+                        <input id="weekyearInput" formControlName="num_semanas" 
+                            type="number" class="form-control text-uppercase">
+                    </div>
+                </div>
+
+                <div class="col-sm-3 col-md-3">
+                    <div class="form-group">
+                        <label for="fechaInicioInput">Fecha inicio</label>
+                        <input #fechaInicio (change)="onChangeFecha(fechaInicio.value)" id="fechaInicioInput" formControlName="fecha_inicio" 
+                            type="date" class="form-control">
+                    </div>
+                </div>
+
+                
+
+            </div>
+
+            <button (click)="saveYear()" [disabled]="!yearForm.valid" class="btn btn-success mt-4">Guardar</button>
+
+        </div>
+
+    </div>
+
+</form>

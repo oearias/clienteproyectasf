@@ -1,0 +1,268 @@
+<form [formGroup]="clienteForm">
+
+    <div class="formularioCard card card-default rounded-0 mb-0">
+
+        <div class="card-header bg-primary">
+            <h5 class="card-title"><b>
+                    Datos Generales
+                </b></h5>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body mb-4" style="display: block;">
+
+            <div class="row">
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label>Sucursal</label>
+                        <input type="hidden" formControlName="id" class="form-control">
+                        <ng-select class="text-uppercase" [items]="sucursales" formControlName="sucursal_id"
+                            bindLabel="nombre" placeholder="Seleccione una sucursal..." bindValue="id"
+                            (change)="onChangeSucursal($event)">
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label>Zona</label>
+                        <ng-select #selectZona class="text-uppercase" [items]="zonas" formControlName="zona_id"
+                            bindLabel="nombre" (change)="onChangeZona($event)"
+                            selectZona placeholder="Seleccione una zona..." bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label>Agencia</label>
+                        <ng-select #selectAgencia class="text-uppercase" [items]="agencias" formControlName="agencia_id"
+                            bindLabel="nombre" placeholder="Seleccione una agencia..." bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="row">
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label>Nombre(s)</label>
+                        <input type="text" formControlName="nombre" class="form-control text-uppercase">
+                    </div>
+
+                </div>
+
+                <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label for="searchInput">Apellido paterno</label>
+                        <input id="searchInput" formControlName="apellido_paterno" type="text"
+                            class="form-control text-uppercase">
+                    </div>
+                </div>
+
+                <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label for="searchInput">Apellido materno</label>
+                        <input id="searchInput" formControlName="apellido_materno" type="text"
+                            class="form-control text-uppercase">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label>Fecha de nacimiento</label>
+                        <input type="date" formControlName="fecha_nacimiento" class="form-control">
+                    </div>
+
+                </div>
+
+                <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label for="sexoInput">Sexo</label>
+                        <ng-select id="sexoInput" class="text-uppercase" [items]="arrSexo" formControlName="sexo"
+                            bindLabel="nombre" placeholder="Seleccione un género..." bindValue="nombre">
+                        </ng-select>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label>Teléfono</label>
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <i class="fas fa-phone"></i>
+                                </span>
+                            </div>
+                            <input type="number" formControlName="telefono" class="form-control" placeholder="Teléfono"
+                                aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label for="searchInput">RFC</label>
+                        <input id="searchInput" formControlName="rfc" type="text" class="form-control text-uppercase">
+                    </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label>CURP</label>
+                        <input type="text" formControlName="curp" class="form-control text-uppercase">
+                    </div>
+
+                </div>
+
+                <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label for="searchInput">Email</label>
+                        <input id="searchInput" formControlName="email" type="text" class="form-control">
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card card-default rounded-0 mb-0">
+        <div class="card-header rounded-0 bg-primary">
+            <h5 class="card-title"><b>
+                    Dirección
+                </b></h5>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body mb-4" style="display: block;">
+
+            <div class="row">
+
+                <div class="col-sm-4 col-md-8">
+                    <div class="form-group">
+                        <label>Calle</label>
+                        <input type="text" formControlName="calle" class="form-control text-uppercase">
+                    </div>
+
+                </div>
+
+                <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label for="searchInput">Colonia</label>
+                        <ng-select (change)="onChangeColonia($event)" [clearable]="false" class="text-uppercase"
+                            [items]="colonias" formControlName="colonia_id" bindLabel="nombre"
+                            placeholder="Seleccione una colonia..." bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label for="searchInput">Núm. ext.</label>
+                        <input id="searchInput" formControlName="num_ext" type="text"
+                            class="form-control text-uppercase">
+                    </div>
+                </div>
+
+                <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label for="searchInput">Núm. int.</label>
+                        <input id="searchInput" formControlName="num_int" type="text"
+                            class="form-control text-uppercase">
+                    </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label>CP</label>
+                        <input disabled="true" #cp type="text" class="form-control">
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-8 col-md-6">
+                    <div class="form-group">
+                        <label for="searchInput">Cruzamientos</label>
+                        <input id="searchInput" formControlName="cruzamientos" type="text"
+                            class="form-control text-uppercase">
+                    </div>
+                </div>
+
+                <div class="col-sm-8 col-md-6">
+                    <div class="form-group">
+                        <label for="searchInput">Referencia</label>
+                        <input id="searchInput" formControlName="referencia" type="text"
+                            class="form-control text-uppercase">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row mb-4">
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label>Municipio</label>
+                        <input type="text" formControlName="municipio" class="form-control text-uppercase">
+                    </div>
+                </div>
+
+                <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label for="searchInput">Localidad</label>
+                        <input id="searchInput" formControlName="localidad" type="text"
+                            class="form-control text-uppercase">
+                    </div>
+                </div>
+
+                <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label for="searchInput">Estado</label>
+                        <ng-select class="text-uppercase" [items]="estados" formControlName="estado" bindLabel="nombre"
+                            placeholder="Seleccione un estado..." bindValue="nombre"></ng-select>
+                    </div>
+                </div>
+
+            </div>
+
+            <button (click)="saveCliente()" class="btn btn-success">Guardar</button>
+
+        </div>
+
+    </div>
+
+</form>

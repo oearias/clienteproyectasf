@@ -1,0 +1,165 @@
+
+
+<!-- <button class="btn btn-link p-0" (click)="volver()">
+    <i style="font-size: 33px;" class="fas fa-arrow-left fw-bold"></i>
+</button> -->
+
+<form [formGroup]="creditoForm">
+
+    <div class="formularioCard card card-default rounded-0 mb-0">
+
+        <div class="card-header bg-primary">
+            <h5  class="card-title">
+                <b>
+                    <span *ngIf="!editingCredito else editCredito">Crear crédito</span>
+                    <ng-template #editCredito>
+                        <span>Editar crédito</span>
+                    </ng-template>
+                </b>
+            </h5>
+            <div class="card-tools">
+                <!-- <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button> -->
+            </div>
+        </div>
+
+        <div class="card-body mb-4" style="display: block;">
+    
+
+            <div class="row">
+
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-group">
+                        <label>Solicitud</label>
+                        <ng-select (change)="onChangeSolicitud($event)" class="text-uppercase" [items]="creditos" formControlName="solicitud_credito_id" bindLabel="nombre"
+                            placeholder="Seleccione una solicitud" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+                
+
+            </div>
+
+            <div class="row">
+
+                <!-- <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label for="inputTipoContrato">Tipo de Contrato</label>
+                        <ng-select class="text-uppercase" [items]="tipoContratos" formControlName="tipo_contrato_id" bindLabel="nombre"
+                            [clearable]="false" placeholder="Seleccione un tipo de crédito" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div> -->
+
+            </div>
+
+            <div class="row">
+
+                <!-- <div class="col-sm-8 col-md-4">
+                    <div class="form-group">
+                        <label for="inputFuente">Fuente de financiamiento</label>
+                        <ng-select class="text-uppercase" [items]="financiamientos" formControlName="fuente_financ_id" bindLabel="nombre"
+                            placeholder="Seleccione una fuente de financiamiento" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div> -->
+
+                <div class="col-sm-8 col-md-3">
+                    <div class="form-group">
+                        <label for="inputTipoCredito">Tipo de Crédito</label>
+                        <ng-select class="text-uppercase" readonly="true" [items]="tipoCreditos" formControlName="tipo_credito_id" bindLabel="nombre"
+                            #selectTipoCredito [clearable]="false" placeholder="Tipo de crédito" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="col-sm-8 col-md-2">
+                    <div class="form-group">
+                        <label for="inputRenovacion">Renovación n.</label>
+                        <input #inputRenovacion readonly formControlName="renovacion" type="number" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-sm-8 col-md-3">
+                    <div class="form-group">
+                        <label for="inputTarifa">Tarifa</label>
+                        <ng-select (change)="onChangeTarifa($event)" class="text-uppercase" [items]="tarifas" formControlName="tarifa_id" bindLabel="nombre"
+                            readonly="true" [clearable]="false" placeholder="Tarifa" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-2">
+                    <div class="form-group">
+                        <label for="inputMontoOtorgado">Monto otorgado</label>
+
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                            </div>
+
+                            <input readonly="true" type="number" formControlName="monto_otorgado" class="form-control text-right">
+                            <input type="hidden" formControlName="cliente_id" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-2">
+                    <div class="form-group">
+                        <label for="inputMontoTotal">Monto total a pagar</label>
+
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                            </div>
+
+                            <input readonly="true" type="number" formControlName="monto_total" class="form-control text-right">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-6 col-md-2">
+                    <div class="form-group">
+                        <label for="inputFechaInicio">Fecha de inicio</label>
+                       <input #fechaInicio type="date" readonly="true" formControlName="fecha_inicio_prog" (change)="onChangeFechaInicio()" class="form-control">
+
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-2">
+                    <div class="form-group">
+                        <label for="inputFechaFin">Fecha de finalización</label>
+                        <input readonly="true" type="date" formControlName="fecha_fin_prog" class="form-control">
+                    </div>
+                </div>
+
+                <div *ngIf="editingCredito?.id" class="col-sm-6 col-md-2">
+                    <div class="form-group">
+                        <label for="inputFechaEntrega">Fecha de entrega</label>
+                        <input #fechaInicio type="date" formControlName="fecha_entrega_prog" class="form-control">
+
+                    </div>
+                </div>
+
+                <!-- <div class="col-sm-6 col-md-3">
+                    <div class="form-group">
+                        <label for="inputAño">Año</label>
+                        <input type="number" formControlName="año" class="form-control">
+                    </div>
+                </div> -->
+
+            </div>
+
+
+            <button (click)="saveCredito()" class="btn btn-success mt-4">Guardar</button>
+
+        </div>
+
+    </div>
+
+</form>

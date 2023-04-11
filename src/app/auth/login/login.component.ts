@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { ToastrService} from 'ngx-toastr';
+import { SpinnerService } from '../../services/spinner.service';
 
 @Component({
   selector: 'app-login',
@@ -8,14 +12,61 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  token = null;
+  public isLoading$ = this.spinnerService.isLoading$
+
+  public loginForm = this.fb.group({
+    email: ['', Validators.required],
+    password: ['', Validators.required]
+  })
+
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private toastr: ToastrService,
+    private spinnerService: SpinnerService
+  ) { }
 
   ngOnInit(): void {
   }
 
-  onLogin() {
+  login() {
 
-    this.router.navigate(['']);
+    if(this.loginForm.valid){
+
+      this.authService.login(this.loginForm.value).subscribe( (res:any) => {
+
+        if(res.msg){
+          this.toastr.error(res.msg);
+        }
+        
+        if(res.token){
+
+          localStorage.setItem('nombreCompleto', `${res.nombre} ${res.apellido_paterno}`);
+          localStorage.setItem('role', `${res.role}`);
+          localStorage.setItem('usuario', `${res.usuario}`);
+          
+          //this.router.navigateByUrl('/dashboard');
+          this.router.navigate(['/dashboard', res]);
+
+          //
+        }
+
+      }, (err) => {
+
+
+        if(err){
+          this.toastr.error(err.error.msg);
+        }
+      })
+
+    }else{
+
+      this.toastr.error('Formulario no valido');
+    }
+
+    
 
   }
 

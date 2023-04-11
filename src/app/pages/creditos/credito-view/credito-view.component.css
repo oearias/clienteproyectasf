@@ -1,0 +1,12 @@
+.labelStatus {
+    font-size: 20px;
+    ;
+}
+
+.programado {
+    background-color: rgba(142, 251, 132, 0.26);
+}
+
+.real {
+    background-color: rgba(187, 183, 183, 0.158);
+}

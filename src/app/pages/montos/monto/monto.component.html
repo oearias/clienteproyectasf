@@ -1,0 +1,59 @@
+<!-- <button class="btn btn-link p-0" (click)="volver()">
+    <i style="font-size: 33px;" class="fas fa-arrow-left fw-bold"></i>
+</button> -->
+
+<form [formGroup]="montoForm">
+
+    <div class="formularioCard card card-default rounded-0 mb-0">
+
+        <div class="card-header bg-primary">
+            <h5 class="card-title">
+                <b>
+                    <span *ngIf="!editingMonto else editMonto">Crear monto</span>
+                    <ng-template #editMonto>
+                        <span>Editar monto</span>
+                    </ng-template>
+                </b>
+            </h5>
+            <div class="card-tools">
+                <!-- <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button> -->
+            </div>
+        </div>
+
+        <div class="card-body mb-4" style="display: block;">
+
+            <div class="row">
+
+                <div class="col-sm-8 col-md-2">
+                    <div class="form-group">
+                        <label for="inputZona">Monto</label>
+
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                            </div>
+
+                            <input type="number" formControlName="monto" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4 col-md-4">
+                    <div class="form-group">
+                        <label for="tarifa_input">Plazo</label>
+                        <ng-select bindLabel="nombre" bindValue="id" formControlName="tarifa_id" [items]="tarifas"
+                            placeholder="Seleccione un plazo"></ng-select>
+                    </div>
+                </div>
+
+            </div>
+
+            <button (click)="saveMonto()" class="btn btn-success mt-4">Guardar</button>
+
+        </div>
+
+    </div>
+
+</form>

@@ -1,0 +1,74 @@
+
+
+
+
+<form [formGroup]="semanaForm">
+
+    <div class="formularioCard card card-default rounded-0 mb-0">
+
+        <div class="card-header bg-primary">
+            <h5  class="card-title">
+                <b>
+                    <span *ngIf="!editingSemana else editSemana">Crear Semana</span>
+                    <ng-template #editSemana>
+                        <span>Editar semana</span>
+                    </ng-template>
+                </b>
+            </h5>
+        </div>
+
+        <div class="card-body mb-4" style="display: block;">
+
+            <div class="row">
+
+                <div class="col-sm-3 col-md-3">
+                    <div class="form-group">
+                        <label for="weekyearInput">N. Semana</label>
+                        <input id="weekyearInput" formControlName="weekyear" 
+                            type="number" class="form-control text-uppercase">
+                    </div>
+                </div>
+
+                <div class="col-sm-3 col-md-3">
+                    <div class="form-group">
+                        <label for="fechaInicioInput">Fecha inicio</label>
+                        <input #fechaInicio (change)="onChangeFecha(fechaInicio.value)" id="fechaInicioInput" formControlName="fecha_inicio" 
+                            type="date" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-sm-3 col-md-3">
+                    <div class="form-group">
+                        <label for="fechaFinInput">Fecha fin</label>
+                        <input #fechaFin (change)="onChangeFecha(fechaFin.value)" id="fechaFinInput" formControlName="fecha_fin" 
+                            type="date" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-sm-3 col-md-3">
+                    <div class="form-group">
+                        <label for="yearInput">Año</label>
+                        <input id="yearInput" formControlName="year" 
+                            type="number" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-check">
+                        <input formControlName="estatus" class="form-check-input" type="checkbox"
+                            value="" id="checkEstatus">
+                        <label class="form-check-label" for="checkEstatus">
+                            Abierta
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <button (click)="saveSemana()" class="btn btn-success mt-4">Guardar</button>
+
+        </div>
+
+    </div>
+
+</form>

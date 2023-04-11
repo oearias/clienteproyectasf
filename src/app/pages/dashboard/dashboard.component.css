@@ -1,0 +1,15 @@
+.contador {
+    font-size: 2rem;
+    animation: conteo 1s ease-out;
+  }
+  
+  @keyframes conteo {
+    from {
+      opacity: 0;
+      transform: translate(0, -50%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+  }

@@ -1,0 +1,15 @@
+<div id="overlay" (click)="modalService.showModal=false"></div>
+<div id="container" >
+    <div id="header">
+        Confirmación
+    </div>
+
+    <div id="content">
+        ¿Está Ud. seguro que desea eliminar a: <b>{{modalService.registro}}</b>?
+    </div>
+
+    <div id="actions">
+        <button class="btn btn-outline-secondary" (click)="modalService.showModal=false">Cancelar</button>
+        <button class="btn btn-danger" (click)="deleteRegistro()">¡Eliminar</button>
+    </div>
+</div>

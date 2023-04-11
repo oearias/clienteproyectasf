@@ -1,0 +1,42 @@
+
+<!-- 
+<button class="btn btn-link p-0" (click)="volver()">
+    <i style="font-size: 33px;" class="fas fa-arrow-left fw-bold"></i>
+</button> -->
+
+<form [formGroup]="financiamientoForm">
+
+    <div class="formularioCard card card-default rounded-0 mb-0">
+
+        <div class="card-header bg-primary">
+            <h5  class="card-title">
+                <b>
+                    <span *ngIf="!editingFinanciamiento else editFinanciamiento">Crear fuente de financiamiento</span>
+                    <ng-template #editFinanciamiento>
+                        <span>Editar fuente de financiamiento</span>
+                    </ng-template>
+                </b>
+            </h5>
+        </div>
+
+        <div class="card-body mb-4" style="display: block;">
+
+            <div class="row">
+
+                <div class="col-sm-8 col-md-12">
+                    <div class="form-group">
+                        <label for="nombreInput">Nombre</label>
+                        <input id="nombreInput" formControlName="nombre" 
+                            type="text" class="form-control text-uppercase">
+                    </div>
+                </div>
+
+            </div>
+
+            <button (click)="saveFinanciamiento()" class="btn btn-success mt-4">
+                <i class="fas fa-save"></i>&nbsp;Guardar</button>
+        </div>
+
+    </div>
+
+</form>

@@ -1,1 +1,47 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+/*Stepper*/
+@import '~bs-stepper/dist/css/bs-stepper.min.css';
+
+/* Also import bootstrap if needed */
+@import '~bs-stepper/dist/css/bs-stepper.min.css';
+
+/*Borra flecha del dropdown*/
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+.table-sort th{
+    cursor: pointer;
+}
+
+/* .ng-select .ng-select-container {
+  min-height: 30px;
+}
+
+.ng-select.ng-select-single .ng-select-container {
+  font-size: 14px;
+  height: 30px;
+} */
+
+/*Borra flechas del input type number*/
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.formularioCard{
+  margin-top: 10px;
+}
+
+.none{
+  border: none;
+}

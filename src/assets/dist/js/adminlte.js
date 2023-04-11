@@ -67,6 +67,8 @@
         this._element = element;
         this._config = config;
 
+        
+
         this._init();
       } // Public
 
@@ -565,6 +567,7 @@
       function PushMenu(element, options) {
         this._element = element;
         this._options = $.extend({}, Default, options);
+        console.log('preguntamos estatus del sidebar');
 
         if (!$(Selector.OVERLAY).length) {
           this._addOverlay();
@@ -597,6 +600,7 @@
         if (this._options.autoCollapseSize) {
           if ($(window).width() <= this._options.autoCollapseSize) {
             $(Selector.BODY).removeClass(ClassName.OPEN).addClass(ClassName.CLOSED);
+            //$('logoShort').removeClass('logoShort');
           }
         }
 
@@ -613,8 +617,18 @@
       _proto.toggle = function toggle() {
         if (!$(Selector.BODY).hasClass(ClassName.COLLAPSED)) {
           this.collapse();
+          $('#logo1').removeClass('cerrado')
+          $('#logo1').addClass('abierto')
+
+          $('#logo2').removeClass('abierto')
+          $('#logo2').addClass('cerrado')
         } else {
           this.expand();
+          $('#logo1').removeClass('abierto')
+          $('#logo1').addClass('cerrado')
+
+          $('#logo2').removeClass('cerrado')
+          $('#logo2').addClass('abierto')
         }
       };
 
@@ -811,6 +825,7 @@
           var openMenuLi = parentLi.siblings(Selector.OPEN).first();
           var openTreeview = openMenuLi.find(Selector.TREEVIEW_MENU).first();
           this.collapse(openTreeview, openMenuLi);
+          //alert('muestra')
         }
 
         treeviewMenu.stop().slideDown(this._config.animationSpeed, function () {
@@ -856,6 +871,7 @@
 
         if (isOpen) {
           this.collapse($(treeviewMenu), parentLi);
+          //alert('muestra')
         } else {
           this.expand($(treeviewMenu), parentLi);
         }

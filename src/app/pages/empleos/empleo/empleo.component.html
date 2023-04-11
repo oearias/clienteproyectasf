@@ -1,0 +1,46 @@
+<button class="btn btn-link p-0" (click)="volver()">
+    <i style="font-size: 33px;" class="fas fa-arrow-left fw-bold"></i>
+</button>
+
+<form [formGroup]="tipoEmpleoForm">
+
+    <div class="formularioCard card card-default rounded-0 mb-0">
+
+        <div class="card-header bg-primary">
+            <h5  class="card-title">
+                <b>
+                    <span *ngIf="!editingTipoEmpleo else editTipoEmpleo">Crear tipo de empleo</span>
+                    <ng-template #editTipoEmpleo>
+                        <span>Editar tipo de empleo</span>
+                    </ng-template>
+                </b>
+            </h5>
+            <div class="card-tools">
+                <!-- <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button> -->
+            </div>
+        </div>
+
+        <div class="card-body mb-4" style="display: block;">
+
+            <div class="row">
+
+                <div class="col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <label for="nombreInput">Nombre</label>
+                        <input id="nombreInput" formControlName="nombre" 
+                            type="text" class="form-control text-uppercase">
+                    </div>
+                </div>
+
+            </div>
+
+            <button (click)="saveTipoEmpleo()" class="btn btn-success mt-4">
+                <i class="fas fa-save"></i>&nbsp;Guardar</button>
+
+        </div>
+
+    </div>
+
+</form>

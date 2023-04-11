@@ -1,0 +1,237 @@
+<div class="card mt-3">
+
+    <div class="card-header">
+
+        <div class="d-flex justify-content-end">
+
+            <button (click)="goCreateCreditos()" class="btn btn-success">
+                <i class="fas fa-calendar"></i>
+                Establecer fechas
+            </button>
+
+            <!-- <button (click)="createCredito()" class="btn btn-primary ml-3">
+                <i class="fas fa-plus-circle"></i>
+                Nuevo crédito
+            </button> -->
+
+            <button data-toggle="collapse" data-target="#collapseFilter" aria-expanded="false"
+                class="btn btn-secondary ml-3">
+                <i class="fas fa-filter"></i>
+                Filtros
+            </button>
+
+        </div>
+
+        <div class="collapse mt-3" id="collapseFilter">
+            <form [formGroup]="filterForm">
+                <div class="row">
+
+                    <div class="col-sm-12 col-md-5">
+                        <div class="form-group">
+                            <ng-select formControlName="criterio" [clearable]="false" placeholder="Criterio de búsqueda"
+                                [items]="criterios" bindValue="criterio" bindLabel="nombre">
+                            </ng-select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-8 col-md-5">
+                        <div class="form-group">
+                            <input class="form-control" formControlName="palabra" placeholder="Búsqueda..." type="text"
+                                name="palabra">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2 col-md-1">
+                        <div class="form-group">
+                            <button (click)="search()" class="btn btn-primary btn-block">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2 col-md-1">
+                        <div class="form-group">
+
+                            <button (click)="limpiar()" class="btn btn-outline-primary btn-block">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <!-- <div *ngIf="solicitudes.length < 1" class="d-flex justify-content-center align-items-center">
+            <h5>Sin registros aún</h5>
+        </div> -->
+
+        <table *ngIf="creditos.length > 0" class="table table-striped table-hover table-sort table-sm"
+            style="font-size: 14px;">
+            <thead>
+                <tr>
+
+                    <th class='text-center' (click)="sort('id')">N. de crédito
+                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    </th>
+                    <th (click)="sort('nombre')">Nombre
+                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    </th>
+                    <th class="text-center" (click)="sort('nombre')">Zona
+                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    </th>
+                    <th class="text-center" (click)="sort('nombre')">Agencia
+                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    </th>
+                    <th class="text-center" (click)="sort('nombre')">Monto
+                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    </th>
+                    <th class="text-center">Estatus
+
+                    </th>
+
+                    <th class="text-center">Estatus 2</th>
+
+                    <th class="text-center" (click)="sort('locked')">
+                    </th>
+
+                    <th class="text-center">Entregado</th>
+                    <th class="text-center">N. cheque</th>
+
+                    <th style="width: 5px; cursor: default; margin-left: 0px; margin-right: 0px; padding-left: 0; padding-right: 0px;"
+                        class="text-center"></th>
+                    <th style="width: 5px; cursor: default; margin-left: 0px; margin-right: 0px; padding-left: 0; padding-right: 0px;"
+                        class="text-center"></th>
+                    <th style="width: 5px; cursor: default; margin-left: 0px; margin-right: 0px; padding-left: 0; padding-right: 0px;"
+                        class="text-center"></th>
+
+                    <!-- <th class="text-center" style="cursor: default;">Acciones</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="align-middle"
+                    *ngFor="let credito of creditos | orderBy: key: reverse | paginate : { itemsPerPage: itemsPP, currentPage: p } ; let i = index;  ">
+                    <td class="align-middle text-center" style="min-width: 120px;">{{credito?.num_contrato}}</td>
+                    <td class="align-middle" style="min-width: 200px;">{{credito?.nombre_completo}}</td>
+                    <td class="align-middle text-center" style="min-width: 100px;">{{credito?.zona}}</td>
+                    <td class="align-middle text-center" style="min-width: 100px;">{{credito?.agencia}}</td>
+                    <td class="align-middle text-right">${{credito?.monto_otorgado | number:'1.2-2':'en-US' }}</td>
+
+                    <td style="min-width: 100px;">
+                        <span>{{credito?.estatus_contrato}}</span>
+                    </td>
+
+                    <td class="align-middle text-center" style="min-width: 100px;">
+
+                        <span class="badge badge-primary"
+                            *ngIf="credito.estatus_credito=='LIQUIDADO'; else elseBlockEstatus">
+                            {{credito?.estatus_credito}}
+                        </span>
+
+                        <span class="badge badge-warning" *ngIf="credito.estatus_credito=='SIN LIQUIDAR'; ">
+                            {{credito?.estatus_credito}}
+                        </span>
+
+
+
+                    </td>
+
+                    <td class="align-middle text-center">
+
+                        <span class="badge badge-secondary" *ngIf="credito.locked==1;">
+                            <i class="fas fa-print"></i>
+                        </span>
+
+                    </td>
+
+                    <td class="text-center align-middle">
+                        <ng-container *ngIf=" credito?.entregado === 1;">
+                            <i style="font-size: 18px;" class="fas fa-check-circle text-success"></i>
+                        </ng-container>
+                        <ng-container *ngIf="credito?.no_entregado === 1;">
+                            <i style="font-size: 18px;" class="fas fa-times-circle text-danger"></i>
+                        </ng-container>
+                        <ng-container *ngIf="credito.entregado != 1 && credito.no_entregado != 1">
+                            {{credito.no_entregado}}
+                            <i style="font-size: 18px;" class="fas fa-minus-circle text-primary"></i>
+                        </ng-container>
+                        <!-- <ng-template *ngIf="credito.entregado != 1 && credito.no_entregado !=1 " #elsePorEntregar>
+                            JAJA
+                        </ng-template> -->
+                    </td>
+                    <td class="text-center align-middle" style="min-width: 100px;">{{credito?.num_cheque}}</td>
+
+                    <td class="text-center">
+                        <button (click)="viewCredito(credito)" style="border: none;" class="btn btn-outline-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </td>
+
+                    <td class="text-center">
+                        <button *ngIf="credito?.fecha_entrega_prog && credito?.fecha_inicio_prog"
+                            (click)="printAllDocumentation(credito)" style="border: none;"
+                            class="btn btn-outline-secondary">
+                            <i class="fas fa-print"></i>
+                        </button>
+                    </td>
+                    <!-- <td>
+                        <button *ngIf="credito?.locked !=1" (click)="editCredito(credito)" style="border: none;"
+                            class="btn btn-outline-secondary"><i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <button *ngIf="credito?.locked !=1" (click)="deleteCredito(credito)" style="border: none;"
+                            class="btn btn-outline-danger"><i class="fas fa-trash"></i>
+                        </button>
+                    </td> -->
+
+                    <td class="text-center" style="font-size: 17px;">
+
+                        <!-- <div class="dropdown" *ngIf="credito?.locked !=1">
+
+                            <button style="border: none;" type="button"
+                                class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+
+                            <div class="dropdown-menu dropdown-menu-right">
+                                
+                                <button (click)="viewCredito(credito)" class="dropdown-item" type="button">
+                                    <i class="fas fa-search mr-2"></i> Ver
+                                </button>
+                                <button (click)="editCredito(credito)" class="dropdown-item" type="button">
+                                    <i class="fas fa-edit mr-2"></i> Editar
+                                </button>
+
+                                <button (click)="deleteCredito(credito)" class="dropdown-item text-danger"
+                                    type="button">
+                                    <i class="fas fa-trash mr-2"></i> Eliminar
+                                </button>
+                            </div>
+                        </div> -->
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="text-center card-footer d-flex justify-content-center align-items-center">
+            <span class="mr-3">
+                Items por página:
+            </span>
+            <ng-select [(ngModel)]="selectedItem" (change)="cambiaItems($event)" style="width: 80px;"
+                [clearable]="false" [searchable]="false" [items]="items" bindValue="cant" bindLabel="cant"></ng-select>
+            <pagination-controls class="pt-3" previousLabel="Anterior" nextLabel="Siguiente" responsive="true"
+                (pageChange)="p = $event">
+            </pagination-controls>
+        </div>
+
+    </div>
+
+</div>

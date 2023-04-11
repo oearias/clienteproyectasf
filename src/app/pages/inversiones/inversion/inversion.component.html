@@ -1,0 +1,61 @@
+<!-- <button class="btn btn-link p-0" (click)="volver()">
+    <i style="font-size: 33px;" class="fas fa-arrow-left fw-bold"></i>
+</button> -->
+
+<form [formGroup]="inversionForm">
+
+    <div class="formularioCard card card-default rounded-0 mb-0">
+
+        <div class="card-header bg-primary">
+            <h5 class="card-title">
+                <b>
+                    <span *ngIf="!inversion else editInversion">Crear inversión positiva</span>
+                    <ng-template #editInversion>
+                        <span>Inversión positiva</span>
+                    </ng-template>
+                </b>
+            </h5>
+        </div>
+
+        <div class="card-body mb-4" style="display: block;">
+
+            <div class="row">
+
+                <div class="col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <label for="inputCredito">N. de credito | N. de cliente | Cliente</label>
+                        <ng-select (change)="onChangeCredito($event)" class="text-uppercase" [items]="creditos"
+                            formControlName="id" bindLabel="nombre" [clearable]="false"
+                            placeholder="Seleccione un crédito" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <div class="form-check">
+                        <input formControlName="inversion_positiva" class="form-check-input" type="checkbox"
+                            value="" id="checkInversion">
+                        <label class="form-check-label" for="checkInversion">
+                            Inversión positiva
+                        </label>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+            <button *ngIf="!inversion" type="button" [disabled]="!inversionForm?.valid" (click)="saveInversion()" class="btn btn-success mt-4">
+                <i class="fas fa-save"></i>
+                Guardar</button>
+
+            <!-- <button *ngIf="editingInversion" type="button" [disabled]="!inversionForm?.valid" (click)="confirmPago()" class="btn btn-danger mt-4">
+                <i class="fas fa-save"></i>
+                Cancelar Pago</button> -->
+
+        </div>
+
+    </div>
+
+</form>
