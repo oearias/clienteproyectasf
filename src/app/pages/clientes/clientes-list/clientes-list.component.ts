@@ -43,10 +43,12 @@ export class ClientesListComponent implements OnInit {
 
   //Filter
   criterios = [
-    { nombre: 'nombre', criterio: 'nombre' },
-    { nombre: 'apellido paterno', criterio: 'apellido_paterno' },
-    { nombre: 'apellido materno', criterio: 'apellido_materno' },
+    { nombre: 'nombre', criterio: 'nombre_completo' },
+    { nombre: 'apellido paterno', criterio: 'nombre_completo' },
+    { nombre: 'apellido materno', criterio: 'nombre_completo' },
     { nombre: 'número de cliente', criterio: 'num_cliente' },
+    { nombre: 'zona', criterio: 'zona' },
+    { nombre: 'agencia', criterio: 'agencia' },
   ];
 
   //Sort
@@ -77,6 +79,8 @@ export class ClientesListComponent implements OnInit {
 
   getClientes() {
     this.clienteService.getClientes().subscribe((res: any) => {
+
+      console.log(res);
 
       this.clientes = res;
 
@@ -130,7 +134,11 @@ export class ClientesListComponent implements OnInit {
     });
   }
 
-  cambiaItems(event) {
+  viewContractsByCliente(cliente:Cliente){
+    this.router.navigate(['dashboard/clientes/creditos/cliente', cliente.id]);
+  }
+
+  cambiaItems(event:any) {
     this.itemsPP = event.cant
   }
 

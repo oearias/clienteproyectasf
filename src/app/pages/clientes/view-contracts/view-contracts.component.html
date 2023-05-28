@@ -1,18 +1,13 @@
-<div class="card mt-3">
+<div class="card card-default rounded-0 mb-0 mt-3">
 
-    <div class="card-header">
 
-        <div class="d-flex justify-content-end">
+    <div class="card-header bg-primary">
 
-            <!-- <button (click)="goCreateCreditos()" class="btn btn-success">
-                <i class="fas fa-calendar"></i>
-                Establecer fechas
-            </button> -->
+        <h5 class="card-title">
+            <b>Datos del cliente</b>
+        </h5>
 
-            <!-- <button (click)="createCredito()" class="btn btn-primary ml-3">
-                <i class="fas fa-plus-circle"></i>
-                Nuevo crédito
-            </button> -->
+        <!-- <div class="d-flex justify-content-end">
 
             <button data-toggle="collapse" data-target="#collapseFilter" aria-expanded="false"
                 class="btn btn-secondary ml-3">
@@ -20,15 +15,9 @@
                 Filtros
             </button>
 
-            <button (click)="printCreditos()"
-                class="btn btn-secondary ml-3">
-                <i class="fas fa-file-export"></i>
-                Exportar
-            </button>
+        </div> -->
 
-        </div>
-
-        <div class="collapse mt-3" id="collapseFilter">
+        <!-- <div class="collapse mt-3" id="collapseFilter">
             <form [formGroup]="filterForm">
                 <div class="row">
 
@@ -48,10 +37,6 @@
                                 [items]="estatus" bindValue="id" bindLabel="nombre">
                             </ng-select>
                         </div>
-                    </div>
-
-                    <div class="col-sm-12 col-md-2">
-                        <input #inputFechaInicio (change)="onChangeFechaInicio($event, inputFechaInicio)" [readonly]="true" type="date" class="form-control">
                     </div>
 
                     <div class="col-sm-12 col-md">
@@ -84,31 +69,74 @@
                 </div>
 
             </form>
-        </div>
+        </div> -->
 
     </div>
 
     <div class="card-body">
 
-        <!-- <div *ngIf="solicitudes.length < 1" class="d-flex justify-content-center align-items-center">
-            <h5>Sin registros aún</h5>
-        </div> -->
+        <div class="row">
+            <div class="col-sm-3 fw-bold">N. cliente:</div>
+            <div class="col-9">
+                {{cliente?.num_cliente2}}
+            </div>
+            <div class="col-sm-3 fw-bold">Nombre:</div>
+            <div class="col-9">
+                {{cliente?.nombre_completo}}
+            </div>
+        </div>
 
-        <table *ngIf="creditos.length > 0" class="table table-striped table-sort table-hover table-sm table-responsive-lg"
-            style="font-size: 14px;">
+        <div class="row">
+            <div class="col fw-bold">Zona:</div>
+            <div class="col">
+                {{cliente?.zona}}
+            </div>
+            <div class="col fw-bold">Agencia:</div>
+            <div class="col">
+                {{cliente?.agencia}}
+            </div>
+        </div>
+
+        <!-- <table class="table">
+            <tbody>
+                <tr>
+                    <td style="width: 150px;">
+                        <span class="fw-bold">N. cliente:</span>
+                    </td>
+                    <td>{{cliente?.num_cliente2}}</td>
+                    <td style="width: 150px;">
+                        <span class="fw-bold">Nombre:</span>
+                    </td>
+                    <td>{{cliente?.nombre_completo}}</td>
+                </tr>
+                <tr>
+                    <td style="width: 150px;">
+                        <span class="fw-bold">Zona</span>
+                    </td>
+                    <td>{{cliente?.zona}}</td>
+                    <td style="width: 150px;">
+                        <span class="fw-bold">Agencia:</span>
+                    </td>
+                    <td>{{cliente?.agencia}}</td>
+                </tr>
+            </tbody>
+        </table> -->
+    </div>
+
+    <hr>
+
+    <div class="card-body">
+
+        <div *ngIf="creditos.length < 1" class="d-flex justify-content-center align-items-center">
+            <h5>Este cliente no tiene contratos aún</h5>
+        </div>
+
+        <table *ngIf="creditos.length > 0"
+            class="table table-striped table-sort table-hover table-sm table-responsive-lg" style="font-size: 14px;">
             <thead>
                 <tr>
 
                     <th class='text-center' (click)="sort('id')">N. de crédito
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
-                    </th>
-                    <th (click)="sort('nombre')">Nombre
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
-                    </th>
-                    <th class="text-center" (click)="sort('zona')">Zona
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
-                    </th>
-                    <th class="text-center" (click)="sort('agencia')">Agencia
                         &nbsp;<i class="fas fa-sort text-muted"></i>
                     </th>
                     <th class="text-center" (click)="sort('monto_otorgado')">Monto
@@ -125,20 +153,12 @@
                     <th class="text-center">
                     </th>
 
-                    <th class="text-center" (click)="sort('entregado')">Entregado
+                    <th style="min-width: 120px" class="text-center" (click)="sort('entregado')">Entregado
                         &nbsp;<i class="fas fa-sort text-muted"></i>
                     </th>
                     <th class="text-center">N. cheque</th>
 
-                    <th style="width: 5px; cursor: default; margin-left: 0px; margin-right: 0px; padding-left: 0; padding-right: 0px;"
-                        class="text-center">
-                    </th>
-                    <th style="width: 5px; cursor: default; margin-left: 0px; margin-right: 0px; padding-left: 0; padding-right: 0px;"
-                        class="text-center">
-                    </th>
-                    <th style="width: 5px; cursor: default; margin-left: 0px; margin-right: 0px; padding-left: 0; padding-right: 0px;"
-                        class="text-center">
-                    </th>
+                    <th class="text-center" colspan="c">Acciones</th>
 
                     <!-- <th class="text-center" style="cursor: default;">Acciones</th> -->
                 </tr>
@@ -147,9 +167,6 @@
                 <tr class="align-middle"
                     *ngFor="let credito of creditos | orderBy: key: reverse | paginate : { itemsPerPage: itemsPP, currentPage: p } ; let i = index;  ">
                     <td class="align-middle text-center" style="min-width: 120px;">{{credito?.num_contrato}}</td>
-                    <td class="align-middle" style="min-width: 200px;">{{credito?.nombre_completo}}</td>
-                    <td class="align-middle text-center" style="min-width: 100px;">{{credito?.zona}}</td>
-                    <td class="align-middle text-center" style="min-width: 100px;">{{credito?.agencia}}</td>
                     <td class="align-middle text-right">${{credito?.monto_otorgado | number:'1.2-2':'en-US' }}</td>
 
                     <td style="min-width: 100px;">
@@ -167,8 +184,6 @@
                             {{credito?.estatus_credito}}
                         </span>
 
-
-
                     </td>
 
                     <td class="align-middle text-center">
@@ -180,6 +195,7 @@
                     </td>
 
                     <td class="text-center align-middle">
+
                         <ng-container *ngIf=" credito?.entregado === 1;">
                             <i style="font-size: 18px;" class="fas fa-check-circle text-success"></i>
                         </ng-container>
@@ -190,9 +206,7 @@
                             {{credito.no_entregado}}
                             <i style="font-size: 18px;" class="fas fa-minus-circle text-primary"></i>
                         </ng-container>
-                        <!-- <ng-template *ngIf="credito.entregado != 1 && credito.no_entregado !=1 " #elsePorEntregar>
-                            JAJA
-                        </ng-template> -->
+
                     </td>
                     <td class="text-center align-middle" style="min-width: 100px;">{{credito?.num_cheque}}</td>
 
@@ -209,49 +223,15 @@
                             <i class="fas fa-print"></i>
                         </button>
                     </td>
-                    <!-- <td>
-                        <button *ngIf="credito?.locked !=1" (click)="editCredito(credito)" style="border: none;"
-                            class="btn btn-outline-secondary"><i class="fas fa-edit"></i>
-                        </button>
-                    </td>
-                    <td>
-                        <button *ngIf="credito?.locked !=1" (click)="deleteCredito(credito)" style="border: none;"
-                            class="btn btn-outline-danger"><i class="fas fa-trash"></i>
-                        </button>
-                    </td> -->
-
                     <td class="text-center" style="font-size: 17px;">
-
-                        <!-- <div class="dropdown" *ngIf="credito?.locked !=1">
-
-                            <button style="border: none;" type="button"
-                                class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-
-                            <div class="dropdown-menu dropdown-menu-right">
-                                
-                                <button (click)="viewCredito(credito)" class="dropdown-item" type="button">
-                                    <i class="fas fa-search mr-2"></i> Ver
-                                </button>
-                                <button (click)="editCredito(credito)" class="dropdown-item" type="button">
-                                    <i class="fas fa-edit mr-2"></i> Editar
-                                </button>
-
-                                <button (click)="deleteCredito(credito)" class="dropdown-item text-danger"
-                                    type="button">
-                                    <i class="fas fa-trash mr-2"></i> Eliminar
-                                </button>
-                            </div>
-                        </div> -->
-
                     </td>
+
                 </tr>
             </tbody>
         </table>
 
-        <div class="text-center card-footer d-flex justify-content-center align-items-center">
+        <div *ngIf="creditos.length > 0"
+            class="text-center card-footer d-flex justify-content-center align-items-center">
             <span class="mr-3">
                 Items por página:
             </span>

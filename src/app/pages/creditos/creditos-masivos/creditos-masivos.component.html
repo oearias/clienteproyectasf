@@ -4,17 +4,28 @@
     <div class="card-header">
         <div class="d-flex justify-content-end">
 
-            <div *ngIf="creditos?.length > 0"  class="form-inline ">
+            <div *ngIf="creditos?.length > 0" class="form-inline ">
                 <label for="inputFechaEntrega">Fecha de entrega:</label>
-                <input #inputFechaEntrega id="inputFechaEntrega" type="date" class="form-control ml-2" style="width: 200px;">
+                <input #inputFechaEntrega id="inputFechaEntrega" type="date" class="form-control ml-2"
+                    style="width: 200px;">
             </div>
 
-            <button *ngIf="creditos?.length > 0" (click)="printFormatoEntregasCredito()" class="btn btn-secondary ml-3 mr-3">
+            <button *ngIf="creditos?.length > 0" (click)="printFormatoEntregasCredito()" class="btn btn-secondary ml-3">
                 <i class="far fa-file-pdf"></i>
                 Formato de entregas de crédito
             </button>
 
-            <button *ngIf="creditos?.length > 0" (click)="changeStatus()" class="btn btn-success">
+            <button (click)="limpiar()" class='btn btn-outline-primary ml-3'>
+                <i class="fas fa-sync-alt"></i>
+            </button>
+
+            <button [disabled]="totalContratosToPrint <= 0" *ngIf="creditos?.length > 0" (click)="printContratos()"
+                class="btn btn-secondary ml-3">
+                <i class="fas fa-print"></i>
+                Imprimir contratos sel.
+            </button>
+
+            <button *ngIf="creditos?.length > 0" (click)="changeStatus()" class="btn btn-success ml-3">
                 <i class="fas fa-save"></i>
                 Guardar cambios
             </button>
@@ -24,7 +35,7 @@
 
     </div>
 
-    <div class="card-body">
+    <div class="card-body pt-0">
 
         <div *ngIf="creditos.length < 1" class="d-flex justify-content-center align-items-center">
             <h5>Sin créditos por entregar</h5>
@@ -34,46 +45,54 @@
             style="font-size: 14px;">
             <thead>
                 <tr>
+
                     <th></th>
-                    <th class="text-center" (click)="sort('id')">N. Solicitud
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
+
+                    <th id="checkbox-column" class="align-middle">
+
+                        <input id="checkSelectAll" (change)="toggleSelectAllCheckbox($event.target?.checked)" [checked]="selectAllCheckbox" style="width: 20px;" type="checkbox"
+                            class="form-control">
+
                     </th>
-                    <th (click)="sort('nombre_completo')">Nombre
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
+
+                    <th class="text-center align-middle">N. Solicitud
                     </th>
-                    <th (click)="sort('estatus')" class="text-center">Monto
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    <th class="align-middle">Nombre
                     </th>
-                    <th class="text-center">Fecha de entrega</th>
-                    <th class="text-center">Hora de entrega</th>
-                    <th class="text-center">Fecha de inicio</th>
-                    <th class="text-center">N. de cheque</th>
-                    <th colspan="2" class="text-center" style="cursor: default;">
+                    <th class="text-center align-middle">Monto
+                    </th>
+                    <th class="text-center align-middle">Fecha de entrega</th>
+                    <th class="text-center align-middle">Hora de entrega</th>
+                    <th class="text-center align-middle">Fecha de inicio</th>
+                    <th class="text-center align-middle">N. de cheque</th>
+                    <th colspan="2" class="text-center align-middle" style="cursor: default;">
                         Entregado
                     </th>
-                    <th class="text-center">Motivo</th>
+                    <th class="text-center align-middle">Motivo</th>
                 </tr>
                 <tr>
-                    <th colspan="8"></th>
-                    <th class="text-center">
+                    <th colspan="9"></th>
+                    <th class="text-center p-0">
                         <i class="fas fa-check text-success"></i>
                     </th>
-                    <th class="text-center">
+                    <th class="text-center p-0">
                         <i class="fas fa-times text-danger"></i>
                     </th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr class="align-middle" *ngFor="let credito of creditos | orderBy: key: reverse   ">
+                <tr class="align-middle" *ngFor="let credito of creditos | orderBy: key: reverse ">
+
+                    <td></td>
                     <td class="text-center">
+
+                        <input (change)="onCheckContrato($event, credito)" [checked]="credito?.printSelected" style="width: 20px;"
+                            type="checkbox" class="form-control">
+
                         <input type="hidden" value="{{credito?.id}}">
-                        <!-- <div style="width: 100%;" class="d-flex justify-content-center">
-                            <input style="width: 20px;"
-                                (click)="onCheck($event, credito, fechaEntrega, fechaInicio, entregado, numCheque )"
-                                type="checkbox" class="form-control">
-                        </div> -->
                     </td>
+
                     <td class="align-middle text-center">{{credito?.solicitud_credito_id}}</td>
                     <td class="align-middle">{{credito?.nombre_completo}}</td>
                     <!-- <td class="align-middle text-center">{{credito?.fecha_solicitud | date:'dd-MM-yyyy' }}</td> -->
@@ -88,8 +107,8 @@
                     </td>
 
                     <td>
-                        <input #horaEntrega (change)="onChangeHoraEntrega(credito, horaEntrega)"
-                            type="time" class="form-control" [value]="credito?.hora_entrega">
+                        <input #horaEntrega (change)="onChangeHoraEntrega(credito, horaEntrega)" type="time"
+                            class="form-control" [value]="credito?.hora_entrega">
                     </td>
 
                     <td>
@@ -123,27 +142,6 @@
                     </td>
                 </tr>
             </tbody>
-            <!-- <tfoot>
-                <tr>
-                    <td colspan="4" class="text-right" style="font-size: 18px;">Total:</td>
-                    <td class="text-right">
-                        <span class="fw-bold" style="font-size: 18px; font-weight: 700;">
-                            ${{total | number:'1.2-2':'en-US' }}
-                        </span>
-                    </td>
-                    <td colspan="2"></td>
-                </tr>
-
-                <tr>
-                    <td colspan="4" class="text-right" style="font-size: 18px;">Total seleccionado:</td>
-                    <td class="text-right">
-                        <span class="fw-bold" style="font-size: 18px; font-weight: 700;">
-                            ${{monto_sol_checked | number:'1.2-2':'en-US' }}
-                        </span>
-                    </td>
-                    <td colspan="2"></td>
-                </tr>
-            </tfoot> -->
         </table>
 
     </div>

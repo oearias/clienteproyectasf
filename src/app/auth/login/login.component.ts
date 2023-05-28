@@ -43,12 +43,13 @@ export class LoginComponent implements OnInit {
         
         if(res.token){
 
-          localStorage.setItem('nombreCompleto', `${res.nombre} ${res.apellido_paterno}`);
-          localStorage.setItem('role', `${res.role}`);
-          localStorage.setItem('usuario', `${res.usuario}`);
+          sessionStorage.setItem('nombreCompleto', `${res.nombre} ${res.apellido_paterno}`);
+          sessionStorage.setItem('role', `${res.role}`);
+          sessionStorage.setItem('usuario', `${res.usuario}`);
+          
           
           //this.router.navigateByUrl('/dashboard');
-          this.router.navigate(['/dashboard', res]);
+          this.router.navigate(['/dashboard', res], {queryParams: {reload:true} });
 
           //
         }

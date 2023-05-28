@@ -58,8 +58,6 @@ export class SemanaComponent implements OnInit {
 
           this.editingSemana = res;
 
-          console.log(res);
-
           this.id?.setValue(this.editingSemana.id);
           this.fecha_inicio?.setValue(this.datePipe.transform(this.editingSemana.fecha_inicio,'yyyy-MM-dd','-0500'));
           this.fecha_fin?.setValue(this.datePipe.transform(this.editingSemana.fecha_fin,'yyyy-MM-dd','-0500'));

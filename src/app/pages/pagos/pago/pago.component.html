@@ -21,32 +21,10 @@
 
             <div class="row">
 
-                <div class="col-sm-12 col-md-12">
-                    <div class="form-group">
-                        <label for="inputCredito">N. de credito | N. de Cliente | Cliente</label>
-                        <ng-select (change)="onChangeCredito($event)" class="text-uppercase" [items]="creditos"
-                            formControlName="credito_id" bindLabel="nombre" [clearable]="false"
-                            placeholder="Seleccione un crédito" bindValue="id">
-                        </ng-select>
-                    </div>
-                </div>
-
-                <!-- <div class="col-sm-8 col-md-3">
-                    <div class="form-group">
-                        <label for="inputCredito">Método de pago</label>
-                        <ng-select class="text-uppercase" [items]="metodosPago"
-                            (change)="onChangeMetodoPago($event)" 
-                            bindLabel="nombre" formControlName="metodo_pago" [clearable]="false"
-                            placeholder="Seleccione un método de pago" bindValue="nombre">
-                        </ng-select>
-                    </div>
-
-                </div> -->
-
-                <div class="col-sm-6 col-md">
+                <div class="col-sm-6 col-md-2">
                     <div class="form-group">
                         <label for="inputCredito">N. de Semana</label>
-                        <ng-select [items]="semanas"
+                        <ng-select #selectWeekyear [items]="semanas"
                             bindLabel="weekyear" formControlName="weekyear2" [clearable]="false"
                             placeholder="Seleccione una semana correspondiente" bindValue="weekyear">
                         </ng-select>
@@ -54,23 +32,41 @@
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md">
-                    <div class="form-group">
-                        <label for="inputFolio">Folio</label>
-                        <input class="form-control" formControlName="folio">
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md">
+                <div class="col-sm-6 col-md-2">
                     <div class="form-group">
                         <label>Fecha</label>
                         <div class="input-group">
-                            <input formControlName="fecha" type="date" class="form-control">
+                            <input formControlName="fecha" type="date" class="form-control" [readonly]="readonlyMode">
                         </div>
                     </div>
                 </div>
 
-                <div class="col-sm-6 col-md">
+                
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-12 col-md-4">
+                    <div class="form-group">
+                        <label for="inputCredito">N. de credito | N. de Cliente | Cliente</label>
+                        <ng-select #selectCredito (change)="onChangeCredito($event)" class="text-uppercase" [items]="creditos"
+                            formControlName="credito_id" bindLabel="nombre" [clearable]="false"
+                            placeholder="Seleccione un crédito" bindValue="id">
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-md-2">
+                    <div class="form-group">
+                        <label for="inputFolio">Folio</label>
+                        <input class="form-control" formControlName="folio" [readonly]="readonlyMode">
+                    </div>
+                </div>
+
+                
+
+                <div class="col-sm-6 col-md-2">
                     <div class="form-group">
                         <label for="inputMontoTotal">Monto</label>
 
@@ -79,37 +75,11 @@
                                 <span class="input-group-text">$</span>
                             </div>
 
-                            <input type="number" placeholder="0.00" formControlName="monto"
+                            <input type="number" placeholder="0.00" formControlName="monto" [readonly]="readonlyMode"
                                 class="form-control text-right">
                         </div>
                     </div>
                 </div>
-
-            </div>
-
-            <div class="row">
-
-                <!-- <div class="col-sm-8 col-md-3">
-                    <div class="form-group">
-                        <label for="inputCredito">N. de Semana</label>
-                        <ng-select [items]="semanas"
-                            bindLabel="weekyear" formControlName="weekyear2" [clearable]="false"
-                            placeholder="Seleccione una semana correspondiente" bindValue="weekyear">
-                        </ng-select>
-                        <input type="hidden" formControlName="weekyear">
-                    </div>
-                </div> -->
-
-                
-
-                <!-- <div class="col-sm-12 col-md-2">
-                    <div class="form-group">
-                        <label>Hora</label>
-                        <div class="input-group">
-                            <input #inputHora readonly="true" formControlName="hora" type="time" class="form-control text-right">
-                        </div>
-                    </div>
-                </div> -->
 
             </div>
 

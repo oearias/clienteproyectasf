@@ -1,39 +1,41 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { NgSelectComponent } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
-import { Credito } from 'src/app/interfaces/Credito';
-import { ModalService } from 'src/app/services/modal.service';
 import Swal from 'sweetalert2';
-import { CreditosService } from '../../../services/creditos.service';
-import { NgSelectComponent } from '@ng-select/ng-select';
+import { Credito } from 'src/app/interfaces/Credito';
 import { EstatusSolicitud } from 'src/app/interfaces/EstatusSolicitud';
 import { CreditoEstatusService } from 'src/app/services/credito-estatus.service';
+import { CreditosService } from 'src/app/services/creditos.service';
+import { PathService } from 'src/app/services/path.service';
+import { ClientesService } from 'src/app/services/clientes.service';
+import { Cliente } from 'src/app/interfaces/Cliente';
 
 @Component({
-  selector: 'app-creditos-list',
-  templateUrl: './creditos-list.component.html',
-  styleUrls: ['./creditos-list.component.css']
+  selector: 'app-view-contracts',
+  templateUrl: './view-contracts.component.html',
+  styleUrls: ['./view-contracts.component.css']
 })
-export class CreditosListComponent implements OnInit {
+export class ViewContractsComponent implements OnInit {
 
   @ViewChild('selectEstatus') selectEstatus: NgSelectComponent;
-  @ViewChild('inputFechaInicio') inputFechaInicio: ElementRef;
   @ViewChild('inputAux') inputAux: ElementRef;
 
   constructor(
+    private pathService: PathService,
+    private clienteService: ClientesService,
     private creditoEstatusService: CreditoEstatusService,
     private creditoService: CreditosService,
     private router: Router,
-    public modalService: ModalService,
+    private route: ActivatedRoute,
     private toastr: ToastrService,
     private fb: FormBuilder
-  ) {
-   }
+  ) { }
 
   creditos: Credito[] = [];
-  fechaInicio: Date;
+  cliente: Cliente;
 
   //Formulario del filtro
   filterForm = this.fb.group({
@@ -57,42 +59,61 @@ export class CreditosListComponent implements OnInit {
 
   //Filter
   criterios = [
-    { nombre: 'Nombre', criterio: 'nombre' },
-    { nombre: 'Apellido paterno', criterio: 'apellido_paterno' },
-    { nombre: 'Apellido materno', criterio: 'apellido_materno' },
-    { nombre: 'Estatus', criterio: 'estatus_id'},
-    { nombre: 'Número de contrato', criterio: 'num_contrato' },
-    { nombre: 'Fecha de inicio', criterio: 'fecha_inicio_prog' },
+    { nombre: 'nombre', criterio: 'nombre' },
+    { nombre: 'apellido paterno', criterio: 'apellido_paterno' },
+    { nombre: 'apellido materno', criterio: 'apellido_materno' },
+    { nombre: 'estatus', criterio: 'estatus_id'},
+    { nombre: 'número de contrato', criterio: 'num_contrato' },
   ];
 
   //Estatus
   estatus: EstatusSolicitud[] = [];
 
   //Sort
-  key = 'id';
+  key = '';
   reverse: boolean = false;
+
 
   ngOnInit(): void {
 
+    this.setPath();
     this.loadEstatusCredito();
-    this.getCreditos();
 
-    this.subscription = this.creditoService.refresh$.subscribe(() => {
-      this.getCreditos();
+    this.route.params.subscribe((params) => {
+
+      if (params.id) {
+        this.getCliente(params.id);
+        this.getCreditosByClienteId(params.id);
+
+      }
+
+      this.subscription = this.creditoService.refresh$.subscribe(() => {
+        this.getCreditosByClienteId(params.id);
+      });
+
     });
+
+    
 
   }
 
-  getCreditos(){
+  getCliente(cliente_id:number){
+    console.log(cliente_id);
+
+    this.clienteService.getCliente(cliente_id).subscribe(res =>{
+      this.cliente = res;
+    })
+  }
+
+  getCreditosByClienteId(cliente_id:number){
+
     this.creditoService.getCreditos().subscribe( (creditos) => {
 
-      // this.creditos = creditos.filter(item => item.preaprobado!= 1); //unicamente créditos entregados
-
-      this.creditos = creditos;
-
+      this.creditos = creditos.filter(item => item.cliente_id == cliente_id); //unicamente créditos entregados
 
     });
   }
+
 
   createCredito() {
     this.router.navigateByUrl('dashboard/creditos/credito');
@@ -136,17 +157,19 @@ export class CreditosListComponent implements OnInit {
   }
 
   viewCredito(credito: Credito){
-    this.router.navigate(['dashboard/creditos/credito/view', credito.id]);
+    //this.router.navigate(['dashboard/creditos/credito/view', credito.id]);
+
+    const navigationExtras: NavigationExtras = {
+      queryParams: {
+        user_id: credito.cliente_id
+      }
+    };
+    
+    this.router.navigate(['dashboard/clientes/credito/view', credito.id ], navigationExtras);
   }
 
   printAllDocumentation(credito:Credito) {
     this.creditoService.downloadAllDocumentation(credito);
-  }
-
-  printCreditos(){
-
-    this.creditoService.downloadCreditos(this.fechaInicio);
-
   }
 
   goCreateCreditos(){
@@ -182,11 +205,6 @@ export class CreditosListComponent implements OnInit {
 
         this.selectEstatus.readonly = false;
         this.inputAux.nativeElement.disabled = true;
-        this.inputFechaInicio.nativeElement.readOnly = true;
-
-      }else if(event.criterio === 'fecha_inicio_prog'){
-
-        this.inputFechaInicio.nativeElement.readOnly = false;
 
       }else{
 
@@ -194,7 +212,6 @@ export class CreditosListComponent implements OnInit {
         this.inputAux.nativeElement.disabled = false;
         this.selectEstatus.handleClearClick();
         this.selectEstatus.readonly = true;
-        this.inputFechaInicio.nativeElement.readOnly = true;
 
       }
     }
@@ -202,6 +219,7 @@ export class CreditosListComponent implements OnInit {
 
   loadEstatusCredito(){
     this.creditoEstatusService.getEstatus().subscribe( estatusCred => {
+      console.log(estatusCred);
       this.estatus = estatusCred
     });
   }
@@ -212,23 +230,12 @@ export class CreditosListComponent implements OnInit {
     }
   }
 
-  onChangeFechaInicio(event:any, inputFechaInicio:HTMLInputElement){
-    if(event){
-      this.palabra?.setValue(inputFechaInicio.value);
-      this.fechaInicio = new Date(inputFechaInicio.value);
-    }
-  }
-
   onKeyUp(){
     this.palabra.setValue(this.inputAux.nativeElement.value);
   }
 
   limpiar() {
     this.filterForm.reset();
-    this.fechaInicio = null;
-    this.palabra?.setValue(null);
-    this.inputFechaInicio.nativeElement.value = null;
-    this.inputFechaInicio.nativeElement.readOnly = true;
     this.ngOnInit();
   }
 
@@ -239,6 +246,10 @@ export class CreditosListComponent implements OnInit {
   sort(key: string) {
     this.key = key;
     this.reverse = !this.reverse;
+  }
+
+  setPath() {
+    this.pathService.path = '/dashboard/clientes';
   }
 
   get criterio() {

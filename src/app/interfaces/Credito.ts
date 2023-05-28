@@ -24,6 +24,7 @@ export interface Credito {
     tipo_credito_id: number;
     tipo_contrato_id: number;
     estatus_contrato_id:number;
+    estatus_credito_id: number;
     fuente_financ_id:number;
     locked: number;
     renovacion:number;
@@ -32,4 +33,5 @@ export interface Credito {
     entregado: number;
     no_entregado: number;
     inversion_positiva: boolean;
+    dias_penalizaciones: number;
 }

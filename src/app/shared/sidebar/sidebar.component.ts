@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { SidebarService } from '../../services/sidebar.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Usuario } from 'src/app/interfaces/Usuario';
 import { UsuariosService } from '../../services/usuarios.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,7 +12,9 @@ import { UsuariosService } from '../../services/usuarios.service';
   styles: [
   ]
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
+
+  private navigationSubscription: Subscription;
 
   menuItems: any[];
   usuario: Usuario;
@@ -22,14 +25,31 @@ export class SidebarComponent implements OnInit {
     private sidebarService: SidebarService,
     private route: ActivatedRoute,
     private router: Router,
-    private usuarioService: UsuariosService
+    private usuarioService: UsuariosService,
   ) {
 
     //this.menuItems = sidebarService.menu;
 
   }
+  ngOnDestroy(): void {
+    //este fragmento de código permite la recarga de los archivos js si se trae el parametro reload
+    this.navigationSubscription = this.router.events.subscribe( (event)=>{
+      if(event instanceof NavigationEnd){
+        if(event.url.includes('?reload=true')){
+          location.reload();
+        }
+      }
+    });
+    
+  }
 
   ngOnInit(): void {
+
+    // this.route.queryParams.subscribe(params => {
+    //   if (params['reload']) {
+    //     location.reload();
+    //   }
+    // });
 
     this.route.params.subscribe((params: Usuario) => {
 
@@ -45,8 +65,8 @@ export class SidebarComponent implements OnInit {
         this.nombreUsuario = `${this.usuario.nombre} ${this.usuario.apellido_paterno}`;
         this.role = `${this.usuario.role}`;
       }else{
-        this.nombreUsuario = localStorage.getItem('nombreCompleto');
-        this.role = localStorage.getItem('role');
+        this.nombreUsuario = sessionStorage.getItem('nombreCompleto');
+        this.role = sessionStorage.getItem('role');
       }
 
     })
@@ -57,9 +77,9 @@ export class SidebarComponent implements OnInit {
 
   logOut(){
     console.log('Bye Bye');
-    localStorage.removeItem('nombreCompleto');
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
+    sessionStorage.removeItem('nombreCompleto');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('role');
     this.router.navigate(['/login']);
   }
 

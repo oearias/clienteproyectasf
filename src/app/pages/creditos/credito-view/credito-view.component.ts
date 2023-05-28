@@ -159,29 +159,28 @@ export class CreditoViewComponent implements OnInit {
       if (params.id) {
 
         forkJoin([
-          this.tipoCreditoService.getTipoCreditos(),
           this.creditoService.getCreditos(),
           this.tarifaService.getTarifas(),
-          this.financiamientoService.getFinanciamientos(),
-          this.tipoContratoService.getTipoContratos(),
           this.creditoService.getCredito(params.id),
-          this.creditoService.getAmortizacion(params.id)
-        ]).subscribe((results: [TipoCredito[], Credito[], Tarifa[], Financiamiento[], TipoContrato[], Credito, Amortizacion[]]) => {
+          this.creditoService.getAmortizacion(params.id),
+          this.tipoCreditoService.getTipoCreditos()
+        ]).subscribe((results: [Credito[], Tarifa[], Credito, Amortizacion[], TipoCredito[] ]) => {
 
-          this.creditos = results[1];
-          this.editingCredito = results[5];
 
-          this.tipoCreditos = results[0];
-          this.tarifas = results[2];
-          this.loadCreditoData(results[5]);
+          this.creditos = results[0];
+          this.editingCredito = results[2];
+
+          this.tipoCreditos = results[4];
+          this.tarifas = results[1];
+          this.loadCreditoData(results[2]);
 
           this.grand_total = 0;
           this.total_pagado = 0;
           this.total_penalizaciones = 0;
 
-          if(results[6]){
+          if(results[3]){
 
-            this.amortizacion = results[6].map((item, i) => {
+            this.amortizacion = results[3].map((item, i) => {
 
               item['expanded'] = false;
   
@@ -199,156 +198,22 @@ export class CreditoViewComponent implements OnInit {
 
         })
 
-        // this.creditoService.getCredito(params.id).subscribe(res => {
-
-        //   this.editingCredito = res;
-
-        //   this.id?.setValue(this.editingCredito.id);
-        //   this.num_contrato?.setValue(this.editingCredito.num_contrato);
-
-        //   this.solicitud_credito_id?.setValue(this.editingCredito.id);
-
-        //   this.cliente_id?.setValue(this.editingCredito.cliente_id);
-        //   this.tarifa_id?.setValue(this.editingCredito.tarifa_id);
-        //   this.monto_otorgado?.setValue(this.editingCredito.monto_otorgado);
-        //   this.monto_total?.setValue(this.editingCredito.monto_total);
-        //   this.monto_semanal?.setValue(this.editingCredito.monto_semanal);
-
-        //   //preguntamos si hay fecha_inicio_prog, fecha_fin_prog y fecha_entrega
-        //   console.log(this.editingCredito.fecha_inicio_prog);
-        //   console.log(this.editingCredito.fecha_entrega_prog);
-        //   console.log(this.editingCredito.fecha_fin_prog);
-
-        //   (this.editingCredito.fecha_inicio_prog) ? this.fecha_inicio_prog.setValue(this.datePipe.transform(this.editingCredito.fecha_inicio_prog, 'yyyy-MM-dd', '0+100')) : null;
-        //   (this.editingCredito.fecha_fin_prog) ? this.fecha_fin_prog.setValue(this.datePipe.transform(this.editingCredito.fecha_fin_prog, 'yyyy-MM-dd', '0+100')) : null;
-        //   (this.editingCredito.fecha_entrega_prog) ? this.fecha_entrega_prog.setValue(this.datePipe.transform(this.editingCredito.fecha_entrega_prog, 'yyyy-MM-dd', '0+100')) : null;
-
-        //   if (this.editingCredito.entregado === 1) {
-        //     this.tipo_credito_id.setValue(this.editingCredito.tipo_credito_id);
-        //     this.renovacion.setValue(this.editingCredito.renovacion);
-        //   } else {
-        //     this.tipo_credito_id.setValue('-');
-        //     this.renovacion.setValue(null)
-        //   }
-
-        //   this.fuente_financ_id?.setValue(this.editingCredito.fuente_financ_id);
-        //   this.tipo_contrato_id?.setValue(this.editingCredito.tipo_contrato_id);
-
-        //   //Obtenemos los datos de la tarifa
-        //   this.tarifaService.getTarifa(this.tarifa_id.value).subscribe(tarifa => {
-
-        //     this.tarifaSelected = tarifa;
-
-        //   });
-
-        //   //preguntamos el role, y con esto habilitamos las fechas de entrega y fecha de inicio.
-        //   if (this.editingCredito?.locked === 1) {
-        //     this.fecha_inicio_prog.disable();
-        //     this.fecha_entrega_prog.disable();
-        //   }
-
-
-
-        //   //this.getSolicitudesException(this.solicitud_credito_id.value);
-        //   this.getCreditosException(this.editingCredito.solicitud_credito_id)
-
-        //   //Calculamos el balance
-        //   //***this.getBalance(this.editingCredito);
-        //   //this.getPagos(this.editingCredito);
-
-        //   this.getAmortizacion();
-
-        //   ///
-        //   // this.subscription = this.pagoService.refresh$.subscribe(() => {
-        //   //   this.getPagos(this.editingCredito);
-        //   // });
-        //   ////
-
-
-        // });
-
-
       }
     });
-  }
 
-  loadData() {
+    // Despues de que ya hicimos todo, aqui podemos simplemente establecer el setpath y 
+    // y redirigir a la lista de creditos por cliente si es que hay queryParams
+    this.route.queryParams.subscribe( (qParams)=>{
 
-    // forkJoin([
-    //   this.tipoCreditoService.getTipoCreditos(),
-    //   this.creditoService.getCreditos(),
-    //   this.tarifaService.getTarifas(),
-    //   this.financiamientoService.getFinanciamientos(),
-    //   this.tipoContratoService.getTipoContratos(),
-    //   //this.creditoService.getAmortizacion()
-    // ]).subscribe((results: [TipoCredito[], Credito[], Tarifa[], Financiamiento[], TipoContrato[]]) => {
+      if(qParams.user_id){
+        
+        this.pathService.path = '/dashboard/clientes/creditos/cliente/'+qParams.user_id;
+      }
 
-    //   this.creditos = results[1].filter(item => item.preaprobado === 1)
-    //     .map((credito) => {
-    //       credito.nombre = `${credito.solicitud_credito_id} | ${credito.nombre} ${credito.apellido_paterno} ${credito.apellido_materno}`
-    //       return credito;
-    //     });
 
-    //   this.route.params.pipe(
-    //     switchMap(params => this.creditoService.getCredito(params.id))
-    //   ).subscribe(credito => {
-    //     console.log('lo estas logrando');
-    //     this.creditoService.getAmortizacion(credito).subscribe(amorti => {
-    //       this.amortizacion = amorti.map(item => {
-
-    //         item['expanded'] = false;
-
-    //         this.total_pagado += Number(item.suma_monto_pagado);
-    //         this.total_penalizaciones += Number(item.penalizacion_semanal);
-    //         this.grand_total += Number(item.adeudo_semanal);
-
-    //         return item;
-
-    //       });
-    //     })
-    //   })
-
-    // })
-
-    // this.getSolicitudes(); se elimina por que ya las solicitudes en teoría fueron convertidas a creditos
-    // this.getCreditos();
-    // this.getTarifas();
-    // this.getFinanciamientos()
-    // this.getTipoCreditos();
-    // this.getTipoContratos();
+    });
 
   }
-
-  // getSolicitudes() {
-
-  //   this.solService.getSolicitudes().subscribe(solicitudes => {
-
-  //     this.solicitudes = solicitudes
-  //       .filter(item => item.estatus_sol_id === 7)
-  //       .filter(item => item.locked != 1)
-  //       .map((sol) => {
-  //         sol.nombre = `${sol.id} | ${sol.nombre} ${sol.apellido_paterno} ${sol.apellido_materno}`
-  //         return sol;
-  //       });
-
-  //   })
-  // }
-
-  // getSolicitudesException(id: number) {
-
-  //   this.solService.getSolicitudesException(id).subscribe(solicitudes => {
-
-  //     this.solicitudes = solicitudes
-  //       .filter(item => item.estatus_sol_id === 7 || item.id === id)
-  //       //.filter(item => item.locked != 1)
-  //       .map((sol) => {
-  //         sol.nombre = `${sol.id} | ${sol.nombre} ${sol.apellido_paterno} ${sol.apellido_materno}`
-  //         return sol;
-  //       });
-
-  //   })
-  // }
-
 
   loadCreditoData(credito: Credito) {
 
@@ -410,19 +275,6 @@ export class CreditoViewComponent implements OnInit {
 
   }
 
-  // getCreditos() {
-  //   this.creditoService.getCreditos().subscribe(creditos => {
-
-  //     this.creditos = creditos
-  //       .filter(item => item.preaprobado === 1)
-  //       .map((credito) => {
-  //         credito.nombre = `${credito.solicitud_credito_id} | ${credito.nombre} ${credito.apellido_paterno} ${credito.apellido_materno}`
-  //         return credito;
-  //       });
-
-  //   });
-  // }
-
   getCreditosException(id: number) {
 
       this.creditos
@@ -434,33 +286,6 @@ export class CreditoViewComponent implements OnInit {
 
 
   }
-
-  // getAmortizacion() {
-
-  //   this.grand_total = 0;
-  //   this.total_pagado = 0;
-  //   this.total_penalizaciones = 0;
-
-  //   this.creditoService.getAmortizacion(this.editingCredito).subscribe(res => {
-
-  //     this.amortizacion = res.map(item => {
-
-  //       console.log(res);
-
-  //       item['expanded'] = false;
-
-  //       this.total_pagado += Number(item.suma_monto_pagado);
-  //       this.total_penalizaciones += Number(item.penalizacion_semanal);
-  //       this.grand_total += Number(item.adeudo_semanal);
-
-  //       return item;
-
-  //     });
-
-  //   });
-
-
-  // }
 
   colapsa(amorti: any, indice: number) {
 
@@ -617,23 +442,6 @@ export class CreditoViewComponent implements OnInit {
 
   }
 
-  // getPagos(credito: Credito) {
-
-  //   let suma = 0;
-
-  //   this.pagoService.getPagosByCreditoId(credito.id).subscribe(pagos => {
-
-  //     pagos.forEach(item => {
-  //       suma = suma + Number(item.monto);
-  //     })
-
-  //     this.total_pagado?.setValue(this.formatNumberWithCommas((suma).toFixed(2)));
-  //     this.pagos = pagos;
-
-  //   });
-
-  // }
-
   getBalance(credito: Credito) {
 
     this.balanceService.getAdeudo(credito.id).subscribe(res => {
@@ -729,7 +537,6 @@ export class CreditoViewComponent implements OnInit {
   printTarjetaPagos() {
     this.creditoService.downloadTarjetaPagos(this.editingCredito);
   }
-
 
 
   //Getters

@@ -20,7 +20,7 @@ export class AuthService {
     return this.http.post<any>(this.URL_API + 'auth/login', user)
       .pipe(
         tap( (resp: any) => {
-          localStorage.setItem('token', resp.token);
+          sessionStorage.setItem('token', resp.token);
         })
       )
   }

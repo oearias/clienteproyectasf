@@ -81,6 +81,7 @@ import { YearComponent } from './semanas/year/year.component';
 import { InversionesComponent } from './inversiones/inversiones.component';
 import { InversionListComponent } from './inversiones/inversion-list/inversion-list.component';
 import { InversionComponent } from './inversiones/inversion/inversion.component';
+import { ViewContractsComponent } from './clientes/view-contracts/view-contracts.component';
 
 const routes: Routes = [
   {
@@ -308,7 +309,10 @@ const routes: Routes = [
         children: [
           { path: '', component: ClientesListComponent },
           { path: 'cliente/:id', component: ClienteComponent, data: { titulo: 'Clientes' } },
-          { path: 'cliente', component: ClienteComponent, data: { titulo: 'Clientes' } }
+          { path: 'cliente', component: ClienteComponent, data: { titulo: 'Clientes' } },
+          { path: 'creditos/cliente/:id', component: ViewContractsComponent, data: { titulo: 'Créditos por cliente' } },
+          //{ path: 'credito/view/:id', component: CreditoDetailComponent, data: { titulo: 'Créditos por cliente' } }
+          { path: 'credito/view/:id', component: CreditoViewComponent, data: { titulo: 'Créditos por cliente' } }
         ]
       },
     ]

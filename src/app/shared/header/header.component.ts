@@ -18,9 +18,9 @@ export class HeaderComponent implements OnInit {
 
   logOut(){
     console.log('Bye Bye');
-    localStorage.removeItem('nombreCompleto');
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
+    sessionStorage.removeItem('nombreCompleto');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('role');
     this.router.navigate(['/login']);
   }
 

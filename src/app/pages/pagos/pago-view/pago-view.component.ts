@@ -6,6 +6,7 @@ import { PagosService } from 'src/app/services/pagos.service';
 import { WeeksyearService } from 'src/app/services/weeksyear.service';
 import { CreditosService } from '../../../services/creditos.service';
 import { PathService } from '../../../services/path.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-pago-view',
@@ -44,6 +45,7 @@ export class PagoViewComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
+    private datePipe: DatePipe,
     private pagoService: PagosService,
     private creditoService: CreditosService,
     private weeksyearService: WeeksyearService,
@@ -80,7 +82,7 @@ export class PagoViewComponent implements OnInit {
           this.credito_id?.setValue(this.editingPago?.credito_id);
           this.num_contrato?.setValue(this.editingPago?.num_contrato);
           this.monto?.setValue(this.editingPago?.monto);
-          this.fecha?.setValue(this.formatFecha(this.editingPago?.fecha));
+          this.fecha?.setValue(this.datePipe.transform(this.editingPago?.fecha, 'yyyy-MM-dd','0+100'));
           this.hora?.setValue(this.editingPago?.hora);
           this.metodo_pago?.setValue(this.editingPago?.metodo_pago);
           this.weekyear?.setValue(this.editingPago?.weekyear);
@@ -120,20 +122,6 @@ export class PagoViewComponent implements OnInit {
     this.weeksyearService.getSemanas().subscribe( (semanas:any) => {
       this.weeksyear = semanas;
     });
-  }
-
-  formatFecha(date: Date) {
-    let d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
-
-    if (month.length < 2)
-      month = '0' + month;
-    if (day.length < 2)
-      day = '0' + day;
-
-    return [year, month, day].join('-');
   }
 
   onChangeCredito(event:any){

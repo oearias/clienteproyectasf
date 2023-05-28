@@ -7,7 +7,7 @@ import { CreditosService } from '../../../services/creditos.service';
 import { Credito } from '../../../interfaces/Credito';
 import Swal from 'sweetalert2';
 import { ToastrService } from 'ngx-toastr';
-
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-creditos-masivos',
   templateUrl: './creditos-masivos.component.html',
@@ -23,7 +23,13 @@ export class CreditosMasivosComponent implements OnInit {
   arrayToSend = [];
   arrayInicial = [];
 
+  arrayToPrint = [];
+  totalContratosToPrint = 0;
+
+  selectAllCheckbox = false;
+
   constructor(
+    private datePipe: DatePipe,
     private creditoService: CreditosService,
     private pathService: PathService,
     private toastr: ToastrService
@@ -35,48 +41,97 @@ export class CreditosMasivosComponent implements OnInit {
 
     this.subscription = this.creditoService.refresh$.subscribe(() => {
       this.getCreditos();
-    })
+    });
   }
 
-  getCreditos() {
+  getCreditos(fechaParam?: Date) {
 
     this.arrayInicial = [];
+    this.arrayToPrint = [];
 
     this.creditoService.getCreditos().subscribe(creditos => {
 
-      this.creditos = creditos.map((item: any) => {
+      this.creditos = creditos
+        //Desaparemos los creditos no entregados
+        .filter(item => item.no_entregado != 1)
+        //Filtramos los creditos visualmente si hay una fecha de entrega específica
+        .filter(item => !fechaParam || new Date(item.fecha_entrega_prog).toISOString().slice(0, 10) === new Date(fechaParam).toISOString().slice(0, 10))
+        .map((item: any) => {
 
-        
-        //Creditos aprobados para entrega
-        if (item.preaprobado === 1) {
+          //Creditos aprobados para entrega
+          if (item.preaprobado === 1) {
 
-          if (item.fecha_entrega_prog != null) {
-            item.fecha_entrega_prog = this.formatFecha(item.fecha_entrega_prog);
+            if (item.fecha_entrega_prog != null) {
+              item.fecha_entrega_prog = this.datePipe.transform(item.fecha_entrega_prog, 'yyyy-MM-dd', '0+100');
+            }
+
+            if (item.fecha_inicio_prog != null) {
+              item.fecha_inicio_prog = this.datePipe.transform(item.fecha_inicio_prog, 'yyyy-MM-dd', '0+100');
+            }
+
+
+            if (item.motivo === null) {
+              item.isChecked = false;
+            } else {
+              item.isChecked = true;
+            }
+
+            item.printSelected = false;
+
+            this.addToArrayInicial(item.id, item.fecha_entrega_prog, item.hora_entrega, item.fecha_inicio_prog, item.num_cheque, item.entregado, item.no_entregado, item.motivo, item.num_semanas);
+            this.addToArrayToPrint(item.id, item.printSelected, item.fecha_inicio_prog);
+
+            return item;
           }
 
-          if (item.fecha_inicio_prog != null) {
-            item.fecha_inicio_prog = this.formatFecha(item.fecha_inicio_prog);
-          }
-
-
-          if (item.motivo === null) {
-            item.isChecked = false;
-          } else {
-            item.isChecked = true;
-          }
-
-          this.addToArrayInicial(item.id, item.fecha_entrega_prog, item.hora_entrega, item.fecha_inicio_prog, item.num_cheque, item.entregado, item.no_entregado, item.motivo, item.num_semanas);
-
-          console.log(item);
-
-
-          return item;
-        }
-      }).filter(item => item);
+        })
+        .filter((item: any) => item);
     });
 
 
   }
+
+  // getCreditosByFecha(fechaParam: Date) {
+
+  //   this.arrayInicial = [];
+
+  //   this.creditoService.getCreditos().subscribe(creditos => {
+
+
+  //     this.creditos = creditos
+  //       //Desaparemos los creditos no entregados
+  //       .filter(item => item.no_entregado != 1)
+  //       //.filter(item => ())
+  //       .map((item: any) => {
+
+  //         //Creditos aprobados para entrega
+  //         if (item.preaprobado === 1) {
+
+  //           if (item.fecha_entrega_prog != null) {
+  //             item.fecha_entrega_prog = this.datePipe.transform(item.fecha_entrega_prog, 'yyyy-MM-dd', '0+100');
+  //           }
+
+  //           if (item.fecha_inicio_prog != null) {
+  //             item.fecha_inicio_prog = this.datePipe.transform(item.fecha_inicio_prog, 'yyyy-MM-dd', '0+100');
+  //           }
+
+
+  //           if (item.motivo === null) {
+  //             item.isChecked = false;
+  //           } else {
+  //             item.isChecked = true;
+  //           }
+
+  //           item.printSelected = false;
+
+  //           this.addToArrayInicial(item.id, item.fecha_entrega_prog, item.hora_entrega, item.fecha_inicio_prog, item.num_cheque, item.entregado, item.no_entregado, item.motivo, item.num_semanas);
+  //           this.addToArrayToPrint(item.id, item.printSelected);
+
+  //           return item;
+  //         }
+  //       }).filter((item: any) => item);
+  //   });
+  // }
 
   onChangeFechaInicio(credito: Credito, fechaEntrega: HTMLInputElement, fechaInicio: HTMLInputElement) {
 
@@ -120,7 +175,7 @@ export class CreditosMasivosComponent implements OnInit {
   onChangeFechaEntrega(credito: Credito, fechaEntrega: HTMLInputElement, fechaInicio: HTMLInputElement) {
 
     //Detectamos la fecha de entrega
-    if ((fechaEntrega.value > fechaInicio.value) && fechaInicio.value.length > 0) {
+    if ((fechaEntrega.value > fechaInicio.value) && (fechaInicio.value.length > 0)) {
 
       fechaEntrega.value = null;
 
@@ -141,7 +196,7 @@ export class CreditosMasivosComponent implements OnInit {
 
   }
 
-  onChangeHoraEntrega(credito: Credito, horaEntrega: HTMLInputElement){
+  onChangeHoraEntrega(credito: Credito, horaEntrega: HTMLInputElement) {
 
     let element = this.arrayInicial.find(element => element.credito_id === credito.id);
     element['hora_entrega'] = horaEntrega.value;
@@ -164,10 +219,10 @@ export class CreditosMasivosComponent implements OnInit {
 
   }
 
-  onCheckEntregado({ target: { checked } }, credito: Credito, fechaEntrega: HTMLInputElement, fechaInicio: HTMLInputElement, numCheque: HTMLInputElement, horaEntrega: HTMLInputElement, entregado:HTMLInputElement, noEntregado: HTMLInputElement, motivo: HTMLInputElement) {
+  onCheckEntregado({ target: { checked } }, credito: Credito, fechaEntrega: HTMLInputElement, fechaInicio: HTMLInputElement, numCheque: HTMLInputElement, horaEntrega: HTMLInputElement, entregado: HTMLInputElement, noEntregado: HTMLInputElement, motivo: HTMLInputElement) {
 
     //Validamos que estén llenas las fechas y el cheque
-    if (fechaEntrega.value != null && fechaEntrega.value.length > 0 && fechaInicio.value != null && fechaInicio.value.length > 0 && numCheque.value != null && numCheque.value.length > 0  && horaEntrega.value != null && horaEntrega.value.length > 0) {
+    if (fechaEntrega.value != null && fechaEntrega.value.length > 0 && fechaInicio.value != null && fechaInicio.value.length > 0 && numCheque.value != null && numCheque.value.length > 0 && horaEntrega.value != null && horaEntrega.value.length > 0) {
 
       let element = this.arrayInicial.find(element => element.credito_id === credito.id);
 
@@ -182,7 +237,7 @@ export class CreditosMasivosComponent implements OnInit {
     } else {
 
       entregado.checked = null;
-      
+
       Swal.fire({
         title: 'Llenemos algunos datos',
         html: `Para poder marcar como entregado este crédito es necesario ingresar fecha de entrega, hora de entrega, fecha de inicio y número de cheque`,
@@ -196,7 +251,25 @@ export class CreditosMasivosComponent implements OnInit {
 
   }
 
+  onCheckContrato({ target: { checked } }, credito: Credito) {
+
+    this.updateArrayToPrint(credito.id, checked);
+
+    const totalSeleccionados = this.arrayToPrint.filter(item => item.printSelected === true).length;
+
+
+    if (totalSeleccionados < 1) {
+      console.log('total seleccionados', totalSeleccionados);
+      this.selectAllCheckbox = false;
+
+    }
+
+
+
+  }
+
   onCheckNoEntregado({ target: { checked } }, credito: Credito, entregado: HTMLInputElement, motivo: HTMLInputElement) {
+
     let element = this.arrayInicial.find(element => element.credito_id === credito.id);
 
     checked
@@ -211,8 +284,7 @@ export class CreditosMasivosComponent implements OnInit {
 
   }
 
-
-  addToArrayInicial(id: any, fechaEntrega: any, horaEntrega:any, fechaInicio: any, num_cheque: any, entregado: any, no_entregado: any, motivo: any, num_semanas:any) {
+  addToArrayInicial(id: any, fechaEntrega: any, horaEntrega: any, fechaInicio: any, num_cheque: any, entregado: any, no_entregado: any, motivo: any, num_semanas: any) {
     this.arrayInicial.push(
       {
         credito_id: id,
@@ -228,44 +300,129 @@ export class CreditosMasivosComponent implements OnInit {
 
   }
 
+  addToArrayToPrint(id: number, flag: boolean, fechaInicio) {
+
+    this.arrayToPrint.push({
+      credito_id: id,
+      printSelected: flag,
+      fecha_inicio: fechaInicio
+    });
+
+  }
+
+  tieneFechaInicio(arreglo: Array<any>): boolean {
+
+    for (let i = 0; i < arreglo.length; i++) {
+
+      if (arreglo[i].fecha_inicio === null) {
+        return false;
+      }
+
+    }
+
+    return true;
+  }
+
+
+  updateArrayToPrint(id: number, flag: boolean) {
+
+    const index = this.arrayToPrint.findIndex(item => item.credito_id === id);
+    if (index !== -1) {
+      this.arrayToPrint[index].printSelected = flag;
+    }
+
+    this.totalContratosToPrint = this.arrayToPrint.filter(item => item.printSelected === true).length;
+
+  }
+
   changeStatus() {
 
-    this.creditoService.updateFechaCreditosMasivos(this.arrayInicial).subscribe( (res:any) => {
-
-      console.log(this.arrayInicial);
+    this.creditoService.updateFechaCreditosMasivos(this.arrayInicial).subscribe((res: any) => {
 
       this.toastr.success(res);
-    }, (err)=> {
+    }, (err) => {
 
       this.toastr.error(err.error);
 
     });
   }
 
-  printFormatoEntregasCredito(){
+  printFormatoEntregasCredito() {
 
-    if(this.inputFechaEntrega.nativeElement.value.length > 0){
+    if (this.inputFechaEntrega.nativeElement.value.length > 0) {
 
       let fechaParam = this.inputFechaEntrega.nativeElement.value;
 
-      // fechaParam = this.formatFecha(fechaParam);
-
-      // console.log(fechaParam);
-
-      // console.log(typeof fechaParam);
+      //Aqui filtramos visualmente los creditos ccon la fecha del reporte
+      this.getCreditos(fechaParam);
 
       this.creditoService.downloadEntregasCredito(fechaParam);
-    
-    }else{
+
+    } else {
       Swal.fire({
         title: 'Llenemos algunos datos',
-        html: `Para poder generar el reporte es necesario ingresar la fecha de entrega como parámetro situada al lado izquierdo de este botón`,
+        html: `Para poder generar el reporte es necesario ingresar la fecha de entrega situada al lado izquierdo de este botón`,
         icon: 'info',
         showCancelButton: false,
         confirmButtonColor: '#2f5ade',
         confirmButtonText: '¡Entendido!'
       });
     }
+  }
+
+  toggleSelectAllCheckbox(isChecked: boolean) {
+
+    this.creditos = this.creditos
+      .map(credito => ({ ...credito, printSelected: isChecked }));
+
+    this.creditos.forEach((item: any) => this.updateArrayToPrint(item.id, isChecked));
+
+    this.totalContratosToPrint = this.arrayToPrint.filter(item => item.printSelected === true).length;
+
+
+  }
+
+  printContratos() {
+
+    if (this.arrayToPrint.length > 0) {
+
+
+      //Validamos que todos los contratos tengan fecha_inicio
+      const tieneFecha = this.tieneFechaInicio(this.arrayToPrint.filter(item => item.printSelected));
+
+
+      if (tieneFecha === false) {
+        Swal.fire({
+          title: 'Llenemos algunos datos',
+          html: `Para poder imprimir los contratos seleccionados es necesario que tengan guardada la fecha de inicio cada uno de ellos.`,
+          icon: 'info',
+          showCancelButton: false,
+          confirmButtonColor: '#2f5ade',
+          confirmButtonText: '¡Entendido!'
+        });
+      } else {
+
+
+        this.creditoService.printContratosMasivos(this.arrayToPrint);
+
+      }
+
+
+
+    } else {
+
+      Swal.fire({
+        title: 'Llenemos algunos datos',
+        html: `Para poder imprimir contratos es necesario seleccionar al menos un crédito en la casilla izquierda`,
+        icon: 'info',
+        showCancelButton: false,
+        confirmButtonColor: '#2f5ade',
+        confirmButtonText: '¡Entendido!'
+      });
+
+    }
+
+    //Para imprimir contratos es necesario seleccionar al menos un credito en la casilla de la izq.
   }
 
   detectWhatDayIs(fecha: any) {
@@ -275,22 +432,15 @@ export class CreditosMasivosComponent implements OnInit {
     return whatday.getDay();
   }
 
-  formatFecha(date: Date) {
-    let d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
-
-    if (month.length < 2)
-      month = '0' + month;
-    if (day.length < 2)
-      day = '0' + day;
-
-    return [year, month, day].join('-');
-  }
-
   setPath() {
     this.pathService.path = '/dashboard/creditos';
+  }
+
+  limpiar() {
+
+    this.inputFechaEntrega.nativeElement.value = null;
+
+    this.getCreditos();
   }
 
 }

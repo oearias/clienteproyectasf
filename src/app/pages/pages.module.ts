@@ -97,6 +97,7 @@ import { YearComponent } from './semanas/year/year.component';
 import { InversionesComponent } from './inversiones/inversiones.component';
 import { InversionComponent } from './inversiones/inversion/inversion.component';
 import { InversionListComponent } from './inversiones/inversion-list/inversion-list.component';
+import { ViewContractsComponent } from './clientes/view-contracts/view-contracts.component';
 
 
 @NgModule({
@@ -182,6 +183,7 @@ import { InversionListComponent } from './inversiones/inversion-list/inversion-l
     InversionesComponent,
     InversionComponent,
     InversionListComponent,
+    ViewContractsComponent,
   ],
   exports: [
     DashboardComponent,

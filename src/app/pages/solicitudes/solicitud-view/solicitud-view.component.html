@@ -157,6 +157,7 @@
                                         <tr>
                                             <th class="text-center">N. crédito</th>
                                             <th class="text-center">Monto</th>
+                                            <th class="text-center">Dias atraso</th>
                                             <th class="text-center">Estatus</th>
                                         </tr>
                                     </thead>
@@ -164,13 +165,19 @@
                                         <tr *ngFor="let credito of creditos">
                                             <td class="text-center">{{credito?.num_contrato}}</td>
                                             <td class="text-right">${{credito?.monto_otorgado | number:'1.2-2':'en-US'
-                                                }}</td>
-                                            <td class="text-center">{{credito?.estatus_credito}}</td>
+                                                }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{credito?.dias_penalizaciones}}
+                                            </td>
+                                            <td class="text-center">
+                                                <span style="font-weight: bold;">{{credito?.estatus_credito}}</span>
+                                            </td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td></td>
+                                            <td colspan="2"></td>
                                             <td class="text-right">Total de créditos:</td>
                                             <td>{{totalCreditos}}</td>
                                         </tr>
@@ -225,7 +232,7 @@
                                 <div class="col-sm col-md d-flex justify-content-center align-items-center">
                                     <div>
                                         <button
-                                            *ngIf="role != 'CREATOR' &&  (role === 'ADMIN' || role === 'EDITOR' ) && editingSolicitud?.estatus_sol_id === 3 "
+                                            *ngIf="role != 'CREATOR' &&  (role === 'ADMIN' || role === 'EDITOR' ) && editingSolicitud?.estatus_sol_id === 3 && totalCreditosSinLiquidar === 0 "
                                             [disabled]="!solicitudForm.valid" (click)="aprobarSolicitud()"
                                             class="btn btn-success btn-block"><i class="fas fa-check-circle"></i>
                                             Aprobar solicitud</button>
@@ -235,7 +242,7 @@
                                 <div class="col-sm col-md d-flex justify-content-center align-items-center">
                                     <div>
                                         <button
-                                            *ngIf="role != 'CREATOR' &&  (role === 'ADMIN' || role === 'EDITOR' ) && editingSolicitud?.estatus_sol_id === 3 "
+                                            *ngIf="role != 'CREATOR' &&  (role === 'ADMIN' || role === 'EDITOR' ) && editingSolicitud?.estatus_sol_id === 3 && totalCreditosSinLiquidar === 0  "
                                             [disabled]="!solicitudForm.valid" (click)="revertirSolicitud()"
                                             class="btn btn-warning btn-block"><i class="fas fa-minus-circle"></i>
                                             Correción de solicitud</button>

@@ -96,6 +96,7 @@ export class SolicitudViewComponent implements AfterViewInit {
 
 
   totalCreditos: number = 0;
+  totalCreditosSinLiquidar : number = 0;
 
   role:any;
 
@@ -250,7 +251,7 @@ export class SolicitudViewComponent implements AfterViewInit {
       num_dependientes: null,
       personas_viviendo: null,
       observaciones: null,
-      usuario: localStorage.getItem('usuario'),
+      usuario: sessionStorage.getItem('usuario'),
       cliente: {
         nombre: null,
         apellido_paterno: null,
@@ -293,7 +294,7 @@ export class SolicitudViewComponent implements AfterViewInit {
     this.monto.disable();
     
 
-    this.role = localStorage.getItem('role');
+    this.role = sessionStorage.getItem('role');
 
   }
 
@@ -555,6 +556,14 @@ export class SolicitudViewComponent implements AfterViewInit {
     this.creditoService.getCreditos().subscribe(creditos => {
       this.creditos = creditos.filter(item => item.cliente_id === this.editingSolicitud?.cliente_id);
       this.totalCreditos = this.creditos.length;
+
+      this.totalCreditosSinLiquidar = this.creditos
+              .filter(credito => credito.estatus_credito_id === 4  ).length;
+
+      if(this.totalCreditosSinLiquidar > 0){
+        this.alertaCreditosNoLiquidados();
+      }
+
     });
   }
   
@@ -637,6 +646,7 @@ export class SolicitudViewComponent implements AfterViewInit {
 
     if (event) {
       this.estatus_sol_id?.setValue(event.id);
+
       this.observaciones.enable();
     }
 
@@ -812,6 +822,19 @@ export class SolicitudViewComponent implements AfterViewInit {
     }
 
 
+  }
+
+  alertaCreditosNoLiquidados(){
+
+    Swal.fire({
+      title: 'Créditos pendientes',
+      html: `El solicitante tiene créditos pendientes por lo tanto no es posible autorizar esta solicitud. Proceda a rechazarla`,
+      icon: 'info',
+      showCancelButton: false,
+      confirmButtonColor: '#2f5ade',
+      confirmButtonText: 'Entendido',
+      confirmButtonAriaLabel: 'send'
+    });
   }
 
   aprobarSolicitud() {

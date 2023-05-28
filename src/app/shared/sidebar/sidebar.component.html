@@ -35,7 +35,8 @@
 
     <!-- Sidebar Menu -->
     <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" 
+      role="menu" data-accordion="false">
         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
         <li class="nav-item has-treeview" *ngFor="let item of menuItems">
@@ -48,12 +49,14 @@
             </p>
           </a>
           <ul class="nav nav-treeview">
+
             <li class="nav-item" *ngFor="let subMenuItem of item.submenu">
               <a [routerLink]="subMenuItem.url" class="nav-link" style="cursor: pointer;">
                 <i class={{subMenuItem.icon}}></i>
                 <p class="ml-2">{{subMenuItem.titulo}}</p>
               </a>
             </li>
+
           </ul>
         </li>
         <li class="nav-item">

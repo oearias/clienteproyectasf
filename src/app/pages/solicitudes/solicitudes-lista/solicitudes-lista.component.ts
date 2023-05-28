@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { SolicitudesService } from '../../../services/solicitudes.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Solicitud } from '../../../interfaces/Solicitud';
@@ -43,7 +43,7 @@ export class SolicitudesListaComponent implements OnInit {
     { cant: 25 },
   ];
 
-  role:any;
+  role: any;
 
   //Filter
   criterios = [
@@ -57,7 +57,7 @@ export class SolicitudesListaComponent implements OnInit {
 
   //Estatus
   estatus: EstatusSolicitud[] = [];
- 
+
   //Sort
   //key = 'id';
   key = '';
@@ -66,34 +66,47 @@ export class SolicitudesListaComponent implements OnInit {
   allowedRoles = ['CREATOR', 'ADMIN'];
 
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private solService: SolicitudesService,
     private solEstatusService: SolEstatusService,
     private toastr: ToastrService,
     private fb: FormBuilder
-  ) { 
-    this.role = localStorage.getItem('role');
+  ) {
+    this.role = sessionStorage.getItem('role');
   }
 
   ngOnInit(): void {
 
     this.loadEstatusSolicitud();
-    this.getSolicitudes();
 
-    this.subscription = this.solService.refresh$.subscribe(() => {
-      this.getSolicitudes();
-    });
+    this.route.queryParams.subscribe(params => {
+
+      //Aquí mando un parámetro al metodo, para ver solo solicitudes filtradas
+      this.getSolicitudes(params.flag);
+
+      this.subscription = this.solService.refresh$.subscribe(() => {
+        this.getSolicitudes(params.flag);
+      });
+
+    })
 
   }
 
-  getSolicitudes() {
+  getSolicitudes(param?: number) {
+
     this.solService.getSolicitudes().subscribe((res: any) => {
 
-      if(this.role === 'EDITOR'){
+      const bandera = Number(param);
 
-        this.solicitudes = res.filter( (solicitud:Solicitud)=> solicitud.estatus_sol_id === 3 );
+      if (this.role === 'EDITOR' || bandera === 1) {
 
-      }else{
+        this.solicitudes = res.filter((solicitud: Solicitud) => solicitud.estatus_sol_id === 3);
+
+      } else {
+
+        console.log(bandera);
+        console.log(this.role);
 
         this.solicitudes = res;
       }
@@ -108,11 +121,11 @@ export class SolicitudesListaComponent implements OnInit {
   }
 
   editSolicitud(solicitud: Solicitud) {
-    this.router.navigate(['dashboard/solicitudes/solicitud', solicitud.id, 'flagEdit',true]);
+    this.router.navigate(['dashboard/solicitudes/solicitud', solicitud.id, 'flagEdit', true]);
   }
 
-  deleteSolicitud(solicitud: Solicitud){
-    
+  deleteSolicitud(solicitud: Solicitud) {
+
     Swal.fire({
       title: 'Eliminar',
       html: `¿Está ud. seguro de eliminar <br>la solicitud <b>${solicitud.id}</b>?`,
@@ -125,8 +138,8 @@ export class SolicitudesListaComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
 
-        this.solService.deleteSolicitud(solicitud).subscribe( (res:any) => {
-          if(res){
+        this.solService.deleteSolicitud(solicitud).subscribe((res: any) => {
+          if (res) {
 
             this.toastr.success(res);
 
@@ -134,9 +147,9 @@ export class SolicitudesListaComponent implements OnInit {
         }, (err) => {
 
           Swal.fire({
-            title:'¡Ups!',
-            html:`No es posible eliminar el registro. ${err.error.msg} <b>${err.error?.tabla}</b>`,
-            icon:'warning'
+            title: '¡Ups!',
+            html: `No es posible eliminar el registro. ${err.error.msg} <b>${err.error?.tabla}</b>`,
+            icon: 'warning'
           });
         });
 
@@ -144,22 +157,22 @@ export class SolicitudesListaComponent implements OnInit {
     });
   }
 
-  viewSolicitud(solicitud: Solicitud){
+  viewSolicitud(solicitud: Solicitud) {
     this.router.navigate(['dashboard/solicitudes/solicitud/view', solicitud.id])
   }
 
-  onChangeCriterio(event: any){
-    if(event){
+  onChangeCriterio(event: any) {
+    if (event) {
 
       this.inputAux.nativeElement.value = null;
       this.palabra.setValue(null);
 
-      if(event.criterio === 'estatus_id'){
+      if (event.criterio === 'estatus_id') {
 
         this.selectEstatus.readonly = false;
         this.inputAux.nativeElement.disabled = true;
 
-      }else{
+      } else {
 
         this.palabra.enable();
         this.inputAux.nativeElement.disabled = false;
@@ -170,23 +183,23 @@ export class SolicitudesListaComponent implements OnInit {
     }
   }
 
-  loadEstatusSolicitud(){
-    this.solEstatusService.getEstatus().subscribe( estatusSol => {
+  loadEstatusSolicitud() {
+    this.solEstatusService.getEstatus().subscribe(estatusSol => {
       this.estatus = estatusSol
     });
   }
 
-  onChangeSelectEstatus(event:any){
-    if(event){
+  onChangeSelectEstatus(event: any) {
+    if (event) {
       this.palabra?.setValue(event?.id);
     }
   }
 
-  onKeyUp(){
+  onKeyUp() {
     this.palabra.setValue(this.inputAux.nativeElement.value);
   }
 
-  cambiaItems(event:any) {
+  cambiaItems(event: any) {
     this.itemsPP = event.cant
   }
 
@@ -195,6 +208,7 @@ export class SolicitudesListaComponent implements OnInit {
     if (this.filterForm.valid) {
       this.solService.getSolicitudesByCriteria(this.filterForm.value.criterio, this.filterForm.value.palabra).subscribe((res) => {
         this.solicitudes = res;
+
       }, err => {
         this.toastr.error(err.error.msg);
       })
@@ -205,7 +219,7 @@ export class SolicitudesListaComponent implements OnInit {
 
   }
 
-  goPresupuesto(){
+  goPresupuesto() {
     this.router.navigate(['dashboard/solicitudes/presupuesto']);
   }
 
@@ -215,7 +229,7 @@ export class SolicitudesListaComponent implements OnInit {
     this.ngOnInit();
   }
 
-  onClearSelectStatus(){
+  onClearSelectStatus() {
     this.palabra?.setValue(null);
   }
 

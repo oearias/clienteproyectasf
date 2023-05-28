@@ -285,7 +285,8 @@ export class SolicitudEditComponent implements AfterViewInit {
     //Desactivamos valores que no podrá cambiar mientras se edite
     //2da version, si la podra editar de manera completa el editor.
     //this.fecha_solicitud.disable();
-    this.cliente.disable();
+    
+    //this.cliente.disable();
     this.sucursal_id.disable();
     this.zona_id.disable();
     this.agencia_id.disable();

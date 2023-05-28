@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -14,6 +14,8 @@ import { SemanasService } from '../../../services/semanas.service';
 import { Semana } from 'src/app/interfaces/Semana';
 import { filter } from 'rxjs/operators';
 import { NgSelectComponent } from '@ng-select/ng-select';
+import { DatePipe } from '@angular/common';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-pago',
@@ -24,11 +26,16 @@ export class PagoComponent implements OnInit {
 
   @ViewChild('inputHora') inputHora: ElementRef;
   @ViewChild('selectWeekyear') selectWeekyear: ElementRef;
+  @ViewChild('selectWeekyear') selectWeekyearNg: NgSelectComponent;
+  @ViewChild('selectCredito') selectCredito: NgSelectComponent;
 
-  creditos: any[] = [];
+  creditos: Credito[] = [];
+  creditosArray: Credito[] = [];
   //weeksyear = [];
   semanas: Semana[] = [];
   semanaOpened: Semana;
+
+  readonlyMode: boolean = false;
 
   pagoForm = this.fb.group({
     id: new FormControl(null),
@@ -61,6 +68,7 @@ export class PagoComponent implements OnInit {
     private creditoService: CreditosService,
     private semanaService: SemanasService,
     private toastr: ToastrService,
+    private datePipe: DatePipe
   ) {
     this.pagoForm.setValue({
       id: null,
@@ -68,11 +76,11 @@ export class PagoComponent implements OnInit {
       credito_id: null,
       metodo_pago: 'EFECTIVO',
       folio: null,
-      fecha: null,
+      fecha: this.datePipe.transform(new Date(), 'yyyy-MM-dd'),
       hora: '00:00',
       monto: null,
       weekyear: null,
-      weekyear2:null,
+      weekyear2: null,
       observaciones: null
     });
 
@@ -83,28 +91,39 @@ export class PagoComponent implements OnInit {
     this.setPath();
     this.loadData();
     //this.weekyear2.disable();
-    
+
 
     this.route.params.subscribe((params) => {
 
       if (params.id) {
 
-        this.pagoService.getPago(params.id).subscribe(res => {
+        forkJoin([
+          this.pagoService.getPago(params.id),
+          this.creditoService.getCreditos(),
+        ]).subscribe((results: [Pago, Credito[]]) => {
+          this.editingPago = results[0];
+          this.creditos = results[1]
+            .map((credito) => {
+              credito.nombre = `${credito.num_contrato} | ${credito.num_cliente} | ${credito.apellido_paterno} ${credito.apellido_materno} ${credito.nombre}`
+              return credito;
+            });
 
-          this.editingPago = res;
+          this.creditosArray = this.creditos;
 
           this.id?.setValue(this.editingPago?.id);
           this.credito_id?.setValue(this.editingPago?.credito_id);
-          this.num_contrato?.setValue(this.editingPago?.num_contrato);
+          this.folio.setValue(this.editingPago?.folio);
           this.monto?.setValue(this.editingPago?.monto);
-          this.fecha?.setValue(this.formatFecha(this.editingPago?.fecha));
+          this.fecha?.setValue(this.datePipe.transform(this.editingPago?.fecha, 'yyyy-MM-dd','0+100'));
           this.observaciones?.setValue(this.editingPago?.observaciones);
+          this.num_contrato?.setValue(this.editingPago?.num_contrato);
+
+          // Ponemos modo lectura los controles
+          this.readonlyMode = true;
+          this.selectCredito.readonly = true;
+          this.selectWeekyearNg.readonly = true;
 
         });
-
-        this.pagoForm.disable();
-        this.id.enable();
-        this.observaciones.enable();
 
       }
     });
@@ -113,31 +132,33 @@ export class PagoComponent implements OnInit {
 
   confirmPago() {
 
-    let verbo;
+    this.savePago();
 
-    if (this.id.value > 0) {
-      verbo = 'Cancelar';
-    } else {
-      verbo = 'Ingresar'
-    }
+    // let verbo;
 
-    Swal.fire({
-      title: `${verbo} pago`,
-      html: `¿Está ud. seguro que desea ${verbo} el pago <br>por la cantidad de: <b>$${this.monto.value}</b> <br>al Crédito n. <b>${this.num_contrato.value}</b> <br>con fecha: <b>${this.fecha.value}</b>?`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#2f5ade',
-      cancelButtonColor: '#d33',
-      cancelButtonText: 'Cancelar',
-      confirmButtonText: `Si, ${verbo}!`,
-      confirmButtonAriaLabel: 'send'
-    }).then((result) => {
-      if (result.isConfirmed) {
+    // if (this.id.value > 0) {
+    //   verbo = 'Cancelar';
+    // } else {
+    //   verbo = 'Ingresar'
+    // }
 
-        this.savePago();
+    // Swal.fire({
+    //   title: `${verbo} pago`,
+    //   html: `¿Está ud. seguro que desea ${verbo} el pago <br>por la cantidad de: <b>$${this.monto.value}</b> <br>al Crédito n. <b>${this.num_contrato.value}</b> <br>con fecha: <b>${this.fecha.value}</b>?`,
+    //   icon: 'question',
+    //   showCancelButton: true,
+    //   confirmButtonColor: '#2f5ade',
+    //   cancelButtonColor: '#d33',
+    //   cancelButtonText: 'Cancelar',
+    //   confirmButtonText: `Si, ${verbo}!`,
+    //   confirmButtonAriaLabel: 'send'
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
 
-      }
-    });
+    //     this.savePago();
+
+    //   }
+    // });
   }
 
   savePago() {
@@ -163,6 +184,8 @@ export class PagoComponent implements OnInit {
 
         } else {
 
+          console.log('Probando: ',this.pagoForm.value);
+
           this.pagoService.updatePago(this.pagoForm.value).subscribe((res: any) => {
 
 
@@ -177,10 +200,9 @@ export class PagoComponent implements OnInit {
 
       } else {
 
-        //llamar al metodo que une fecha y hora en un solo valo
-
         this.pagoService.insertPago(this.pagoForm.value).subscribe((res: any) => {
 
+          this.resetForm();
           this.toastr.success(res);
 
         }, (err) => {
@@ -189,13 +211,22 @@ export class PagoComponent implements OnInit {
 
         });
 
-        this.router.navigateByUrl('/dashboard/pagos');
+        //this.router.navigateByUrl('/dashboard/pagos');
 
       }
 
 
 
     }
+  }
+
+  resetForm() {
+
+    this.creditoSelected = null;
+    this.credito_id.setValue(null);
+    this.monto.setValue(null);
+    this.folio.setValue(null);
+
   }
 
   onChangeCredito(event: any) {
@@ -206,9 +237,12 @@ export class PagoComponent implements OnInit {
       this.num_contrato?.setValue(event.num_contrato);
 
       //a manera de prueba vamos a localizar el crédito aqui
-      this.creditoService.getCredito(this.credito_id.value).subscribe(res => {
-        this.creditoSelected = res
-      });
+      // this.creditoService.getCredito(this.credito_id.value).subscribe(res => {
+      //   this.creditoSelected = res
+      // });
+
+      this.creditoSelected = this.creditosArray.find((item) => item.id === this.credito_id.value);
+
     }
 
   }
@@ -237,45 +271,30 @@ export class PagoComponent implements OnInit {
 
       this.creditos = creditos
         .filter(item => item.entregado === 1)
+        .filter(item => item.estatus_credito_id != 1)
         .map((credito) => {
           credito.nombre = `${credito.num_contrato} | ${credito.num_cliente} | ${credito.apellido_paterno} ${credito.apellido_materno} ${credito.nombre}`
           return credito;
-        })
-    })
+        });
+
+      this.creditosArray = this.creditos;
+    });
   }
 
   loadSemanas() {
-    // this.weeksyearService.getSemanas().subscribe((semanas: any) => {
-    //   this.weeksyear = semanas
-    // });
 
     this.semanaService.getSemanas().subscribe(semanas => {
 
       this.semanas = semanas
-      .filter(item => item.estatus )
+        .filter(item => item.estatus)
 
       this.semanaOpened = semanas.find(item => item.estatus);
 
       this.weekyear.setValue(this.semanaOpened?.weekyear);
       this.weekyear2.setValue(this.semanaOpened?.weekyear);
-      
-    })
 
-    console.log(this.semanas);
-  }
+    });
 
-  formatFecha(date: Date) {
-    let d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
-
-    if (month.length < 2)
-      month = '0' + month;
-    if (day.length < 2)
-      day = '0' + day;
-
-    return [year, month, day].join('-');
   }
 
   volver() {
@@ -301,6 +320,10 @@ export class PagoComponent implements OnInit {
 
   get monto() {
     return this.pagoForm.get('monto');
+  }
+
+  get folio() {
+    return this.pagoForm.get('folio');
   }
 
   get fecha() {

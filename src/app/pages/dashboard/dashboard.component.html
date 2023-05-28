@@ -13,7 +13,7 @@
     <div class="card-body">
       <div class="row">
 
-        <div class="col-lg-3 col-6" *ngIf="role === 'ADMIN' ">
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
           <div class="small-box bg-info">
             <div class="inner">
               <h3 class="contador">{{total_clientes}}</h3>
@@ -32,7 +32,7 @@
           </div>
         </div>
 
-        <div class="col-lg-3 col-6" *ngIf="allowedRoles.includes(role)">
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="allowedRoles.includes(role)">
           <div class="small-box bg-danger">
             <div class="inner">
               <h3 class="contador">{{total_solicitudes}}</h3>
@@ -51,26 +51,45 @@
           </div>
         </div>
 
-        <div class="col-lg-3 col-6" *ngIf="role === 'EDITOR' ">
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf=" role === 'ADMIN' || role === 'EDITOR'  ">
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3 class="contador">{{total_solicitudes}}</h3>
+              <h3 class="contador">{{total_solicitudes_revisar}}</h3>
               <span style="font-weight: bold; font-size: 18px;">Solicitudes por revisar</span>
               <div>&nbsp;</div>
-              <div *ngIf="allowedRoles.includes(role)" style="font-size: 14px;">aprobadas: {{total_solicitudes_aprobadas_entrega}}</div>
-              <div *ngIf="allowedRoles.includes(role)" style="font-size: 14px;">rechazadas: {{total_solicitudes_rechazadas}}</div>
+              <div style="font-size: 14px;">&nbsp;</div>
+              <div style="font-size: 14px;">&nbsp;</div>
             </div>
             <div class="icon">
               <i class=" fas fa-clipboard"></i>
             </div>
-            <a href=".#/dashboard/solicitudes" class="small-box-footer">
+            <a [routerLink]="['/dashboard/solicitudes']" [queryParams]="{flag: 1}" class="small-box-footer">
               Ir
               <i class="fas fa-arrow-circle-right"></i>
             </a>
           </div>
         </div>
 
-        <div class="col-lg-3 col-6" *ngIf="role === 'ADMIN' ">
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
+          <div class="small-box bg-danger">
+            <div class="inner">
+              <h3 class="contador">{{total_solicitudes_presup}}</h3>
+              <span style="font-weight: bold; font-size: 18px;">Solicitudes para presupuesto</span>
+              <div>&nbsp;</div>
+              <div style="font-size: 14px;">&nbsp;</div>
+              <div style="font-size: 14px;">&nbsp;</div>
+            </div>
+            <div class="icon">
+              <i class="fas fa-clipboard"></i>
+            </div>
+            <a href=".#/dashboard/solicitudes/presupuesto" class="small-box-footer">
+              Ir
+              <i class="fas fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
           <div class="small-box bg-primary">
             <div class="inner">
               <h3 class="contador">{{total_creditos}}</h3>
@@ -80,7 +99,7 @@
               <div style="font-size: 14px;">no entregados: {{total_creditos_no_entregados}}</div>
             </div>
             <div class="icon">
-              <i class=" fas fa-file-contract"></i>
+              <i class="fas fa-file-contract"></i>
             </div>
             <a href=".#/dashboard/creditos" class="small-box-footer">
               Ir
@@ -89,7 +108,26 @@
           </div>
         </div>
 
-        <div class="col-lg-3 col-6" *ngIf="role === 'ADMIN' ">
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
+          <div class="small-box bg-primary">
+            <div class="inner">
+              <h3 class="contador">{{total_creditos_prog_entrega}}</h3>
+              <span style="font-weight: bold; font-size: 18px;">Créditos para prog. entrega</span>
+              <div>&nbsp;</div>
+              <div style="font-size: 14px;">&nbsp;</div>
+              <div style="font-size: 14px;">&nbsp;</div>
+            </div>
+            <div class="icon">
+              <i class="fas fa-file-contract"></i>
+            </div>
+            <a href=".#/dashboard/creditos/createCreditos" class="small-box-footer">
+              Ir
+              <i class="fas fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
           <div class="small-box bg-success">
             <div class="inner">
               <h3 class="contador">{{total_pagos}}</h3>

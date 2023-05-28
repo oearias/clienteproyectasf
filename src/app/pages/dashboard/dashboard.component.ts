@@ -18,15 +18,33 @@ import { DatePipe } from '@angular/common';
 })
 export class DashboardComponent implements OnInit {
 
-  role:any;
+  role: any;
   allowedRoles = ['CREATOR', 'ADMIN'];
   fechaHoy: Date = new Date();
+
+  creditos: Credito[] = [];
+
+  solicitudes: Solicitud[] = [];
+  solicitudesRevisar: Solicitud[] = [];
+  solicitudesPresupuesto: Solicitud[] = [];
+
+  creditosProgEntrega: Credito[] = [];
+
+  pagos: Pago[] = [];
+  pagosHoy: Pago[] = [];
+  pagosLastWeek: Pago[] = []
 
   total_clientes: number = 0;
   total_clientes2: number;
 
   total_solicitudes: number = 0;
   total_solicitudes2: number;
+
+  total_solicitudes_revisar: number = 0;
+  total_solicitudes_revisar2: number;
+
+  total_solicitudes_presup: number = 0;
+  total_solicitudes_presup2: number;
 
   total_creditos: number = 0;
   total_creditos2: number;
@@ -36,16 +54,14 @@ export class DashboardComponent implements OnInit {
   total_creditos_entregados: number = 0
   total_creditos_no_entregados: number = 0
 
+  total_creditos_prog_entrega: number = 0;
+  total_creditos_prog_entrega2: number;
+
   total_pagos: number = 0;
   total_pagos2: number;
 
   total_pagos_hoy: number = 0;
   total_pagos_lastweek: number = 0;
-
-  creditos: Credito[] = [];
-  solicitudes: Solicitud[] = [];
-  pagos: Pago[] = [];
-  pagosLastWeek: Pago[] = []
 
   constructor(
     private router: Router,
@@ -55,12 +71,13 @@ export class DashboardComponent implements OnInit {
     private pagoService: PagosService,
     private datePipe: DatePipe
   ) {
-    this.role = localStorage.getItem('role');
-   }
+    this.role = sessionStorage.getItem('role');
+  }
 
   ngOnInit(): void {
-    if (!localStorage.getItem('token')) {
-      console.log('Bye Bye');
+
+    if (!sessionStorage.getItem('token')) {
+      console.log('Bye Bye Bye');
       this.router.navigate(['/login']);
     }
 
@@ -84,15 +101,18 @@ export class DashboardComponent implements OnInit {
       const fechaLastWeekFormateada = this.datePipe.transform(fechaLastWeek, 'yyyy-MM-dd');
 
 
-      
+      if (this.role === 'EDITOR' || this.role === 'ADMIN' ) {
+        //Solicitudes por revisar
+        this.solicitudesRevisar = results[1].filter(sol => sol.estatus_sol_id === 3);
 
-      if(this.role === 'EDITOR'){
-        this.solicitudes = results[1].filter(sol => sol.estatus_sol_id === 3);
+      } 
 
-        console.log('es editor');
-      }else{
-        this.solicitudes = results[1];
-      }
+      this.solicitudesPresupuesto = results[1].filter(sol => sol.estatus_sol_id === 6);
+      this.total_solicitudes_presup = this.solicitudesPresupuesto.length;
+        
+      this.solicitudes = results[1];
+
+      this.total_solicitudes_revisar = this.solicitudesRevisar.length;
 
       this.total_solicitudes_rechazadas = this.solicitudes
         .filter(solicitud => solicitud.estatus_sol_id === 2).length;
@@ -102,27 +122,39 @@ export class DashboardComponent implements OnInit {
 
       this.creditos = results[2];
 
+      this.creditosProgEntrega = results[2]
+        .filter(credito => credito.preaprobado = 1 )
+        .filter(credito => credito.no_entregado === null);
+
+      this.total_creditos_prog_entrega = this.creditosProgEntrega.length;
+
       this.total_creditos_entregados = results[2]
         .filter(item => item.entregado === 1).length;
 
       this.total_creditos_no_entregados = results[2]
         .filter(item => item.entregado != 1).length;
 
+
       this.pagos = results[3]
         .map((pago: any) => {
-          pago.fecha = this.datePipe.transform(pago.fecha, 'yyyy-MM-dd')
+          pago.fecha = this.datePipe.transform(pago.fecha, 'yyyy-MM-dd', '0+100')
           return pago;
         })
-        .filter(item => item.cancelado != 1)
-      //.filter( (item:any) => item.fecha === fechaHoyFormateada);
+        .filter(item => item.cancelado != 1);
 
-      this.pagosLastWeek = results[3]
-        .map((pago: any) => {
-          pago.fecha = this.datePipe.transform(pago.fecha, 'yyyy-MM-dd')
-          return pago;
-        })
+
+      this.pagosLastWeek = this.pagos
         .filter(item => item.cancelado != 1)
-        .filter(item => (item.fecha >= fechaLastWeekFormateada && item.fecha <= fechaHoyFormateada));
+        .filter(item =>
+        (
+          //El new date evita que se tenga que pasar por un map el pago.fecha para poder comparar como string
+          new Date(item.fecha).toISOString().slice(0, 10) >= fechaLastWeekFormateada &&
+          new Date(item.fecha).toISOString().slice(0, 10) <= fechaHoyFormateada
+        ));
+
+      this.pagosHoy = this.pagos
+        .filter(item => item.cancelado != 1)
+        .filter(item => (new Date(item.fecha).toISOString().slice(0, 10) === fechaHoyFormateada));
 
 
       this.total_clientes = results[0].length;
@@ -130,18 +162,28 @@ export class DashboardComponent implements OnInit {
 
       this.total_solicitudes = this.solicitudes.length;
       this.total_solicitudes2 = this.solicitudes.length;
+      this.total_solicitudes_revisar2 = this.solicitudesRevisar.length;
+      this.total_solicitudes_presup2 = this.solicitudesPresupuesto.length;
 
       this.total_creditos = this.creditos.length;
       this.total_creditos2 = this.creditos.length;
 
+      this.total_creditos_prog_entrega = this.creditosProgEntrega.length;
+      this.total_creditos_prog_entrega2 = this.creditosProgEntrega.length;
+
+
       this.total_pagos = this.pagos.length;
       this.total_pagos2 = this.pagos.length;
+      this.total_pagos_hoy = this.pagosHoy.length;
 
       this.total_pagos_lastweek = this.pagosLastWeek.length;
 
       this.animarConteoClientes(this.total_clientes);
       this.animarConteoSolicitudes(this.total_solicitudes);
+      this.animarConteoSolicitudesRevision(this.total_solicitudes_revisar);
+      this.animarConteoSolicitudesPresupuesto(this.total_solicitudes_presup);
       this.animarConteoCreditos(this.total_creditos);
+      this.animarConteoCreditosProgEntrega(this.total_creditos_prog_entrega);
       this.animarConteoPagos(this.total_pagos);
 
     });
@@ -179,6 +221,36 @@ export class DashboardComponent implements OnInit {
     }, 30)
   }
 
+  animarConteoSolicitudesRevision(total: number) {
+
+    let auxiliar = 0;
+
+    const interval = setInterval(() => {
+      if (auxiliar <= total) {
+        this.total_solicitudes_revisar = auxiliar;
+        auxiliar = auxiliar + 1;
+      } else {
+        this.total_solicitudes_revisar = this.total_solicitudes_revisar2;
+        clearInterval(interval);
+      }
+    }, 30)
+  }
+
+  animarConteoSolicitudesPresupuesto(total: number) {
+
+    let auxiliar = 0;
+
+    const interval = setInterval(() => {
+      if (auxiliar <= total) {
+        this.total_solicitudes_presup = auxiliar;
+        auxiliar = auxiliar + 1;
+      } else {
+        this.total_solicitudes_presup = this.total_solicitudes_presup2;
+        clearInterval(interval);
+      }
+    }, 30)
+  }
+
   animarConteoCreditos(total: number) {
 
     let auxiliar = 0;
@@ -189,6 +261,21 @@ export class DashboardComponent implements OnInit {
         auxiliar = auxiliar + 1;
       } else {
         this.total_creditos = this.total_creditos2;
+        clearInterval(interval);
+      }
+    }, 30)
+  }
+
+  animarConteoCreditosProgEntrega(total: number) {
+
+    let auxiliar = 0;
+
+    const interval = setInterval(() => {
+      if (auxiliar <= total) {
+        this.total_creditos_prog_entrega = auxiliar;
+        auxiliar = auxiliar + 1;
+      } else {
+        this.total_creditos_prog_entrega = this.total_creditos_prog_entrega2;
         clearInterval(interval);
       }
     }, 30)

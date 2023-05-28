@@ -1,8 +1,10 @@
-export interface Cliente{
+export interface Cliente {
     id: number;
     sucursal_id: number;
     zona_id: number;
+    zona: string;
     agencia_id: number;
+    agencia: string;
     num_cliente: number;
     num_cliente2: string;
     nombre: string;
@@ -26,4 +28,5 @@ export interface Cliente{
     municipio: string;
     localidad: string;
     estado: string;
+    num_creditos: number;
 }
