@@ -82,6 +82,7 @@ import { InversionesComponent } from './inversiones/inversiones.component';
 import { InversionListComponent } from './inversiones/inversion-list/inversion-list.component';
 import { InversionComponent } from './inversiones/inversion/inversion.component';
 import { ViewContractsComponent } from './clientes/view-contracts/view-contracts.component';
+import { CreditosCheckEntregadosComponent } from './creditos/creditos-check-entregados/creditos-check-entregados.component';
 
 const routes: Routes = [
   {
@@ -282,6 +283,7 @@ const routes: Routes = [
           { path: 'credito/:id', component: CreditoComponent, data: { titulo: 'Créditos' } },
           { path: 'credito', component: CreditoComponent, data: { titulo: 'Créditos' } },
           { path: 'createCreditos', component: CreditosMasivosComponent, data: { titulo: 'Créditos' } },
+          { path: 'checkCreditos', component: CreditosCheckEntregadosComponent, data: { titulo: 'Captura de créditos entregados' } },
         ]
       },
       {

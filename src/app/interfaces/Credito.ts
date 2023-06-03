@@ -25,6 +25,8 @@ export interface Credito {
     tipo_contrato_id: number;
     estatus_contrato_id:number;
     estatus_credito_id: number;
+    agencia: number;
+    zona: number;
     fuente_financ_id:number;
     locked: number;
     renovacion:number;

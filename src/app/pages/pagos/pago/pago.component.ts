@@ -28,6 +28,8 @@ export class PagoComponent implements OnInit {
   @ViewChild('selectWeekyear') selectWeekyear: ElementRef;
   @ViewChild('selectWeekyear') selectWeekyearNg: NgSelectComponent;
   @ViewChild('selectCredito') selectCredito: NgSelectComponent;
+  @ViewChild('inputZona') inputZona: ElementRef;
+  @ViewChild('inputAgencia') inputAgencia: ElementRef;
 
   creditos: Credito[] = [];
   creditosArray: Credito[] = [];
@@ -242,6 +244,9 @@ export class PagoComponent implements OnInit {
       // });
 
       this.creditoSelected = this.creditosArray.find((item) => item.id === this.credito_id.value);
+
+      this.inputZona.nativeElement.value = this.creditoSelected.zona;
+      this.inputAgencia.nativeElement.value = this.creditoSelected.agencia;
 
     }
 

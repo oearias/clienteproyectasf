@@ -74,7 +74,7 @@ export class SolicitudesPresupuestoComponent implements OnInit {
   }
 
   setPath() {
-    this.pathService.path = '/dashboard/solicitudes';
+    this.pathService.path = '/dashboard/';
   }
 
   addToArray(valor: number) {

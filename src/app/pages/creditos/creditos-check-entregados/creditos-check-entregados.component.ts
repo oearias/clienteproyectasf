@@ -1,21 +1,18 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { Solicitud } from 'src/app/interfaces/Solicitud';
-import { PathService } from '../../../services/path.service';
-import { SolicitudesService } from '../../../services/solicitudes.service';
-import { CreditosService } from '../../../services/creditos.service';
-import { Credito } from '../../../interfaces/Credito';
-import Swal from 'sweetalert2';
-import { ToastrService } from 'ngx-toastr';
 import { DatePipe } from '@angular/common';
-@Component({
-  selector: 'app-creditos-masivos',
-  templateUrl: './creditos-masivos.component.html',
-  styleUrls: ['./creditos-masivos.component.css']
-})
-export class CreditosMasivosComponent implements OnInit {
+import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
+import Swal from 'sweetalert2';
+import { Credito } from 'src/app/interfaces/Credito';
+import { CreditosService } from 'src/app/services/creditos.service';
+import { PathService } from 'src/app/services/path.service';
 
-  @ViewChild('inputFechaEntrega') inputFechaEntrega: ElementRef;
+@Component({
+  selector: 'app-creditos-check-entregados',
+  templateUrl: './creditos-check-entregados.component.html',
+  styleUrls: ['./creditos-check-entregados.component.css']
+})
+export class CreditosCheckEntregadosComponent implements OnInit {
 
   subscription: Subscription;
   creditos: Credito[] = [];
@@ -27,6 +24,7 @@ export class CreditosMasivosComponent implements OnInit {
   totalContratosToPrint = 0;
 
   selectAllCheckbox = false;
+  readonlyMode: boolean = true;
 
   constructor(
     private datePipe: DatePipe,
@@ -90,48 +88,6 @@ export class CreditosMasivosComponent implements OnInit {
 
 
   }
-
-  // getCreditosByFecha(fechaParam: Date) {
-
-  //   this.arrayInicial = [];
-
-  //   this.creditoService.getCreditos().subscribe(creditos => {
-
-
-  //     this.creditos = creditos
-  //       //Desaparemos los creditos no entregados
-  //       .filter(item => item.no_entregado != 1)
-  //       //.filter(item => ())
-  //       .map((item: any) => {
-
-  //         //Creditos aprobados para entrega
-  //         if (item.preaprobado === 1) {
-
-  //           if (item.fecha_entrega_prog != null) {
-  //             item.fecha_entrega_prog = this.datePipe.transform(item.fecha_entrega_prog, 'yyyy-MM-dd', '0+100');
-  //           }
-
-  //           if (item.fecha_inicio_prog != null) {
-  //             item.fecha_inicio_prog = this.datePipe.transform(item.fecha_inicio_prog, 'yyyy-MM-dd', '0+100');
-  //           }
-
-
-  //           if (item.motivo === null) {
-  //             item.isChecked = false;
-  //           } else {
-  //             item.isChecked = true;
-  //           }
-
-  //           item.printSelected = false;
-
-  //           this.addToArrayInicial(item.id, item.fecha_entrega_prog, item.hora_entrega, item.fecha_inicio_prog, item.num_cheque, item.entregado, item.no_entregado, item.motivo, item.num_semanas);
-  //           this.addToArrayToPrint(item.id, item.printSelected);
-
-  //           return item;
-  //         }
-  //       }).filter((item: any) => item);
-  //   });
-  // }
 
   onChangeFechaInicio(credito: Credito, fechaEntrega: HTMLInputElement, fechaInicio: HTMLInputElement) {
 
@@ -347,29 +303,6 @@ export class CreditosMasivosComponent implements OnInit {
     });
   }
 
-  printFormatoEntregasCredito() {
-
-    if (this.inputFechaEntrega.nativeElement.value.length > 0) {
-
-      let fechaParam = this.inputFechaEntrega.nativeElement.value;
-
-      //Aqui filtramos visualmente los creditos ccon la fecha del reporte
-      this.getCreditos(fechaParam);
-
-      this.creditoService.downloadEntregasCredito(fechaParam);
-
-    } else {
-      Swal.fire({
-        title: 'Llenemos algunos datos',
-        html: `Para poder generar el reporte es necesario ingresar la fecha de entrega situada al lado izquierdo de este botón`,
-        icon: 'info',
-        showCancelButton: false,
-        confirmButtonColor: '#2f5ade',
-        confirmButtonText: '¡Entendido!'
-      });
-    }
-  }
-
   toggleSelectAllCheckbox(isChecked: boolean) {
 
     this.creditos = this.creditos
@@ -434,13 +367,6 @@ export class CreditosMasivosComponent implements OnInit {
 
   setPath() {
     this.pathService.path = '/dashboard/';
-  }
-
-  limpiar() {
-
-    this.inputFechaEntrega.nativeElement.value = null;
-
-    this.getCreditos();
   }
 
 }

@@ -98,6 +98,7 @@ import { InversionesComponent } from './inversiones/inversiones.component';
 import { InversionComponent } from './inversiones/inversion/inversion.component';
 import { InversionListComponent } from './inversiones/inversion-list/inversion-list.component';
 import { ViewContractsComponent } from './clientes/view-contracts/view-contracts.component';
+import { CreditosCheckEntregadosComponent } from './creditos/creditos-check-entregados/creditos-check-entregados.component';
 
 
 @NgModule({
@@ -184,6 +185,7 @@ import { ViewContractsComponent } from './clientes/view-contracts/view-contracts
     InversionComponent,
     InversionListComponent,
     ViewContractsComponent,
+    CreditosCheckEntregadosComponent,
   ],
   exports: [
     DashboardComponent,
