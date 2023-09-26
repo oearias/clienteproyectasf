@@ -166,10 +166,6 @@ export class ViewContractsComponent implements OnInit {
   viewCredito(credito: Credito){
     //this.router.navigate(['dashboard/creditos/credito/view', credito.id]);
 
-    console.log('entramos al view credito');
-
-    console.log(credito);
-
     const navigationExtras: NavigationExtras = {
       queryParams: {
         user_id: this.cliente.id

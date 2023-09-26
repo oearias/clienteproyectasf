@@ -80,8 +80,6 @@ export class ClientesListComponent implements OnInit {
   getClientes() {
     this.clienteService.getClientes().subscribe((res: any) => {
 
-      console.log(res);
-
       this.clientes = res;
 
     });

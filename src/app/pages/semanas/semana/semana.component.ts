@@ -113,8 +113,6 @@ export class SemanaComponent implements OnInit {
 
   formatFecha(fecha: Date) {
 
-    console.log(fecha);
-
     let d = new Date(fecha),
       month = '' + (d.getMonth() + 1),
       day = '' + d.getDate(),
@@ -124,8 +122,6 @@ export class SemanaComponent implements OnInit {
       month = '0' + month;
     if (day.length < 2)
       day = '0' + day;
-
-      console.log(day);
 
     return [year, month, day].join('-');
   }

@@ -132,8 +132,6 @@ export class InversionComponent implements OnInit {
 
     this.creditoService.getCreditosLimitadosInversionPositiva(this.busqueda).subscribe(creditos => {
 
-      console.log(creditos);
-
       this.creditos = creditos.creditosJSON
 
       // this.creditos = creditos

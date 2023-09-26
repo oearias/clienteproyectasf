@@ -56,8 +56,6 @@ export class ReporteCartasComponent implements OnInit {
   }
 
   printWeek(){
-    console.log('Perfecto');
-    console.log(this.weekyear2.value);
 
     this.creditoService.downloadReporteCartas(this.weekyear2.value);
   }

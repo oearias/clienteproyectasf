@@ -232,8 +232,6 @@ export class CreditoComponent implements OnInit {
 
   onChangeTarifa(event: any) {
 
-    console.log(event);
-
     //Cada que se cambie la tarifa se tiene que resetear las fechas
     this.tarifaService.getTarifa(event.id).subscribe(tarifa => {
 
@@ -424,8 +422,6 @@ export class CreditoComponent implements OnInit {
   }
 
   populateCreditoFields(data: Credito) {
-
-    console.log('data',data);
 
     this.tarifa_id?.setValue(data.tarifa_id);
     //this.monto_otorgado?.setValue(data.monto);

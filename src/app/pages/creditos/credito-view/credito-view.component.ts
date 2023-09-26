@@ -190,7 +190,7 @@ export class CreditoViewComponent implements OnInit {
               TipoCredito[]
             ]) => {
 
-              console.log(results[1]);
+              //console.log(results[1]);
 
 
             //this.creditos = results[0];
@@ -251,7 +251,6 @@ export class CreditoViewComponent implements OnInit {
             this.solicitud_credito_id.setValue(this.editingCredito.solicitud_credito_id);
             this.nombre.setValue(this.editingCredito.cliente.nombre_completo);
 
-            console.log(this.editingCredito);
 
           });
 
