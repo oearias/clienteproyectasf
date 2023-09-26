@@ -38,18 +38,6 @@ export class SolicitudesPresupuestoComponent implements OnInit {
 
   getSolicitudes() {
 
-
-    // this.solService.getSolicitudes().subscribe(solicitudes => {
-    //   let total = 0;
-    //   this.solicitudes = solicitudes.filter(item => {
-    //     if (item.estatus_sol_id === 6) {
-    //       total += Number(item.monto);
-    //       return true;
-    //     }
-    //   });
-    //   this.total = total;
-    // });
-
     this.solService.getSolicitudes().subscribe(solicitudes => {
       this.solicitudes = solicitudes.map(item => {
         if (item.estatus_sol_id === 6) {

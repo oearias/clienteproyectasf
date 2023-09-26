@@ -37,58 +37,33 @@ export class ViewContractsComponent implements OnInit {
   creditos: Credito[] = [];
   cliente: Cliente;
 
-  //Formulario del filtro
-  filterForm = this.fb.group({
-    criterio: new FormControl(null, Validators.required),
-    palabra: new FormControl(null, Validators.required)
-  });
+  currentPage: number = 1; // Inicializa currentPage con 1 por defecto
+  totalPages: number = 1; // Inicializa totalPages con 1 por defecto
+
+  busqueda = '';
 
   subscription: Subscription;
 
-  //Paginate
-  p: number = 1;
-  itemsPP: number = 20;
-  selectedItem = this.itemsPP;
-  items = [
-    { cant: 5 },
-    { cant: 10 },
-    { cant: 15 },
-    { cant: 20 },
-    { cant: 25 },
-  ];
-
-  //Filter
-  criterios = [
-    { nombre: 'nombre', criterio: 'nombre' },
-    { nombre: 'apellido paterno', criterio: 'apellido_paterno' },
-    { nombre: 'apellido materno', criterio: 'apellido_materno' },
-    { nombre: 'estatus', criterio: 'estatus_id'},
-    { nombre: 'número de contrato', criterio: 'num_contrato' },
-  ];
 
   //Estatus
   estatus: EstatusSolicitud[] = [];
-
-  //Sort
-  key = '';
-  reverse: boolean = false;
 
 
   ngOnInit(): void {
 
     this.setPath();
-    this.loadEstatusCredito();
 
     this.route.params.subscribe((params) => {
 
       if (params.id) {
         this.getCliente(params.id);
-        this.getCreditosByClienteId(params.id);
+
+        this.getCreditos(this.currentPage, 10, params.id);
 
       }
 
       this.subscription = this.creditoService.refresh$.subscribe(() => {
-        this.getCreditosByClienteId(params.id);
+        this.getCreditos(this.currentPage, 10, params.id);
       });
 
     });
@@ -98,29 +73,61 @@ export class ViewContractsComponent implements OnInit {
   }
 
   getCliente(cliente_id:number){
-    console.log(cliente_id);
 
     this.clienteService.getCliente(cliente_id).subscribe(res =>{
       this.cliente = res;
     })
   }
 
-  getCreditosByClienteId(cliente_id:number){
+  getCreditos(page:number, limit: number = 10, cliente_id:number){
 
-    this.creditoService.getCreditos().subscribe( (creditos) => {
+    this.creditoService.getCreditosByClienteId(page, limit, this.busqueda, cliente_id).subscribe( (creditos) => {
 
-      this.creditos = creditos.filter(item => item.cliente_id == cliente_id); //unicamente créditos entregados
+      this.creditos = creditos.creditosJSON;
+      this.totalPages = creditos.totalPages;
+      this.currentPage = creditos.currentPage;
 
     });
   }
 
+  generatePageRange(): number[] {
+
+    const pages: number[] = [];
+    const startPage = Math.max(1, this.currentPage - 2);
+    const endPage = Math.min(this.totalPages, this.currentPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.getCreditos(page, 10, this.cliente.id);
+    }
+  }
+
+  goToFirstPage(): void {
+    if (this.totalPages > 1 && this.currentPage !== 1) {
+      this.goToPage(1);
+    }
+  }
+
+  buscarElementos(terminoBusqueda: string) {
+
+    this.busqueda = terminoBusqueda;
+    this.getCreditos(1, 10, this.cliente.id);
+
+  }
 
   createCredito() {
-    this.router.navigateByUrl('dashboard/creditos/credito');
+    this.router.navigateByUrl('dashboard/creditos2/credito');
   }
 
   editCredito(credito: Credito) {
-    this.router.navigate(['dashboard/creditos/credito', credito.id]);
+    this.router.navigate(['dashboard/creditos2/credito', credito.id]);
   }
 
   deleteCredito(credito: Credito){
@@ -159,13 +166,17 @@ export class ViewContractsComponent implements OnInit {
   viewCredito(credito: Credito){
     //this.router.navigate(['dashboard/creditos/credito/view', credito.id]);
 
+    console.log('entramos al view credito');
+
+    console.log(credito);
+
     const navigationExtras: NavigationExtras = {
       queryParams: {
-        user_id: credito.cliente_id
+        user_id: this.cliente.id
       }
     };
     
-    this.router.navigate(['dashboard/clientes/credito/view', credito.id ], navigationExtras);
+    this.router.navigate(['dashboard/clientes2/credito/view', credito.id ], navigationExtras);
   }
 
   printAllDocumentation(credito:Credito) {
@@ -173,91 +184,13 @@ export class ViewContractsComponent implements OnInit {
   }
 
   goCreateCreditos(){
-    this.router.navigate(['dashboard/creditos/createCreditos'])
-  }
-
-  cambiaItems(event) {
-    this.itemsPP = event.cant
-  }
-
-  search() {
-
-    if (this.filterForm.valid) {
-      this.creditoService.getCreditosByCriteria(this.filterForm.value.criterio, this.filterForm.value.palabra).subscribe((res) => {
-        this.creditos = res;
-      }, err => {
-        this.toastr.error(err.error.msg);
-      })
-
-    } else {
-      this.toastr.error('Por favor llene todos los campos del filtro')
-    }
-
-  }
-
-  onChangeCriterio(event: any){
-    if(event){
-
-      this.inputAux.nativeElement.value = null;
-      this.palabra.setValue(null);
-
-      if(event.criterio === 'estatus_id'){
-
-        this.selectEstatus.readonly = false;
-        this.inputAux.nativeElement.disabled = true;
-
-      }else{
-
-        this.palabra.enable();
-        this.inputAux.nativeElement.disabled = false;
-        this.selectEstatus.handleClearClick();
-        this.selectEstatus.readonly = true;
-
-      }
-    }
-  }
-
-  loadEstatusCredito(){
-    this.creditoEstatusService.getEstatus().subscribe( estatusCred => {
-      console.log(estatusCred);
-      this.estatus = estatusCred
-    });
-  }
-
-  onChangeSelectEstatus(event:any){
-    if(event){
-      this.palabra?.setValue(event?.id);
-    }
-  }
-
-  onKeyUp(){
-    this.palabra.setValue(this.inputAux.nativeElement.value);
-  }
-
-  limpiar() {
-    this.filterForm.reset();
-    this.ngOnInit();
-  }
-
-  onClearSelectStatus(){
-    this.palabra?.setValue(null);
-  }
-
-  sort(key: string) {
-    this.key = key;
-    this.reverse = !this.reverse;
+    this.router.navigate(['dashboard/creditos2/createCreditos'])
   }
 
   setPath() {
-    this.pathService.path = '/dashboard/clientes';
+    this.pathService.path = '/dashboard/clientes2';
   }
 
-  get criterio() {
-    return this.filterForm.get('criterio');
-  }
 
-  get palabra() {
-    return this.filterForm.get('palabra');
-  }
 
 }

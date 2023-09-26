@@ -134,7 +134,7 @@
                     </thead>
                     <tbody>
                         <tr class="align-middle" (click)="selectUser(usuario)"
-                            *ngFor="let usuario of usuarios | orderBy: key: reverse | paginate : { itemsPerPage: itemsPP, currentPage: p } ; let i = index;  ">
+                            *ngFor="let usuario of usuarios | orderBy: key: reverse   ; let i = index;  ">
                             <td></td>
                             <td class="align-middle">{{usuario?.nombre_completo}}</td>
                             <td class="align-middle text-center">{{usuario?.role_nombre}}</td>

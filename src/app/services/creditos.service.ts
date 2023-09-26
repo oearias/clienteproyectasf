@@ -1,10 +1,12 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Amortizacion } from '../interfaces/Amortizacion';
 import { Credito } from '../interfaces/Credito';
+import { CreditoResponse } from '../interfaces/CreditoResponse';
+import { Semana } from '../interfaces/Semana';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +24,88 @@ export class CreditosService {
     private http: HttpClient
   ) { }
 
+  // getCreditos() {
+  //   return this.http.get<Credito[]>(this.URL_API);
+  // }
+
   getCreditos() {
-    return this.http.get<Credito[]>(this.URL_API);
+    return this.http.get<any>(this.URL_API);
+  }
+
+  getCreditosPaginados(page:number, limit:number, searchTerm: string) {
+
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('searchTerm', searchTerm.toString());
+
+    const url = `${this.URL_API}/creditos_list?${params.toString()}`;
+
+
+    return this.http.post<any>(url,{});
+
+  }
+
+  getCreditosByClienteId(page:number, limit:number, searchTerm: string, cliente_id: number) {
+
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('searchTerm', searchTerm.toString());
+
+    const body = {
+      cliente_id: cliente_id
+    }
+
+    const url = `${this.URL_API}/creditos_cliente?${params.toString()}`;
+
+
+    return this.http.post<CreditoResponse>(url,body);
+
+  }
+
+  getCreditosLimitados(searchTerm: string) {
+
+    const params = new HttpParams()
+      // .set('page', page.toString())
+      // .set('limit', limit.toString())
+      .set('searchTerm', searchTerm.toString());
+
+    const url = `${this.URL_API}/creditos_list_limit?${params.toString()}`;
+
+    return this.http.post<any>(url,{});
+
+  }
+
+  getCreditosLimitadosInversionPositiva(searchTerm: string) {
+
+    const params = new HttpParams()
+      // .set('page', page.toString())
+      // .set('limit', limit.toString())
+      .set('searchTerm', searchTerm.toString());
+
+    const url = `${this.URL_API}/creditos_list_limit/inversion_positiva?${params.toString()}`;
+
+    return this.http.post<any>(url,{});
+
+  }
+
+  getCreditosInversionPositiva(page:number, limit:number, searchTerm: string) {
+
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('searchTerm', searchTerm.toString());
+
+    const url = `${this.URL_API}/creditos_list/inversion_positiva?${params.toString()}`;
+
+
+    return this.http.post<CreditoResponse>(url,{});
+
+  }
+
+  getCreditosTotales() {
+    return this.http.get<number>(`${this.URL_API}/total/total`);
   }
 
   getCreditosByCriteria(criterio, palabra) {
@@ -32,6 +114,12 @@ export class CreditosService {
 
   getCredito(id: number) {
     return this.http.get<Credito>(`${this.URL_API}/${id}`)
+  }
+
+  getCreditoOptimizado(id: number) {
+    return this.http.post<Credito>(`${this.URL_API}/credito`,{
+      credito_id: id
+    })
   }
 
   insertCredito(credito: Credito) {
@@ -118,7 +206,7 @@ export class CreditosService {
     });
   }
 
-  downloadCreditos(fecha?:Date){
+  downloadCreditos(fecha?: Date) {
 
     return this.http.patch(`${this.URL_API}/print/creditos`, { fecha_inicio: fecha }, { responseType: 'blob' }).subscribe(res => {
 
@@ -149,6 +237,18 @@ export class CreditosService {
       window.open(fileURL);
 
     });
+  }
+
+  downloadReporteCartas(semana_id: number){
+
+    return this.http.post(`${this.URL_API}/print/reporte_cartas/${semana_id}`, {}, { responseType: 'blob' }).subscribe(res => {
+
+      var file = new Blob([res], { type: 'application/pdf' });
+      var fileURL = URL.createObjectURL(file);
+      window.open(fileURL);
+
+    });
+
   }
 
   setInversionPositiva(credito: Credito) {

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe, CurrencyPipe } from '@angular/common';
+import { CustomCurrencyPipe } from '../pipes/custom-currency.pipe'
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -99,6 +100,10 @@ import { InversionComponent } from './inversiones/inversion/inversion.component'
 import { InversionListComponent } from './inversiones/inversion-list/inversion-list.component';
 import { ViewContractsComponent } from './clientes/view-contracts/view-contracts.component';
 import { CreditosCheckEntregadosComponent } from './creditos/creditos-check-entregados/creditos-check-entregados.component';
+import { ReporteCartasComponent } from './reporte-cartas/reporte-cartas.component';
+import { CreditosListaComponent } from './creditos/creditos-lista/creditos-lista.component';
+import { PagosListaComponent } from './pagos/pagos-lista/pagos-lista.component';
+import { ClientesListaComponent } from './clientes/clientes-lista/clientes-lista.component';
 
 
 @NgModule({
@@ -186,6 +191,10 @@ import { CreditosCheckEntregadosComponent } from './creditos/creditos-check-entr
     InversionListComponent,
     ViewContractsComponent,
     CreditosCheckEntregadosComponent,
+    ReporteCartasComponent,
+    CreditosListaComponent,
+    PagosListaComponent,
+    ClientesListaComponent,
   ],
   exports: [
     DashboardComponent,
@@ -216,6 +225,8 @@ import { CreditosCheckEntregadosComponent } from './creditos/creditos-check-entr
   ],
   providers:[
     DatePipe,
+    CurrencyPipe,
+    CustomCurrencyPipe,
     {provide: HTTP_INTERCEPTORS, useClass: SpinnerInterceptor, multi: true}
   ]
 })

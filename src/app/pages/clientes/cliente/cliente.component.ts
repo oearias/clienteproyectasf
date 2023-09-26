@@ -268,7 +268,7 @@ export class ClienteComponent implements OnInit {
         });
       }
 
-      this.router.navigateByUrl('/dashboard/clientes');
+      this.router.navigateByUrl('/dashboard/clientes2');
 
     } else {
       this.toastr.error('Formulario no valido');
@@ -306,11 +306,11 @@ export class ClienteComponent implements OnInit {
   }
 
   volver() {
-    this.router.navigate(['/dashboard/clientes']);
+    this.router.navigate(['/dashboard/clientes2']);
   }
 
   setPath(){
-    this.pathService.path = '/dashboard/clientes';
+    this.pathService.path = '/dashboard/clientes2';
   }
 
   formatFecha(date: Date) {

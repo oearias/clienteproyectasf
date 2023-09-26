@@ -15,30 +15,15 @@ import { Credito } from 'src/app/interfaces/Credito';
 export class InversionListComponent implements OnInit {
 
   creditos: Credito[] = [];
-  p: number = 1;
-  itemsPP: number = 10;
+
+  currentPage: number = 1; // Inicializa currentPage con 1 por defecto
+  totalPages: number = 1; // Inicializa totalPages con 1 por defecto
+  
+  busqueda = '';
+  
   subscription: Subscription;
-  selectedItem = this.itemsPP;
-  palabra:any
 
-  criterio: any;
-
-  items = [
-    { cant: 20 },
-    { cant: 30 },
-    { cant: 40 },
-    { cant: 50 },
-  ]
-
-  criterios = [
-    { nombre: 'crédito', criterio: 'credito_id' },
-    { nombre: 'folio', criterio: 'folio' },
-    { nombre: 'nombre', criterio: 'nombre' },
-  ];
-
-  //Sort
-  key = 'id';
-  reverse: boolean = false;
+ 
 
   constructor(
     private creditoService: CreditosService,
@@ -48,21 +33,54 @@ export class InversionListComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.getInversiones();
+    this.getInversiones(this.currentPage);
 
     this.subscription = this.creditoService.refresh$.subscribe(() => {
-      this.getInversiones();
+      this.getInversiones(this.currentPage);
     });
   }
 
-  getInversiones() {
-    this.creditoService.getCreditos().subscribe((res: Credito[]) => {
+  getInversiones(page: number, limit: number = 10) {
+    
+    this.creditoService.getCreditosInversionPositiva(page, limit, this.busqueda).subscribe((res) => {
 
-      this.creditos = res.filter((credito: Credito) => {
-        return credito.inversion_positiva === true;
-      });
+      this.creditos = res.creditosJSON;
+      this.totalPages = res.totalPages;
+      this.currentPage = res.currentPage;
 
     });
+  }
+
+  generatePageRange(): number[] {
+
+    const pages: number[] = [];
+    const startPage = Math.max(1, this.currentPage - 2);
+    const endPage = Math.min(this.totalPages, this.currentPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.getInversiones(page);
+    }
+  }
+
+  goToFirstPage(): void {
+    if (this.totalPages > 1 && this.currentPage !== 1) {
+      this.goToPage(1);
+    }
+  }
+
+  buscarElementos(terminoBusqueda: string) {
+
+    this.busqueda = terminoBusqueda;
+    this.getInversiones(1);
+
   }
 
   createInversion() {
@@ -146,33 +164,6 @@ export class InversionListComponent implements OnInit {
 
   // }
 
-  cambiaItems(event:any) {
-    this.itemsPP = event.cant
-  }
 
-  getCriterio(event:any) {
-    this.criterio = event.criterio
-  }
-
-  search() {
-
-    if(this.criterio!= null && this.palabra!=null){
-      this.creditoService.getCreditosByCriteria(this.criterio, this.palabra.toLocaleUpperCase() ).subscribe( res =>{
-        this.creditos = res;
-      })
-    }
-  }
-
-  limpiar(){
-    this.criterio=null;
-    this.palabra=null;
-    this.ngOnInit();
-  }
-
-  sort(key:string){
-
-    this.key = key;
-    this.reverse = !this.reverse;
-  }
 
 }

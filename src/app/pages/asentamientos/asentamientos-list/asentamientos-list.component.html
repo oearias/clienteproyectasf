@@ -69,7 +69,7 @@
             </thead>
             <tbody>
                 <tr class="align-middle"
-                    *ngFor="let ta of tipoAsentamientos | orderBy: key: reverse  | paginate : { itemsPerPage: itemsPP, currentPage: p } ; let i = index;  ">
+                    *ngFor="let ta of tipoAsentamientos | orderBy: key: reverse    ; let i = index;  ">
                     <td></td>
                     <td class="align-middle">{{ta?.nombre}}</td>
                     <td class="align-middle">{{ta?.abreviatura}}</td>

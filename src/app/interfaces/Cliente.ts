@@ -1,17 +1,19 @@
+import { Agencia } from "./Agencia";
+
 export interface Cliente {
     id: number;
     sucursal_id: number;
     zona_id: number;
     zona: string;
     agencia_id: number;
-    agencia: string;
+    agencia: Agencia;
     num_cliente: number;
     num_cliente2: string;
+    nombre_completo: string;
     nombre: string;
     apellido_paterno: string;
     apellido_materno: string;
     fecha_nacimiento: Date;
-    nombre_completo: string;
     telefono: string;
     curp: string;
     rfc: string;

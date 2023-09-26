@@ -72,7 +72,7 @@
             </thead>
             <tbody>
                 <tr class="align-middle"
-                    *ngFor="let colonia of colonias | orderBy: key: reverse | paginate : { itemsPerPage: itemsPP, currentPage: p } ; let i = index;  ">
+                    *ngFor="let colonia of colonias | orderBy: key: reverse   ; let i = index;  ">
                     <td></td>
                     <td class="align-middle">{{colonia?.tipo_asentamiento}}</td>
                     <td class="align-middle">{{colonia?.nombre}}</td>

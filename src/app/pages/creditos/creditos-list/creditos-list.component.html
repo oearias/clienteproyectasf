@@ -114,8 +114,9 @@
                     <th class="text-center" (click)="sort('monto_otorgado')">Monto
                         &nbsp;<i class="fas fa-sort text-muted"></i>
                     </th>
-                    <th class="text-center">Estatus
-
+                    <th class="text-center" (click)="sort('estatus_contrato')">
+                        Estatus
+                        &nbsp;<i class="fas fa-sort text-muted"></i>
                     </th>
 
                     <th class="text-center" (click)="sort('estatus_credito')">Estatus 2
@@ -145,25 +146,46 @@
             </thead>
             <tbody>
                 <tr class="align-middle"
-                    *ngFor="let credito of creditos | orderBy: key: reverse | paginate : { itemsPerPage: itemsPP, currentPage: p } ; let i = index;  ">
+                    *ngFor="let credito of creditos | orderBy: key: reverse   ; let i = index;  ">
                     <td class="align-middle text-center" style="min-width: 120px;">{{credito?.num_contrato}}</td>
                     <td class="align-middle" style="min-width: 200px;">{{credito?.nombre_completo}}</td>
                     <td class="align-middle text-center" style="min-width: 100px;">{{credito?.zona}}</td>
                     <td class="align-middle text-center" style="min-width: 100px;">{{credito?.agencia}}</td>
                     <td class="align-middle text-right">${{credito?.monto_otorgado | number:'1.2-2':'en-US' }}</td>
 
-                    <td style="min-width: 100px;">
-                        <span>{{credito?.estatus_contrato}}</span>
+                    <td class="align-middle text-center" style="min-width: 100px;">
+                        <span class="badge badge-success" *ngIf="credito?.estatus_contrato === 'VIGENTE' " >{{credito?.estatus_contrato}}</span>
+
+                        <span class="badge badge-secondary" *ngIf="credito?.estatus_contrato !='VIGENTE'; ">
+                            {{credito?.estatus_contrato}}
+                        </span>
+
                     </td>
 
                     <td class="align-middle text-center" style="min-width: 100px;">
 
-                        <span class="badge badge-primary"
-                            *ngIf="credito?.estatus_credito=='LIQUIDADO'; else elseBlockEstatus">
+                        <span class="badge badge-success"
+                            *ngIf="credito?.estatus_credito==='LIQUIDADO'; else elseBlockEstatus">
                             {{credito?.estatus_credito}}
                         </span>
 
-                        <span class="badge badge-warning" *ngIf="credito?.estatus_credito=='SIN LIQUIDAR'; ">
+                        <span class="badge badge-primary" *ngIf="credito?.estatus_credito==='VIGENTE'; ">
+                            {{credito?.estatus_credito}}
+                        </span>
+
+                        <span class="badge badge-primary" *ngIf="credito?.estatus_credito==='SIN LIQUIDAR'; ">
+                            {{credito?.estatus_credito}}
+                        </span>
+
+                        <span class="badge badge-danger" *ngIf="credito?.estatus_credito==='JURÍDICO'; ">
+                            {{credito?.estatus_credito}}
+                        </span>
+
+                        <span class="badge badge-info" *ngIf="credito?.estatus_credito==='CONVENIO'; ">
+                            {{credito?.estatus_credito}}
+                        </span>
+
+                        <span class="badge badge-light" *ngIf="credito?.estatus_credito==='NO DEFINIDO'; ">
                             {{credito?.estatus_credito}}
                         </span>
 

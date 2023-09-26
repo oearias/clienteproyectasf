@@ -68,7 +68,7 @@
             </thead>
             <tbody>
                 <tr class="align-middle"
-                    *ngFor="let monto of montos | orderBy: key: reverse | paginate : { itemsPerPage: itemsPP, currentPage: p } ; let i = index;  ">
+                    *ngFor="let monto of montos | orderBy: key: reverse   ; let i = index;  ">
                     <td class="align-middle text-center">${{monto?.monto | number:'1.2-2':'en-US' }}</td>
                     <td class="align-middle">{{monto?.tarifa}}</td>
                     <td class="text-center" style="font-size: 17px;">

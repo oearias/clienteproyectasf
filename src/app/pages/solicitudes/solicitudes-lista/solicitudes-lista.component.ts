@@ -18,49 +18,23 @@ import { filter } from 'rxjs/operators';
 })
 export class SolicitudesListaComponent implements OnInit {
 
-  @ViewChild('selectEstatus') selectEstatus: NgSelectComponent;
-  @ViewChild('inputAux') inputAux: ElementRef;
 
   solicitudes: Solicitud[] = [];
 
-  //Formulario del filtro
-  filterForm = this.fb.group({
-    criterio: new FormControl(null, Validators.required),
-    palabra: new FormControl(null, Validators.required),
-  })
+  currentPage: number = 1; // Inicializa currentPage con 1 por defecto
+  totalPages: number = 1; // Inicializa totalPages con 1 por defecto
+
+  busqueda = '';
+
 
   subscription: Subscription;
 
-  //Paginate
-  p: number = 1;
-  itemsPP: number = 10;
-  selectedItem = this.itemsPP;
-  items = [
-    { cant: 5 },
-    { cant: 10 },
-    { cant: 15 },
-    { cant: 20 },
-    { cant: 25 },
-  ];
 
   role: any;
 
-  //Filter
-  criterios = [
-    { nombre: 'nombre', criterio: 'nombre' },
-    { nombre: 'apellido paterno', criterio: 'apellido_paterno' },
-    { nombre: 'apellido materno', criterio: 'apellido_materno' },
-    { nombre: 'número de cliente', criterio: 'num_cliente' },
-    { nombre: 'número de solicitud', criterio: 'sol_id' },
-    { nombre: 'estatus', criterio: 'estatus_id' },
-  ];
 
   //Estatus
   estatus: EstatusSolicitud[] = [];
-
-  //Sort
-  //key = 'id';
-  key = '';
   reverse: boolean = false;
 
   allowedRoles = ['CREATOR', 'ADMIN'];
@@ -71,7 +45,6 @@ export class SolicitudesListaComponent implements OnInit {
     private solService: SolicitudesService,
     private solEstatusService: SolEstatusService,
     private toastr: ToastrService,
-    private fb: FormBuilder
   ) {
     this.role = sessionStorage.getItem('role');
   }
@@ -82,37 +55,84 @@ export class SolicitudesListaComponent implements OnInit {
 
     this.route.queryParams.subscribe(params => {
 
-      //Aquí mando un parámetro al metodo, para ver solo solicitudes filtradas
-      this.getSolicitudes(params.flag);
+      this.getSolicitudes(this.currentPage);
 
       this.subscription = this.solService.refresh$.subscribe(() => {
-        this.getSolicitudes(params.flag);
+        this.getSolicitudes(this.currentPage);
       });
+
+      //Aquí mando un parámetro al metodo, para ver solo solicitudes filtradas
+      // this.getSolicitudes(params.flag);
+
+      // this.subscription = this.solService.refresh$.subscribe(() => {
+      //   this.getSolicitudes(params.flag);
+      // });
+
+      
+
+      
 
     })
 
   }
 
-  getSolicitudes(param?: number) {
+  getSolicitudes(page:number, limit: number = 10) {
 
-    this.solService.getSolicitudes().subscribe((res: any) => {
+    this.solService.getSolicitudesPaginadas(page, limit, this.busqueda).subscribe((solicitudes) =>{
 
-      const bandera = Number(param);
+      console.log(solicitudes);
 
-      if (this.role === 'EDITOR' || bandera === 1) {
-
-        this.solicitudes = res.filter((solicitud: Solicitud) => solicitud.estatus_sol_id === 3);
-
-      } else {
-
-        console.log(bandera);
-        console.log(this.role);
-
-        this.solicitudes = res;
-      }
-
+      this.solicitudes = solicitudes.solicitudesJSON;
+      this.totalPages = solicitudes.totalPages;
+      this.currentPage = solicitudes.currentPage;
 
     });
+
+    // this.solService.getSolicitudesPaginadas(page, limit, this.busqueda).subscribe((res: any) => {
+
+    //   const bandera = Number(param);
+
+    //   if (this.role === 'EDITOR' || bandera === 1) {
+
+    //     this.solicitudes = res.filter((solicitud: Solicitud) => solicitud.estatus_sol_id === 3);
+
+    //   } else {
+    //     this.solicitudes = res;
+    //   }
+
+    // });
+
+  }
+
+  generatePageRange(): number[] {
+
+    const pages: number[] = [];
+    const startPage = Math.max(1, this.currentPage - 2);
+    const endPage = Math.min(this.totalPages, this.currentPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.getSolicitudes(page);
+    }
+  }
+
+  goToFirstPage(): void {
+    if (this.totalPages > 1 && this.currentPage !== 1) {
+      this.goToPage(1);
+    }
+  }
+
+  buscarElementos(terminoBusqueda: string) {
+
+    this.busqueda = terminoBusqueda;
+    this.getSolicitudes(1);
 
   }
 
@@ -161,27 +181,6 @@ export class SolicitudesListaComponent implements OnInit {
     this.router.navigate(['dashboard/solicitudes/solicitud/view', solicitud.id])
   }
 
-  onChangeCriterio(event: any) {
-    if (event) {
-
-      this.inputAux.nativeElement.value = null;
-      this.palabra.setValue(null);
-
-      if (event.criterio === 'estatus_id') {
-
-        this.selectEstatus.readonly = false;
-        this.inputAux.nativeElement.disabled = true;
-
-      } else {
-
-        this.palabra.enable();
-        this.inputAux.nativeElement.disabled = false;
-        this.selectEstatus.handleClearClick();
-        this.selectEstatus.readonly = true;
-
-      }
-    }
-  }
 
   loadEstatusSolicitud() {
     this.solEstatusService.getEstatus().subscribe(estatusSol => {
@@ -189,61 +188,9 @@ export class SolicitudesListaComponent implements OnInit {
     });
   }
 
-  onChangeSelectEstatus(event: any) {
-    if (event) {
-      this.palabra?.setValue(event?.id);
-    }
-  }
-
-  onKeyUp() {
-    this.palabra.setValue(this.inputAux.nativeElement.value);
-  }
-
-  cambiaItems(event: any) {
-    this.itemsPP = event.cant
-  }
-
-  search() {
-
-    if (this.filterForm.valid) {
-      this.solService.getSolicitudesByCriteria(this.filterForm.value.criterio, this.filterForm.value.palabra).subscribe((res) => {
-        this.solicitudes = res;
-
-      }, err => {
-        this.toastr.error(err.error.msg);
-      })
-
-    } else {
-      this.toastr.error('Por favor llene todos los campos del filtro')
-    }
-
-  }
-
   goPresupuesto() {
     this.router.navigate(['dashboard/solicitudes/presupuesto']);
   }
 
-  limpiar() {
-    this.filterForm.reset();
-    this.selectEstatus.clearModel();
-    this.ngOnInit();
-  }
-
-  onClearSelectStatus() {
-    this.palabra?.setValue(null);
-  }
-
-  sort(key: string) {
-    this.key = key;
-    this.reverse = !this.reverse;
-  }
-
-  get criterio() {
-    return this.filterForm.get('criterio');
-  }
-
-  get palabra() {
-    return this.filterForm.get('palabra');
-  }
 
 }

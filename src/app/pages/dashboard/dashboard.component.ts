@@ -56,6 +56,7 @@ export class DashboardComponent implements OnInit {
 
   total_creditos_prog_entrega: number = 0;
   total_creditos_prog_entrega2: number;
+  total_creditos_marcar_entrega: number = 0;
 
   total_pagos: number = 0;
   total_pagos2: number;
@@ -87,106 +88,94 @@ export class DashboardComponent implements OnInit {
 
   getTotales() {
 
-    forkJoin([
-      this.clienteService.getClientes(),
-      this.solicitudService.getSolicitudes(),
-      this.creditoService.getCreditos(),
-      this.pagoService.getPagos()
-    ]).subscribe((results: [Cliente[], Solicitud[], Credito[], Pago[]]) => {
+    // forkJoin([
+    //   this.clienteService.getClientesTotal(),
+    //   this.solicitudService.getSolicitudesTotales(),
+    //   this.creditoService.getCreditosTotales(),
+    //   this.pagoService.getPagos()
+    // ]).subscribe((results: [number, any, any, Pago[]]) => {
 
 
-      const fechaHoy = new Date();
-      const fechaLastWeek = new Date(fechaHoy.getFullYear(), fechaHoy.getMonth(), fechaHoy.getDate() - 6);
-      const fechaHoyFormateada = this.datePipe.transform(fechaHoy, 'yyyy-MM-dd');
-      const fechaLastWeekFormateada = this.datePipe.transform(fechaLastWeek, 'yyyy-MM-dd');
+    //   const fechaHoy = new Date();
+    //   const fechaLastWeek = new Date(fechaHoy.getFullYear(), fechaHoy.getMonth(), fechaHoy.getDate() - 6);
+    //   const fechaHoyFormateada = this.datePipe.transform(fechaHoy, 'yyyy-MM-dd');
+    //   const fechaLastWeekFormateada = this.datePipe.transform(fechaLastWeek, 'yyyy-MM-dd');
 
 
-      if (this.role === 'EDITOR' || this.role === 'ADMIN' ) {
-        //Solicitudes por revisar
-        this.solicitudesRevisar = results[1].filter(sol => sol.estatus_sol_id === 3);
+    //   if (this.role === 'EDITOR' || this.role === 'ADMIN') {
+    //     //Solicitudes por revisar
+    //     this.total_solicitudes_revisar = results[1].total_solicitudes_revisar;
 
-      } 
+    //   }
 
-      this.solicitudesPresupuesto = results[1].filter(sol => sol.estatus_sol_id === 6);
-      this.total_solicitudes_presup = this.solicitudesPresupuesto.length;
-        
-      this.solicitudes = results[1];
+    //   this.total_solicitudes_presup = results[1].total_solicitudes_presupuesto;
 
-      this.total_solicitudes_revisar = this.solicitudesRevisar.length;
+    //   this.total_solicitudes = results[1].total_solicitudes;
 
-      this.total_solicitudes_rechazadas = this.solicitudes
-        .filter(solicitud => solicitud.estatus_sol_id === 2).length;
+      
 
-      this.total_solicitudes_aprobadas_entrega = this.solicitudes
-        .filter(solicitud => solicitud.estatus_sol_id === 7).length;
+    //   this.total_solicitudes_rechazadas = results[1].total_solicitudes_rechazadas;
 
-      this.creditos = results[2];
-
-      this.creditosProgEntrega = results[2]
-        .filter(credito => credito.preaprobado = 1 )
-        .filter(credito => credito.no_entregado === null);
-
-      this.total_creditos_prog_entrega = this.creditosProgEntrega.length;
-
-      this.total_creditos_entregados = results[2]
-        .filter(item => item.entregado === 1).length;
-
-      this.total_creditos_no_entregados = results[2]
-        .filter(item => item.entregado != 1).length;
+    //   this.total_solicitudes_aprobadas_entrega = results[1].total_solicitudes_aprobadas;
 
 
-      this.pagos = results[3]
-        .map((pago: any) => {
-          pago.fecha = this.datePipe.transform(pago.fecha, 'yyyy-MM-dd', '0+100')
-          return pago;
-        })
-        .filter(item => item.cancelado != 1);
+    //   this.total_creditos = results[2].total_creditos;
+    //   this.total_creditos_prog_entrega = results[2].total_creditos_prog_entrega;
+    //   this.total_creditos_marcar_entrega = results[2].total_creditos_marcar_entrega;
+    //   this.total_creditos_entregados = results[2].total_creditos_entregados;
+    //   this.total_creditos_no_entregados = results[2].total_creditos_no_entregados;
+
+    //   this.pagos = results[3]
+    //     .map((pago: any) => {
+    //       pago.fecha = this.datePipe.transform(pago.fecha, 'yyyy-MM-dd', '0+100')
+    //       return pago;
+    //     })
+    //     .filter(item => item.cancelado != 1);
 
 
-      this.pagosLastWeek = this.pagos
-        .filter(item => item.cancelado != 1)
-        .filter(item =>
-        (
-          //El new date evita que se tenga que pasar por un map el pago.fecha para poder comparar como string
-          new Date(item.fecha).toISOString().slice(0, 10) >= fechaLastWeekFormateada &&
-          new Date(item.fecha).toISOString().slice(0, 10) <= fechaHoyFormateada
-        ));
+    //   this.pagosLastWeek = this.pagos
+    //     .filter(item => item.cancelado != 1)
+    //     .filter(item =>
+    //     (
+    //       //El new date evita que se tenga que pasar por un map el pago.fecha para poder comparar como string
+    //       new Date(item.fecha).toISOString().slice(0, 10) >= fechaLastWeekFormateada &&
+    //       new Date(item.fecha).toISOString().slice(0, 10) <= fechaHoyFormateada
+    //     ));
 
-      this.pagosHoy = this.pagos
-        .filter(item => item.cancelado != 1)
-        .filter(item => (new Date(item.fecha).toISOString().slice(0, 10) === fechaHoyFormateada));
-
-
-      this.total_clientes = results[0].length;
-      this.total_clientes2 = results[0].length;
-
-      this.total_solicitudes = this.solicitudes.length;
-      this.total_solicitudes2 = this.solicitudes.length;
-      this.total_solicitudes_revisar2 = this.solicitudesRevisar.length;
-      this.total_solicitudes_presup2 = this.solicitudesPresupuesto.length;
-
-      this.total_creditos = this.creditos.length;
-      this.total_creditos2 = this.creditos.length;
-
-      this.total_creditos_prog_entrega = this.creditosProgEntrega.length;
-      this.total_creditos_prog_entrega2 = this.creditosProgEntrega.length;
+    //   this.pagosHoy = this.pagos
+    //     .filter(item => item.cancelado != 1)
+    //     .filter(item => (new Date(item.fecha).toISOString().slice(0, 10) === fechaHoyFormateada));
 
 
-      this.total_pagos = this.pagos.length;
-      this.total_pagos2 = this.pagos.length;
-      this.total_pagos_hoy = this.pagosHoy.length;
+    //   this.total_clientes = results[0];
+    //   this.total_clientes2 = results[0];
 
-      this.total_pagos_lastweek = this.pagosLastWeek.length;
 
-      this.animarConteoClientes(this.total_clientes);
-      this.animarConteoSolicitudes(this.total_solicitudes);
-      this.animarConteoSolicitudesRevision(this.total_solicitudes_revisar);
-      this.animarConteoSolicitudesPresupuesto(this.total_solicitudes_presup);
-      this.animarConteoCreditos(this.total_creditos);
-      this.animarConteoCreditosProgEntrega(this.total_creditos_prog_entrega);
-      this.animarConteoPagos(this.total_pagos);
+    //   this.total_solicitudes2 = this.total_solicitudes;
+    //   this.total_solicitudes_revisar2 = this.total_solicitudes_revisar;
+    //   this.total_solicitudes_presup2 = this.total_solicitudes_presup;
 
-    });
+    //   this.total_creditos2 = this.total_creditos;
+
+
+    //   this.total_creditos_prog_entrega2 = this.total_creditos_prog_entrega;
+
+
+    //   this.total_pagos = this.pagos.length;
+    //   this.total_pagos2 = this.pagos.length;
+    //   this.total_pagos_hoy = this.pagosHoy.length;
+
+    //   this.total_pagos_lastweek = this.pagosLastWeek.length;
+
+    //   this.animarConteoClientes(this.total_clientes);
+    //   this.animarConteoSolicitudes(this.total_solicitudes);
+    //   this.animarConteoSolicitudesRevision(this.total_solicitudes_revisar);
+    //   this.animarConteoSolicitudesPresupuesto(this.total_solicitudes_presup);
+    //   this.animarConteoCreditos(this.total_creditos);
+    //   this.animarConteoCreditosProgEntrega(this.total_creditos_prog_entrega);
+    //   this.animarConteoPagos(this.total_pagos);
+
+    // });
 
 
   }
@@ -198,7 +187,7 @@ export class DashboardComponent implements OnInit {
     const interval = setInterval(() => {
       if (auxiliar <= total) {
         this.total_clientes = auxiliar;
-        auxiliar = auxiliar + 3;
+        auxiliar = auxiliar + 20;
       } else {
         this.total_clientes = this.total_clientes2;
         clearInterval(interval);
@@ -213,12 +202,12 @@ export class DashboardComponent implements OnInit {
     const interval = setInterval(() => {
       if (auxiliar <= total) {
         this.total_solicitudes = auxiliar;
-        auxiliar = auxiliar + 1;
+        auxiliar = auxiliar + 100;
       } else {
         this.total_solicitudes = this.total_solicitudes2;
         clearInterval(interval);
       }
-    }, 30)
+    }, 1)
   }
 
   animarConteoSolicitudesRevision(total: number) {
@@ -258,12 +247,12 @@ export class DashboardComponent implements OnInit {
     const interval = setInterval(() => {
       if (auxiliar <= total) {
         this.total_creditos = auxiliar;
-        auxiliar = auxiliar + 1;
+        auxiliar = auxiliar + 100;
       } else {
         this.total_creditos = this.total_creditos2;
         clearInterval(interval);
       }
-    }, 30)
+    }, 1)
   }
 
   animarConteoCreditosProgEntrega(total: number) {
@@ -273,7 +262,7 @@ export class DashboardComponent implements OnInit {
     const interval = setInterval(() => {
       if (auxiliar <= total) {
         this.total_creditos_prog_entrega = auxiliar;
-        auxiliar = auxiliar + 1;
+        auxiliar = auxiliar + 200;
       } else {
         this.total_creditos_prog_entrega = this.total_creditos_prog_entrega2;
         clearInterval(interval);
@@ -288,7 +277,7 @@ export class DashboardComponent implements OnInit {
     const interval = setInterval(() => {
       if (auxiliar <= total) {
         this.total_pagos = auxiliar;
-        auxiliar = auxiliar + 1;
+        auxiliar = auxiliar + 20000;
       } else {
         this.total_pagos = this.total_pagos2;
         clearInterval(interval);

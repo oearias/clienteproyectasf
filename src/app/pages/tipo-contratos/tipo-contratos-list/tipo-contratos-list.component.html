@@ -65,7 +65,7 @@
             </thead>
             <tbody>
                 <tr class="align-middle"
-                    *ngFor="let tc of tipoContratos | orderBy: key: reverse | paginate : { itemsPerPage: itemsPP, currentPage: p } ; let i = index;  ">
+                    *ngFor="let tc of tipoContratos | orderBy: key: reverse   ; let i = index;  ">
                     <td></td>
                     <td class="align-middle">{{tc?.nombre}}</td>
                     <td class="text-center" style="font-size: 17px;">

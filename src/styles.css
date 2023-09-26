@@ -45,3 +45,7 @@ input[type=number] {
 .none{
   border: none;
 }
+
+.pagination li.page-item a.page-link {
+  cursor: pointer; /* Cambia el cursor a pointer cuando se pasa sobre los enlaces */
+}

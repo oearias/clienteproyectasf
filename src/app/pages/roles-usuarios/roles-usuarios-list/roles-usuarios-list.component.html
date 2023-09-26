@@ -69,7 +69,7 @@
             </thead>
             <tbody>
                 <tr class="align-middle"
-                    *ngFor="let ru of rolesUser | orderBy: key: reverse | paginate : { itemsPerPage: itemsPP, currentPage: p } ; let i = index;  ">
+                    *ngFor="let ru of rolesUser | orderBy: key: reverse   ; let i = index;  ">
                     <td></td>
                     <td class="align-middle">{{ru?.usuario_nombre}}</td>
                     <td class="align-middle">{{ru?.role_nombre}}</td>

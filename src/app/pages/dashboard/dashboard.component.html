@@ -16,7 +16,7 @@
         <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
           <div class="small-box bg-info">
             <div class="inner">
-              <h3 class="contador">{{total_clientes}}</h3>
+              <h3 class="contador"></h3>
               <span style="font-weight: bold; font-size: 18px;">Clientes</span>
               <div>&nbsp;</div>
               <div style="font-size: 14px;">&nbsp;</div>
@@ -25,7 +25,7 @@
             <div class="icon">
               <i class=" fas fa-users"></i>
             </div>
-            <a href=".#/dashboard/clientes" class="small-box-footer">
+            <a href=".#/dashboard/clientes2" class="small-box-footer">
               Ir
               <i class="fas fa-arrow-circle-right"></i>
             </a>
@@ -35,11 +35,11 @@
         <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="allowedRoles.includes(role)">
           <div class="small-box bg-danger">
             <div class="inner">
-              <h3 class="contador">{{total_solicitudes}}</h3>
+              <h3 class="contador"></h3>
               <span style="font-weight: bold; font-size: 18px;">Solicitudes</span>
               <div>&nbsp;</div>
-              <div style="font-size: 14px;">aprobadas: {{total_solicitudes_aprobadas_entrega}}</div>
-              <div style="font-size: 14px;">rechazadas: {{total_solicitudes_rechazadas}}</div>
+              <div style="font-size: 14px;">&nbsp;</div>
+              <div style="font-size: 14px;">&nbsp;</div>
             </div>
             <div class="icon">
               <i class=" fas fa-clipboard"></i>
@@ -54,7 +54,7 @@
         <div class="col-xl-3 col-lg-4 col-md-6" *ngIf=" role === 'ADMIN' || role === 'EDITOR'  ">
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3 class="contador">{{total_solicitudes_revisar}}</h3>
+              <h3 class="contador"></h3>
               <span style="font-weight: bold; font-size: 18px;">Solicitudes por revisar</span>
               <div>&nbsp;</div>
               <div style="font-size: 14px;">&nbsp;</div>
@@ -73,7 +73,7 @@
         <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
           <div class="small-box bg-danger">
             <div class="inner">
-              <h3 class="contador">{{total_solicitudes_presup}}</h3>
+              <!-- <h3 class="contador">{{total_solicitudes_presup}}</h3> -->
               <span style="font-weight: bold; font-size: 18px;">Solicitudes para presupuesto</span>
               <div>&nbsp;</div>
               <div style="font-size: 14px;">&nbsp;</div>
@@ -92,16 +92,16 @@
         <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
           <div class="small-box bg-primary">
             <div class="inner">
-              <h3 class="contador">{{total_creditos}}</h3>
+              <!-- <h3 class="contador">{{total_creditos}}</h3> -->
               <span style="font-weight: bold; font-size: 18px;">Créditos</span>
               <div>&nbsp;</div>
-              <div style="font-size: 14px;">entregados: {{total_creditos_entregados}}</div>
-              <div style="font-size: 14px;">no entregados: {{total_creditos_no_entregados}}</div>
+              <div style="font-size: 14px;">&nbsp;</div>
+              <div style="font-size: 14px;">&nbsp;</div>
             </div>
             <div class="icon">
               <i class="fas fa-file-contract"></i>
             </div>
-            <a href=".#/dashboard/creditos" class="small-box-footer">
+            <a href=".#/dashboard/creditos2" class="small-box-footer">
               Ir
               <i class="fas fa-arrow-circle-right"></i>
             </a>
@@ -111,7 +111,7 @@
         <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
           <div class="small-box bg-primary">
             <div class="inner">
-              <h3 class="contador">{{total_creditos_prog_entrega}}</h3>
+              <!-- <h3 class="contador">{{total_creditos_prog_entrega}}</h3> -->
               <span style="font-weight: bold; font-size: 18px;">Créditos para prog. entrega</span>
               <div>&nbsp;</div>
               <div style="font-size: 14px;">&nbsp;</div>
@@ -130,7 +130,7 @@
         <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
           <div class="small-box bg-primary">
             <div class="inner">
-              <h3 class="contador">{{total_creditos_prog_entrega}}</h3>
+              <h3 class="contador"></h3>
               <span style="font-weight: bold; font-size: 18px;">Créditos para marcar entrega</span>
               <div>&nbsp;</div>
               <div style="font-size: 14px;">&nbsp;</div>
@@ -149,16 +149,16 @@
         <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
           <div class="small-box bg-success">
             <div class="inner">
-              <h3 class="contador">{{total_pagos}}</h3>
+              <h3 class="contador"></h3>
               <span style="font-weight: bold; font-size: 18px;">Pagos</span>
               <div>&nbsp;</div>
-              <div style="font-size: 14px;">hoy: {{total_pagos_hoy}}</div>
-              <div style="font-size: 14px;">últimos 7 días: {{total_pagos_lastweek}}</div>
+              <div style="font-size: 14px;">&nbsp;</div>
+              <div style="font-size: 14px;">&nbsp;</div>
             </div>
             <div class="icon">
               <i class="fas fa-money-bill-alt"></i>
             </div>
-            <a href=".#/dashboard/pagos" class="small-box-footer">
+            <a href=".#/dashboard/pagos2" class="small-box-footer">
               Ir
               <i class="fas fa-arrow-circle-right"></i>
             </a>

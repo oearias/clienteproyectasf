@@ -32,6 +32,7 @@ export class PagoComponent implements OnInit {
   @ViewChild('inputAgencia') inputAgencia: ElementRef;
 
   creditos: Credito[] = [];
+  pruebas = [];
   creditosArray: Credito[] = [];
   //weeksyear = [];
   semanas: Semana[] = [];
@@ -88,6 +89,8 @@ export class PagoComponent implements OnInit {
 
   }
 
+  busqueda = '';
+
   ngOnInit(): void {
 
     this.setPath();
@@ -103,7 +106,11 @@ export class PagoComponent implements OnInit {
           this.pagoService.getPago(params.id),
           this.creditoService.getCreditos(),
         ]).subscribe((results: [Pago, Credito[]]) => {
+
           this.editingPago = results[0];
+
+          console.log(results[1]);
+
           this.creditos = results[1]
             .map((credito) => {
               credito.nombre = `${credito.num_contrato} | ${credito.num_cliente} | ${credito.apellido_paterno} ${credito.apellido_materno} ${credito.nombre}`
@@ -116,7 +123,7 @@ export class PagoComponent implements OnInit {
           this.credito_id?.setValue(this.editingPago?.credito_id);
           this.folio.setValue(this.editingPago?.folio);
           this.monto?.setValue(this.editingPago?.monto);
-          this.fecha?.setValue(this.datePipe.transform(this.editingPago?.fecha, 'yyyy-MM-dd','0+100'));
+          this.fecha?.setValue(this.datePipe.transform(this.editingPago?.fecha, 'yyyy-MM-dd', '0+100'));
           this.observaciones?.setValue(this.editingPago?.observaciones);
           this.num_contrato?.setValue(this.editingPago?.num_contrato);
 
@@ -186,7 +193,6 @@ export class PagoComponent implements OnInit {
 
         } else {
 
-          console.log('Probando: ',this.pagoForm.value);
 
           this.pagoService.updatePago(this.pagoForm.value).subscribe((res: any) => {
 
@@ -236,6 +242,9 @@ export class PagoComponent implements OnInit {
     this.creditoSelected = null;
 
     if (event) {
+
+      console.log(event);
+
       this.num_contrato?.setValue(event.num_contrato);
 
       //a manera de prueba vamos a localizar el crédito aqui
@@ -243,10 +252,13 @@ export class PagoComponent implements OnInit {
       //   this.creditoSelected = res
       // });
 
-      this.creditoSelected = this.creditosArray.find((item) => item.id === this.credito_id.value);
+      //this.creditoSelected = this.creditosArray.find((item) => item.id === this.credito_id.value);
 
-      this.inputZona.nativeElement.value = this.creditoSelected.zona;
-      this.inputAgencia.nativeElement.value = this.creditoSelected.agencia;
+      this.inputZona.nativeElement.value = event.zona;
+      this.inputAgencia.nativeElement.value = event.agencia;
+
+      // this.inputZona.nativeElement.value = this.creditoSelected?.zona;
+      // this.inputAgencia.nativeElement.value = this.creditoSelected?.agencia;
 
     }
 
@@ -272,18 +284,30 @@ export class PagoComponent implements OnInit {
 
   loadCreditos() {
 
-    this.creditoService.getCreditos().subscribe(creditos => {
+    this.creditoService.getCreditosLimitados(this.busqueda).subscribe(creditos => {
 
-      this.creditos = creditos
-        .filter(item => item.entregado === 1)
-        .filter(item => item.estatus_credito_id != 1)
-        .map((credito) => {
-          credito.nombre = `${credito.num_contrato} | ${credito.num_cliente} | ${credito.apellido_paterno} ${credito.apellido_materno} ${credito.nombre}`
-          return credito;
-        });
+      this.pruebas = creditos.creditosJSON;
 
-      this.creditosArray = this.creditos;
+      //this.creditos = creditos;
+
+      //this.creditosArray = this.creditos;
     });
+  }
+
+  buscarElementos(terminoBusqueda: any) {
+
+    this.busqueda = terminoBusqueda.term;
+
+    this.loadCreditos();
+
+  }
+
+  clearSelectCreditos() {
+    this.busqueda='';
+    this.inputZona.nativeElement.value = '';
+    this.inputAgencia.nativeElement.value = '';
+
+    this.loadCreditos();
   }
 
   loadSemanas() {
@@ -303,11 +327,11 @@ export class PagoComponent implements OnInit {
   }
 
   volver() {
-    this.router.navigate(['/dashboard/pagos']);
+    this.router.navigate(['/dashboard/pagos2']);
   }
 
   setPath() {
-    this.pathService.path = '/dashboard/pagos';
+    this.pathService.path = '/dashboard/pagos2';
   }
 
   //Getters

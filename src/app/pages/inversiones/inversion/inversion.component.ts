@@ -18,6 +18,8 @@ export class InversionComponent implements OnInit {
   creditos: any[] = [];
   inversion: Credito;
 
+  busqueda = '';
+
   inversionForm = this.fb.group({
     id: new FormControl(null, Validators.required),
     inversion_positiva: new FormControl(null, Validators.required),
@@ -128,26 +130,29 @@ export class InversionComponent implements OnInit {
 
     const fechaHoy = new Date();
 
-    this.creditoService.getCreditos().subscribe(creditos => {
+    this.creditoService.getCreditosLimitadosInversionPositiva(this.busqueda).subscribe(creditos => {
 
-      this.creditos = creditos
-        .filter(item => item.entregado === 1)
-        .filter(item => item.inversion_positiva != true)
-        .filter(item => {
-          const fechaInicio = new Date(item.fecha_inicio_real);          
-          fechaInicio.setDate(fechaInicio.getDate()+1); //1 dia despues del primer pago
-          return fechaHoy <= fechaInicio
-        })
-        .map((credito) => {
-          credito.nombre = `${credito.num_contrato} | ${credito.num_cliente} | ${credito.apellido_paterno} ${credito.apellido_materno} ${credito.nombre}`
-          return credito;
-        });
+      console.log(creditos);
+
+      this.creditos = creditos.creditosJSON
+
+      // this.creditos = creditos
+      //   .filter(item => item.entregado === 1)
+      //   .filter(item => item.inversion_positiva != true)
+      //   .filter(item => {
+      //     const fechaInicio = new Date(item.fecha_inicio_real);          
+      //     fechaInicio.setDate(fechaInicio.getDate()+1); //1 dia despues del primer pago
+      //     return fechaHoy <= fechaInicio
+      //   })
+      //   .map((credito) => {
+      //     credito.nombre = `${credito.num_contrato} | ${credito.num_cliente} | ${credito.apellido_paterno} ${credito.apellido_materno} ${credito.nombre}`
+      //     return credito;
+      // });
 
     });
 
 
   }
-
 
 
   volver() {

@@ -31,13 +31,24 @@
                         </div>
                     </div>
 
+                    <div class="col-sm-12 col-md-2">
+                        <div class="form-group">
+                            <label>N. de Solicitud</label>
+                            <input type="number" formControlName="solicitud_credito_id" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-2">
+                        <div class="form-group">
+                            <label>N. de Contrato Histórico</label>
+                            <input type="text" formControlName="num_contrato_historico" class="form-control">
+                        </div>
+                    </div>
+
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
-                            <label>(N.de solicitud | Cliente)</label>
-                            <ng-select (change)="onChangeSolicitud($event)" class="text-uppercase" [items]="creditos"
-                                formControlName="solicitud_credito_id" bindLabel="nombre"
-                                placeholder="Seleccione una solicitud" bindValue="id">
-                            </ng-select>
+                            <label>Cliente</label>
+                            <input type="text" formControlName="nombre" class="form-control">
                         </div>
                     </div>
 
@@ -48,7 +59,7 @@
                     <div class="col-sm-8 col-md-2">
                         <div class="form-group">
                             <label for="inputTarifa">Tarifa</label>
-                            <ng-select (change)="onChangeTarifa($event)" class="text-uppercase" [items]="tarifas"
+                            <ng-select class="text-uppercase" [items]="tarifas"
                                 formControlName="tarifa_id" bindLabel="nombre" [clearable]="false"
                                 placeholder="Seleccione una tarifa" bindValue="id">
                             </ng-select>
@@ -119,7 +130,7 @@
                                     <span class="input-group-text">$</span>
                                 </div>
 
-                                <input type="number" formControlName="monto_otorgado" class="form-control text-right"
+                                <input type="text" formControlName="monto_otorgado" class="form-control text-right"
                                     style="font-weight: bold;">
 
                                 <input type="hidden" formControlName="cliente_id" class="form-control">
@@ -136,7 +147,7 @@
                                     <span class="input-group-text">$</span>
                                 </div>
 
-                                <input type="number" formControlName="monto_total" class="form-control text-right"
+                                <input type="text" formControlName="monto_total" class="form-control text-right"
                                     style="font-weight: bold;">
                             </div>
                         </div>
@@ -309,13 +320,13 @@
                         <th style="width: 30px;"></th>
                         <!-- <th>Sem anio</th> -->
                         <th style="width: 20px;" class="text-center align-middle">N. de semana</th>
-                        <th class="text-center align-middle">Fecha prog. de pago</th>
-                        <th class="text-center align-middle">Monto semanal</th>
+                        <th class="text-center align-middle">Fecha programada de pago</th>
+                        <th class="text-center align-middle">Tarifa semanal</th>
                         <th class="text-center align-middle">Fecha real de pago</th>
                         <th class="text-center align-middle">Pago realizado</th>
-                        <th class="text-center align-middle">Días de penal.</th>
-                        <th class="text-center align-middle">Penal. semanal</th>
-                        <th class="text-center align-middle">Adeudo semanal</th>
+                        <th class="text-center align-middle">Días de penalización</th>
+                        <th class="text-center align-middle">Penalización</th>
+                        <th class="text-center align-middle">Adeudo</th>
                     </thead>
                     <tbody>
                         <ng-container *ngFor="let am of amortizacion; let i = index">
@@ -339,7 +350,7 @@
                                     </span>
 
                                 </td>
-                                <td class="text-center align-middle fw-bold programado">
+                                <td class="text-right align-middle fw-bold programado">
                                     <span *ngIf="am?.monto_semanal">
                                         ${{am?.monto_semanal | number:'1.2-2':'en-US'}}
                                     </span>
@@ -444,7 +455,8 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4"></td>
+                            <td colspan="3"></td>
+                            <td class="text-right" style="font-weight: bold; font-size: 18px;">${{total_tarifas_semanales | number:'1.2-2':'en-US'}}</td>
                             <td></td>
                             <td class="text-right" style="font-weight: bold; font-size: 18px;">${{total_pagado |
                                 number:'1.2-2':'en-US'}}</td>

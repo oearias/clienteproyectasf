@@ -50,8 +50,12 @@
                 <div class="col-sm-12 col-md-6">
                     <div class="form-group">
                         <label for="inputCredito">N. de credito | N. de Cliente | Cliente</label>
-                        <ng-select #selectCredito (change)="onChangeCredito($event)" class="text-uppercase" [items]="creditos"
-                            formControlName="credito_id" bindLabel="nombre" [clearable]="false"
+                        <ng-select #selectCredito 
+                        (clear)="clearSelectCreditos()" 
+                        (search)="buscarElementos($event)" 
+                        (change)="onChangeCredito($event)" 
+                        class="text-uppercase" [items]="pruebas"
+                            formControlName="credito_id" bindLabel="nombre" [clearable]="true"
                             placeholder="Seleccione un crédito" bindValue="id">
                         </ng-select>
                     </div>

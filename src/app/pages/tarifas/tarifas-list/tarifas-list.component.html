@@ -71,7 +71,7 @@
             </thead>
             <tbody>
                 <tr class="align-middle"
-                    *ngFor="let tarifa of tarifas | orderBy: key: reverse | paginate : { itemsPerPage: itemsPP, currentPage: p } ; let i = index;  ">
+                    *ngFor="let tarifa of tarifas | orderBy: key: reverse   ; let i = index;  ">
                     <td></td>
                     <td class="align-middle">{{tarifa?.nombre}}</td>
                     <td class="align-middle text-center">{{tarifa?.num_semanas}}</td>

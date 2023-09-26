@@ -55,29 +55,30 @@
 
     <div class="card-body">
 
-        <table *ngIf="pagos.length > 0" class="table table-striped table-hover table-sort table-sm"
+        <table *ngIf="pagos.length > 0" class="table table-striped table-hover table-sort table-sm table-responsive-lg"
             style="font-size: 14px;">
             <thead>
                 <tr>
                     <th></th>
                     <th class="text-center" (click)="sort('folio')">Folio
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                        <i class="fas fa-sort text-muted"></i>
                     </th>
 
-                    <th class="text-center" (click)="sort('credito')">Núm. Credito
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    <th class="text-center" (click)="sort('credito')">N. Credito
+                        <i class="fas fa-sort text-muted"></i>
                     </th>
 
-                    <th (click)="sort('fecha')">Cliente
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    <th (click)="sort('fecha')" style="width: 400px;;">Cliente
+                        <i class="fas fa-sort text-muted"></i>
                     </th>
 
                     <th class="text-center" (click)="sort('fecha')">Fecha
                         &nbsp;<i class="fas fa-sort text-muted"></i>
                     </th>
 
-                    <th (click)="sort('monto')" class="text-center">Monto
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    <th (click)="sort('monto')" 
+                    class="text-center">Monto
+                        <i class="fas fa-sort text-muted"></i>
                     </th>
 
                     <!-- <th (click)="sort('metodo_pago')" class="text-center">Método de pago
@@ -93,7 +94,7 @@
             </thead>
             <tbody>
                 <tr class="align-middle"
-                    *ngFor="let pago of pagos | orderBy: key: reverse | paginate : { itemsPerPage: itemsPP, currentPage: p } ; let i = index;  ">
+                    *ngFor="let pago of pagos | orderBy: key: reverse   ; let i = index;  ">
                     <td></td>
                     <td class="align-middle text-center">{{pago?.folio}}</td>
                     <td class="align-middle text-center">{{pago?.num_contrato}}</td>

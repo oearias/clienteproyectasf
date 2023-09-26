@@ -115,9 +115,14 @@ export class SidebarService {
       role: ['ADMIN','EDITOR','CREATOR'],
       icono: 'nav-icon fas fa-tachometer-alt',
       submenu: [
+        // {
+        //   titulo: 'Clientes',
+        //   url: '/dashboard/clientes',
+        //   icon: 'fas fa-users'
+        // },
         {
           titulo: 'Clientes',
-          url: '/dashboard/clientes',
+          url: '/dashboard/clientes2',
           icon: 'fas fa-users'
         },
         {
@@ -126,9 +131,14 @@ export class SidebarService {
           url: '/dashboard/solicitudes',
           icon: 'far fa-clipboard'
         },
+        // {
+        //   titulo: 'Créditos',
+        //   url: '/dashboard/creditos',
+        //   icon: 'fas fa-file-contract'
+        // },
         {
           titulo: 'Créditos',
-          url: '/dashboard/creditos',
+          url: '/dashboard/creditos2',
           icon: 'fas fa-file-contract'
         },
         {
@@ -136,10 +146,20 @@ export class SidebarService {
           url: '/dashboard/inversiones',
           icon: 'far fa-smile-beam'
         },
+        // {
+        //   titulo: 'Pagos',
+        //   url: '/dashboard/pagos',
+        //   icon: 'far fa-money-bill-alt'
+        // },
         {
           titulo: 'Pagos',
-          url: '/dashboard/pagos',
+          url: '/dashboard/pagos2',
           icon: 'far fa-money-bill-alt'
+        },
+        {
+          titulo: 'Reporte de cartas',
+          url: '/dashboard/reporteCartas',
+          icon: 'far fa-envelope-open'
         },
         // {
         //   titulo: 'Usuarios',

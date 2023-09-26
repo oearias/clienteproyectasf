@@ -553,8 +553,13 @@ export class SolicitudViewComponent implements AfterViewInit {
   }
 
   loadCreditos() {
+
     this.creditoService.getCreditos().subscribe(creditos => {
-      this.creditos = creditos.filter(item => item.cliente_id === this.editingSolicitud?.cliente_id);
+
+      this.creditos = creditos.filter(item => item.cliente_id === this.editingSolicitud?.cliente_id && item.entregado === 1);
+
+      console.log(this.creditos);
+
       this.totalCreditos = this.creditos.length;
 
       this.totalCreditosSinLiquidar = this.creditos
@@ -565,6 +570,7 @@ export class SolicitudViewComponent implements AfterViewInit {
       }
 
     });
+
   }
   
 

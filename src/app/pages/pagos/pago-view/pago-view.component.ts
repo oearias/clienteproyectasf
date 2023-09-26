@@ -6,7 +6,7 @@ import { PagosService } from 'src/app/services/pagos.service';
 import { WeeksyearService } from 'src/app/services/weeksyear.service';
 import { CreditosService } from '../../../services/creditos.service';
 import { PathService } from '../../../services/path.service';
-import { DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-pago-view',
@@ -18,7 +18,7 @@ export class PagoViewComponent implements OnInit {
   @ViewChild('inputHora') inputHora: ElementRef;
   @ViewChild('inputFolio') inputFolio: ElementRef;
 
-  creditos: any[] = [];
+  creditos = [];
   weeksyear = [];
 
   pagoForm = this.fb.group({
@@ -46,6 +46,7 @@ export class PagoViewComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private datePipe: DatePipe,
+    private currencyPipe: CurrencyPipe,
     private pagoService: PagosService,
     private creditoService: CreditosService,
     private weeksyearService: WeeksyearService,
@@ -66,7 +67,7 @@ export class PagoViewComponent implements OnInit {
   ngOnInit(): void {
     
     this.setPath();
-    this.loadData();
+    
 
     this.route.params.subscribe((params) => {
 
@@ -76,7 +77,7 @@ export class PagoViewComponent implements OnInit {
 
           this.editingPago = res;
 
-          console.log(res);
+          this.loadData(params.id);
 
           this.id?.setValue(this.editingPago?.id);
           this.credito_id?.setValue(this.editingPago?.credito_id);
@@ -98,23 +99,17 @@ export class PagoViewComponent implements OnInit {
     });
   }
 
-  loadData(){
-    this.loadCreditos();
+  loadData(pago_id:number){
+    this.loadCreditos(pago_id);
     this.loadSemanas();
   }
 
-  loadCreditos(){
+  loadCreditos(pago_id:number){
 
-    this.creditoService.getCreditos().subscribe( creditos => {
+    this.pagoService.getCreditoByPagoId(pago_id).subscribe( creditos => {
 
-      console.log(creditos);
+      this.creditos = creditos.creditosJSON;
 
-      this.creditos = creditos
-        //.filter(item => item.locked == 1 )
-        .map((credito)=> {
-          credito.nombre = `${credito.num_contrato} | ${credito.apellido_paterno} ${credito.apellido_materno} ${credito.nombre}`
-          return credito;
-        })
     })
   }
 
@@ -141,11 +136,11 @@ export class PagoViewComponent implements OnInit {
   }
 
   volver() {
-    this.router.navigate(['/dashboard/pagos']);
+    this.router.navigate(['/dashboard/pagos2']);
   }
 
   setPath(){
-    this.pathService.path = '/dashboard/pagos';
+    this.pathService.path = '/dashboard/pagos2';
   }
 
   //Getters

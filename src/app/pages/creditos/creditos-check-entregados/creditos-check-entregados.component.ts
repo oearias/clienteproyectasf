@@ -52,6 +52,7 @@ export class CreditosCheckEntregadosComponent implements OnInit {
       this.creditos = creditos
         //Desaparemos los creditos no entregados
         .filter(item => item.no_entregado != 1)
+        .filter(item => item.fecha_entrega_prog!= null && item.hora_entrega != null && item.num_cheque!=null )
         //Filtramos los creditos visualmente si hay una fecha de entrega específica
         .filter(item => !fechaParam || new Date(item.fecha_entrega_prog).toISOString().slice(0, 10) === new Date(fechaParam).toISOString().slice(0, 10))
         .map((item: any) => {

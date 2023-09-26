@@ -83,6 +83,10 @@ import { InversionListComponent } from './inversiones/inversion-list/inversion-l
 import { InversionComponent } from './inversiones/inversion/inversion.component';
 import { ViewContractsComponent } from './clientes/view-contracts/view-contracts.component';
 import { CreditosCheckEntregadosComponent } from './creditos/creditos-check-entregados/creditos-check-entregados.component';
+import { ReporteCartasComponent } from './reporte-cartas/reporte-cartas.component';
+import { CreditosListaComponent } from './creditos/creditos-lista/creditos-lista.component';
+import { PagosListaComponent } from './pagos/pagos-lista/pagos-lista.component';
+import { ClientesListaComponent } from './clientes/clientes-lista/clientes-lista.component';
 
 const routes: Routes = [
   {
@@ -287,6 +291,18 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'creditos2', component: CreditosComponent,
+        data: { titulo: 'Créditos' },
+        children: [
+          { path: '', component: CreditosListaComponent },
+          { path: 'credito/view/:id', component: CreditoViewComponent, data: { titulo: 'Creditos' } },
+          { path: 'credito/:id', component: CreditoComponent, data: { titulo: 'Créditos' } },
+          { path: 'credito', component: CreditoComponent, data: { titulo: 'Créditos' } },
+          { path: 'createCreditos', component: CreditosMasivosComponent, data: { titulo: 'Créditos' } },
+          { path: 'checkCreditos', component: CreditosCheckEntregadosComponent, data: { titulo: 'Captura de créditos entregados' } },
+        ]
+      },
+      {
         path: 'inversiones', component: InversionesComponent,
         data: { titulo: 'Inversión positiva' },
         children: [
@@ -295,14 +311,30 @@ const routes: Routes = [
           { path: 'inversion', component: InversionComponent, data: { titulo: 'Inversión positiva' } },
         ]
       },
+      // {
+      //   path: 'pagos', component: PagosComponent,
+      //   data: { titulo: 'Pagos' },
+      //   children: [
+      //     { path: '', component: PagosListComponent },
+      //     { path: 'pago/view/:id', component: PagoViewComponent, data: { titulo: 'Pagos' } },
+      //     { path: 'pago/:id', component: PagoComponent, data: { titulo: 'Pagos' } },
+      //     { path: 'pago', component: PagoComponent, data: { titulo: 'Pagos' } },
+      //   ]
+      // },
       {
-        path: 'pagos', component: PagosComponent,
+        path: 'pagos2', component: PagosComponent,
         data: { titulo: 'Pagos' },
         children: [
-          { path: '', component: PagosListComponent },
+          { path: '', component: PagosListaComponent },
           { path: 'pago/view/:id', component: PagoViewComponent, data: { titulo: 'Pagos' } },
           { path: 'pago/:id', component: PagoComponent, data: { titulo: 'Pagos' } },
           { path: 'pago', component: PagoComponent, data: { titulo: 'Pagos' } },
+        ]
+      },
+      {
+        path: 'reporteCartas', component: ReporteCartasComponent,
+        data: { titulo: 'Reporte de Cartas' },
+        children: [
         ]
       },
       {
@@ -310,6 +342,18 @@ const routes: Routes = [
         data: { titulo: 'Clientes' },
         children: [
           { path: '', component: ClientesListComponent },
+          { path: 'cliente/:id', component: ClienteComponent, data: { titulo: 'Clientes' } },
+          { path: 'cliente', component: ClienteComponent, data: { titulo: 'Clientes' } },
+          { path: 'creditos/cliente/:id', component: ViewContractsComponent, data: { titulo: 'Créditos por cliente' } },
+          //{ path: 'credito/view/:id', component: CreditoDetailComponent, data: { titulo: 'Créditos por cliente' } }
+          { path: 'credito/view/:id', component: CreditoViewComponent, data: { titulo: 'Créditos por cliente' } }
+        ]
+      },
+      {
+        path: 'clientes2', component: ClientesComponent,
+        data: { titulo: 'Clientes' },
+        children: [
+          { path: '', component: ClientesListaComponent },
           { path: 'cliente/:id', component: ClienteComponent, data: { titulo: 'Clientes' } },
           { path: 'cliente', component: ClienteComponent, data: { titulo: 'Clientes' } },
           { path: 'creditos/cliente/:id', component: ViewContractsComponent, data: { titulo: 'Créditos por cliente' } },

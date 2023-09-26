@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -20,11 +20,10 @@ import { Pago } from '../../../interfaces/Pago';
 import { Subscription, forkJoin } from 'rxjs';
 import { PathService } from '../../../services/path.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { TipoCredito } from '../../../interfaces/TipoCredito';
-import { Financiamiento } from '../../../interfaces/Financiamiento';
-import { TipoContrato } from 'src/app/interfaces/TipoContrato';
-import { switchMap } from 'rxjs/operators';
+
+import { CustomCurrencyPipe } from 'src/app/pipes/custom-currency.pipe';
 
 declare var $: any;
 
@@ -47,7 +46,8 @@ export class CreditoViewComponent implements OnInit {
 
   creditos: any[] = [];
   solicitudes: any[] = [];
-  tarifas: any[] = [];
+  tarifas: Tarifa[] = [];
+  tarifa: Tarifa;
   financiamientos: any[] = [];
   tipoCreditos: any[] = [];
   tipoContratos: any[] = [];
@@ -60,6 +60,7 @@ export class CreditoViewComponent implements OnInit {
   total_pagado: number = 0;
   total_penalizaciones: number = 0;
   grand_total: number = 0;
+  total_tarifas_semanales: number = 0;
   //
 
   subscription: Subscription;
@@ -68,6 +69,8 @@ export class CreditoViewComponent implements OnInit {
   creditoForm = this.fb.group({
     id: new FormControl(null),
     num_contrato: new FormControl(null),
+    num_contrato_historico: new FormControl(null),
+    nombre: new FormControl(null),
     solicitud_credito_id: new FormControl(null, Validators.required),
     tipo_credito_id: new FormControl(null, Validators.required),
     tipo_contrato_id: new FormControl(null, Validators.required),
@@ -88,6 +91,8 @@ export class CreditoViewComponent implements OnInit {
     total_adeudo: new FormControl(null)
   });
 
+  resultadoForkJoin: any;
+
   editingCredito: Credito;
   tarifaSelected: Tarifa;
   solicitudSelected: Solicitud;
@@ -106,10 +111,13 @@ export class CreditoViewComponent implements OnInit {
     private pagoService: PagosService,
     private solService: SolicitudesService,
     private datePipe: DatePipe,
+    private customCurrencyPipe: CustomCurrencyPipe,
+    private currencyPipe: CurrencyPipe,
     private tarifaService: TarifasService,
     private financiamientoService: FinanciamientosService,
     private tipoCreditoService: TipoCreditoService,
-    private tipoContratoService: TipoContratoService
+    private tipoContratoService: TipoContratoService,
+    private cdr: ChangeDetectorRef
   ) {
 
     //let year = new Date().getFullYear();
@@ -117,6 +125,8 @@ export class CreditoViewComponent implements OnInit {
     this.creditoForm.setValue({
       id: null,
       num_contrato: null,
+      num_contrato_historico: null,
+      nombre: null,
       solicitud_credito_id: null,
       tipo_credito_id: null,
       tipo_contrato_id: null,
@@ -159,55 +169,104 @@ export class CreditoViewComponent implements OnInit {
       if (params.id) {
 
         forkJoin([
-          this.creditoService.getCreditos(),
-          this.tarifaService.getTarifas(),
-          this.creditoService.getCredito(params.id),
+
+          //this.creditoService.getCreditos(),
+          //this.tarifaService.getTarifas(),
+          //this.creditoService.getCredito(params.id),
           this.creditoService.getAmortizacion(params.id),
+          this.creditoService.getCreditoOptimizado(params.id),
+          this.tarifaService.getTarifas(),
           this.tipoCreditoService.getTipoCreditos()
-        ]).subscribe((results: [Credito[], Tarifa[], Credito, Amortizacion[], TipoCredito[] ]) => {
+
+        ]).subscribe(
+          (results:
+            [
+              //Credito[],
+              //Tarifa[],
+              //Credito, 
+              Amortizacion[],
+              Credito,
+              Tarifa[],
+              TipoCredito[]
+            ]) => {
+
+              console.log(results[1]);
 
 
-          this.creditos = results[0];
-          this.editingCredito = results[2];
+            //this.creditos = results[0];
+            //this.editingCredito = results[1];
 
-          this.tipoCreditos = results[4];
-          this.tarifas = results[1];
-          this.loadCreditoData(results[2]);
+            //this.tarifas = results[0];
+            this.tarifas = results[2];
+            this.tipoCreditos = results[3];
 
-          this.grand_total = 0;
-          this.total_pagado = 0;
-          this.total_penalizaciones = 0;
+            //this.loadCreditoData(results[1]);
 
-          if(results[3]){
+            this.grand_total = 0;
+            this.total_pagado = 0;
+            this.total_penalizaciones = 0;
 
-            this.amortizacion = results[3].map((item, i) => {
+            if (results[0]) {
 
-              item['expanded'] = false;
-  
-              this.total_pagado += Number(item.suma_monto_pagado);
-              this.total_penalizaciones += Number(item.penalizacion_semanal);
-              this.grand_total += Number(item.adeudo_semanal);
-  
-              return item;
-  
-            });
+              this.amortizacion = results[0].map((item, i) => {
 
-          }
+                item['expanded'] = false;
 
-          
+                this.total_pagado += Number(item.suma_monto_pagado);
+                this.total_penalizaciones += Number(item.penalizacion_semanal);
+                this.grand_total += Number(item.adeudo_semanal);
 
-        })
+                if (item.monto_semanal > 0) {
+
+                  this.total_tarifas_semanales += Number(item.monto_semanal);
+                }
+
+
+                return item;
+
+              });
+
+            }
+
+            this.editingCredito = results[1];
+
+            this.num_contrato.setValue(this.editingCredito.num_contrato);
+            this.num_contrato_historico.setValue(this.editingCredito?.num_contrato_historico);
+            this.tarifa_id.setValue(this.editingCredito.tarifa.id);
+            this.tipo_credito_id.setValue(this.editingCredito.tipoCredito.id);
+            this.renovacion.setValue(this.editingCredito.renovacion);
+            const montoSemanal = (this.editingCredito.monto_total / this.editingCredito.tarifa.num_semanas);
+    
+
+            const montoSemanalF = this.customCurrencyPipe.transform(montoSemanal);
+            const montoOtorgadoF = this.customCurrencyPipe.transform(Number(this.editingCredito.monto_otorgado));
+            const montoTotalF = this.customCurrencyPipe.transform(Number(this.editingCredito.monto_total));
+
+            
+            this.monto_semanal.setValue(montoSemanalF);
+            this.monto_otorgado.setValue(montoOtorgadoF);
+            this.monto_total.setValue(montoTotalF);
+            this.fecha_inicio_prog.setValue(this.editingCredito.fecha_inicio_prog);
+            this.fecha_fin_prog.setValue(this.editingCredito.fecha_fin_prog);
+            this.solicitud_credito_id.setValue(this.editingCredito.solicitud_credito_id);
+            this.nombre.setValue(this.editingCredito.cliente.nombre_completo);
+
+            console.log(this.editingCredito);
+
+          });
+
+
 
       }
     });
 
     // Despues de que ya hicimos todo, aqui podemos simplemente establecer el setpath y 
     // y redirigir a la lista de creditos por cliente si es que hay queryParams
-    this.route.queryParams.subscribe( (qParams)=>{
+    this.route.queryParams.subscribe((qParams) => {
 
-      if(qParams.user_id){
-        
-        this.pathService.path = '/dashboard/clientes/creditos/cliente/'+qParams.user_id;
+      if (qParams.user_id) {
+
+        this.pathService.path = '/dashboard/clientes/creditos/cliente/' + qParams.user_id;
       }
 
 
@@ -219,6 +278,7 @@ export class CreditoViewComponent implements OnInit {
 
     this.id?.setValue(credito.id);
     this.num_contrato?.setValue(credito.num_contrato);
+    this.num_contrato_historico?.setValue(credito.num_contrato_historico);
 
     this.solicitud_credito_id?.setValue(credito.id);
 
@@ -277,12 +337,12 @@ export class CreditoViewComponent implements OnInit {
 
   getCreditosException(id: number) {
 
-      this.creditos
-        .filter(item => item.preaprobado === 1 || item.solicitud_credito_id === id)
-        .map((credito) => {
-          credito.nombre = `${credito.solicitud_credito_id} | ${credito.nombre} ${credito.apellido_paterno} ${credito.apellido_materno}`
-          return credito;
-        });
+    this.creditos
+      .filter(item => item.preaprobado === 1 || item.solicitud_credito_id === id)
+      .map((credito) => {
+        credito.nombre = `${credito.solicitud_credito_id} | ${credito.nombre} ${credito.apellido_paterno} ${credito.apellido_materno}`
+        return credito;
+      });
 
 
   }
@@ -487,11 +547,11 @@ export class CreditoViewComponent implements OnInit {
   }
 
   volver() {
-    this.router.navigate(['/dashboard/creditos']);
+    this.router.navigate(['/dashboard/creditos2']);
   }
 
   setPath() {
-    this.pathService.path = '/dashboard/creditos';
+    this.pathService.path = '/dashboard/creditos2';
   }
 
   confirmDeletePago(pago: Pago) {
@@ -562,6 +622,14 @@ export class CreditoViewComponent implements OnInit {
 
   get num_contrato() {
     return this.creditoForm.get('num_contrato');
+  }
+
+  get num_contrato_historico() {
+    return this.creditoForm.get('num_contrato_historico');
+  }
+
+  get nombre() {
+    return this.creditoForm.get('nombre');
   }
 
   get monto_otorgado() {

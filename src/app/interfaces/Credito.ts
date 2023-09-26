@@ -1,8 +1,12 @@
 import { Cliente } from './Cliente';
+import { Tarifa } from './Tarifa';
+import { TipoContrato } from './TipoContrato';
+import { TipoCredito } from './TipoCredito';
 
 export interface Credito {
     id: number;
     num_contrato: number;
+    num_contrato_historico: string;
     monto_otorgado: number;
     monto_total: number;
     monto_semanal: number;
@@ -12,7 +16,9 @@ export interface Credito {
     fecha_entrega_prog: Date;
     fecha_entrega_real: Date;
     fecha_fin_prog: Date;
+    hora_entrega: Date;
     tarifa_id: number;
+    tarifa: Tarifa;
     año: number;
     nombre: string;
     cliente: Cliente;
@@ -22,6 +28,7 @@ export interface Credito {
     apellido_materno: string;
     solicitud_credito_id: number;
     tipo_credito_id: number;
+    tipoCredito: TipoCredito,
     tipo_contrato_id: number;
     estatus_contrato_id:number;
     estatus_credito_id: number;

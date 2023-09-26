@@ -60,6 +60,7 @@ export class CreditosListComponent implements OnInit {
     { nombre: 'Nombre', criterio: 'nombre' },
     { nombre: 'Apellido paterno', criterio: 'apellido_paterno' },
     { nombre: 'Apellido materno', criterio: 'apellido_materno' },
+    // { nombre: 'Estatus', criterio: 'estatus_id'},
     { nombre: 'Estatus', criterio: 'estatus_id'},
     { nombre: 'Número de contrato', criterio: 'num_contrato' },
     { nombre: 'Fecha de inicio', criterio: 'fecha_inicio_prog' },
@@ -89,6 +90,8 @@ export class CreditosListComponent implements OnInit {
       // this.creditos = creditos.filter(item => item.preaprobado!= 1); //unicamente créditos entregados
 
       this.creditos = creditos;
+
+      console.log(creditos);
 
 
     });
@@ -140,7 +143,22 @@ export class CreditosListComponent implements OnInit {
   }
 
   printAllDocumentation(credito:Credito) {
-    this.creditoService.downloadAllDocumentation(credito);
+
+    let arrayToPrint = [];
+
+    //Datos que se necesitan para imprimir en esa API
+    arrayToPrint.push({
+      credito_id: credito.id,
+      printSelected: true,
+      fecha_inicio: credito.fecha_inicio_prog
+    });
+
+    //Hay que arreglar, por lo pronto se utiliza la api de abajo
+    //this.creditoService.downloadAllDocumentation(credito);
+
+    //Esta api se tuvo que implementar por que la anterior falla en las medidas y estilos
+    //Debido a los cambios iimplementados en la tarjeta de pagos que se imprime en mitades de hojas
+    this.creditoService.printContratosMasivos(arrayToPrint);
   }
 
   printCreditos(){

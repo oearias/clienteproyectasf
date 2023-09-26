@@ -206,5 +206,9 @@
     {
         "num_semana": 52,
         "nombre": "SEMANA 52"
+    },
+    {
+        "num_semana": 53,
+        "nombre": "SEMANA 53"
     }
 ]
