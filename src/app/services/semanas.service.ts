@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Semana } from '../interfaces/Semana';
+import { SemanaResponse } from '../interfaces/SemanaResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,19 @@ export class SemanasService {
 
   getSemanas(){
     return this.http.get<Semana[]>(this.URL_API);
+  }
+
+  getSemanasPaginados(page: number, limit:number, searchTerm: string){
+
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('searchTerm', searchTerm.toString());
+
+    const url = `${this.URL_API}/semanas_list?${params.toString()}`;
+
+    return this.http.post<SemanaResponse>(url,{});
+    
   }
 
   getSemanasByCriteria(criterio, palabra){

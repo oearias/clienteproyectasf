@@ -61,6 +61,9 @@ export class CreditoViewComponent implements OnInit {
   total_penalizaciones: number = 0;
   grand_total: number = 0;
   total_tarifas_semanales: number = 0;
+  total_penalizaciones_israel: number = 0;
+  total_dias_penalizaciones: number = 0;
+  total_remanente: number = 0;
   //
 
   subscription: Subscription;
@@ -206,14 +209,68 @@ export class CreditoViewComponent implements OnInit {
             this.total_pagado = 0;
             this.total_penalizaciones = 0;
 
+
             if (results[0]) {
 
-              this.amortizacion = results[0].map((item, i) => {
+              this.amortizacion = results[0].map((item) => {
+
+                console.log('Num de Semana: ', item.num_semana);
+                console.log('Dias de penalizacion: ', item.dias_penalizacion);
+
+
+                this.total_remanente += Number(item.remanente);
+
+                
 
                 item['expanded'] = false;
 
+
                 this.total_pagado += Number(item.suma_monto_pagado);
-                this.total_penalizaciones += Number(item.penalizacion_semanal);
+
+                if(item.dias_penalizacion > 0 ){
+
+                  console.log('hay penalizacion');
+
+                  //Preguntamos si existe remanente
+                  if( item.remanente >= item.monto_semanal ){
+
+
+                    //this.total_dias_penalizaciones = 0;
+                    //item.dias_penalizacion = 0;
+                    //item.penalizacion_semanal = 0;
+
+                    item.suma_monto_pagado = Number(item.suma_monto_pagado) + Number(item.remanente);
+
+
+                  }
+
+
+                }else{
+                  item.dias_penalizacion = 0;
+                }
+
+                //Preguntamos si es pago tardío
+                if(item.pago_tardio){
+
+                  console.log('Hay pago tardío');
+
+                  item.adeudo_semanal = Number(0) - Number(item.suma_monto_pagado);
+
+                }else{
+
+                  item.adeudo_semanal = ( Number(item.monto_semanal) - Number(item.suma_monto_pagado) )  + Number(item.penalizacion_semanal)
+                }
+
+
+                // console.log('//////////////////////');
+                // console.log('Num semana', item.num_semana);
+                // console.log('Monto semanal', item.monto_semanal);
+                // console.log('Adeudo semanal',item.adeudo_semanal);
+                // console.log('Suma pagado:',item.suma_monto_pagado);
+                // console.log('Remanente', item.remanente);
+
+                
+                
                 this.grand_total += Number(item.adeudo_semanal);
 
                 if (item.monto_semanal > 0) {
@@ -222,9 +279,19 @@ export class CreditoViewComponent implements OnInit {
                 }
 
 
+                item.adeudo_semanal = ( Number(item.monto_semanal) - Number(item.suma_monto_pagado) ) + Number(item.penalizacion_semanal  )
+                this.total_dias_penalizaciones += item.dias_penalizacion;
+
+                console.log('Suma monto pagado:', item.suma_monto_pagado);
+                console.log('monto semanal:', item.monto_semanal);
+                console.log('Penalizacion semanal:', item.penalizacion_semanal);
+
+
                 return item;
 
               });
+
+
 
             }
 
@@ -235,10 +302,9 @@ export class CreditoViewComponent implements OnInit {
             this.tarifa_id.setValue(this.editingCredito.tarifa.id);
             this.tipo_credito_id.setValue(this.editingCredito.tipoCredito.id);
             this.renovacion.setValue(this.editingCredito.renovacion);
-            const montoSemanal = (this.editingCredito.monto_total / this.editingCredito.tarifa.num_semanas);
-    
+            const montoSemanal = this.editingCredito.tarifa.monto_semanal;
 
-            const montoSemanalF = this.customCurrencyPipe.transform(montoSemanal);
+            const montoSemanalF = this.customCurrencyPipe.transform(Number(montoSemanal));
             const montoOtorgadoF = this.customCurrencyPipe.transform(Number(this.editingCredito.monto_otorgado));
             const montoTotalF = this.customCurrencyPipe.transform(Number(this.editingCredito.monto_total));
 
@@ -248,15 +314,33 @@ export class CreditoViewComponent implements OnInit {
             this.monto_total.setValue(montoTotalF);
             this.fecha_inicio_prog.setValue(this.editingCredito.fecha_inicio_prog);
             this.fecha_fin_prog.setValue(this.editingCredito.fecha_fin_prog);
+            this.fecha_entrega_prog.setValue(this.editingCredito.fecha_entrega_prog);
             this.solicitud_credito_id.setValue(this.editingCredito.solicitud_credito_id);
             this.nombre.setValue(this.editingCredito.cliente.nombre_completo);
+
+            //preguntamos si trae numero de contrato historico
+
+            this.total_penalizaciones = this.total_dias_penalizaciones * Number(this.editingCredito.monto_otorgado * .010 )
+
+            console.log('Total $ Penalizaciones', this.total_penalizaciones);
+
+          
+            console.log(this.editingCredito.monto_otorgado);
+            console.log(this.total_pagado);
+
+            this.grand_total = ( Number(this.editingCredito.monto_total) - this.total_pagado ) + this.total_penalizaciones
+            
+
+
 
 
           });
 
 
 
+
       }
+
     });
 
     // Despues de que ya hicimos todo, aqui podemos simplemente establecer el setpath y 
@@ -303,13 +387,6 @@ export class CreditoViewComponent implements OnInit {
     this.fuente_financ_id?.setValue(credito.fuente_financ_id);
     this.tipo_contrato_id?.setValue(credito.tipo_contrato_id);
 
-    //Obtenemos los datos de la tarifa
-    // this.tarifaService.getTarifa(this.tarifa_id.value).subscribe(tarifa => {
-
-    //   this.tarifaSelected = tarifa;
-
-    // });
-
 
     //preguntamos el role, y con esto habilitamos las fechas de entrega y fecha de inicio.
     if (credito?.locked === 1) {
@@ -320,17 +397,6 @@ export class CreditoViewComponent implements OnInit {
     //this.getSolicitudesException(this.solicitud_credito_id.value);
     this.getCreditosException(credito.solicitud_credito_id)
 
-    //Calculamos el balance
-    //***this.getBalance(this.editingCredito);
-    //this.getPagos(this.editingCredito);
-
-    //this.getAmortizacion();
-
-    ///
-    // this.subscription = this.pagoService.refresh$.subscribe(() => {
-    //   this.getPagos(this.editingCredito);
-    // });
-    ////
 
   }
 

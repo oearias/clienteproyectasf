@@ -1,0 +1,69 @@
+
+<!-- <button class="btn btn-link p-0" (click)="volver()">
+    <i style="font-size: 33px;" class="fas fa-arrow-left fw-bold"></i>
+</button> -->
+
+<form>
+
+    <div class="formularioCard card card-default rounded-0 mb-0">
+
+        <div class="card-header bg-primary">
+            <h5  class="card-title">
+                <b>
+                    <span>{{grupoUsuario?.nombre}}</span>
+                </b>
+            </h5>
+            <div class="card-tools">
+                <!-- <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button> -->
+            </div>
+        </div>
+
+        <div class="card-body mb-4" style="display: block;">
+    
+
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Módulos</th>
+                        <th>Submódulos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let modulo of modulos">
+                        <td class="align-middle">
+                            <input
+                            id="modulo_{{modulo.id}}" 
+                            type="checkbox" 
+                            (change)="onModuloChange(modulo.id, $event)"
+                            [checked]="moduloSeleccionado(modulo.id)">
+                            {{modulo?.nombre}}
+                        </td>
+                        <td>
+                            <div *ngFor="let submodulo of submodulos">
+                                <div *ngIf="submodulo.modulo_id === modulo.id">
+
+                                        <input 
+                                        id="submodulo_{{submodulo.id}}" 
+                                        type="checkbox"
+                                        (change)="onSubmoduloChange(submodulo.id, modulo.id, $event)"
+                                        [checked]="submoduloSeleccionado(submodulo.id)">
+                                    
+                                        {{submodulo.nombre}}
+                         
+
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button (click)="saveGrupoUsuario()" class="btn btn-success mt-4">Guardar</button>
+
+        </div>
+
+    </div>
+
+</form>

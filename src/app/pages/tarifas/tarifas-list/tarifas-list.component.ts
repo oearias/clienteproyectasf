@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { Tarifa } from 'src/app/interfaces/Tarifa';
 import { TarifasService } from '../../../services/tarifas.service';
 import { ToastrService } from 'ngx-toastr';
+import { TarifaResponse } from 'src/app/interfaces/TarifaResponse';
 
 @Component({
   selector: 'app-tarifas-list',
@@ -15,30 +16,12 @@ import { ToastrService } from 'ngx-toastr';
 export class TarifasListComponent implements OnInit {
 
   tarifas: Tarifa[] = [];
-  p: number = 1;
-  itemsPP: number = 10;
+  currentPage: number = 1; // Inicializa currentPage con 1 por defecto
+  totalPages: number = 1; // Inicializa totalPages con 1 por defecto
+
+  busqueda = '';
+
   subscription: Subscription;
-  selectedItem = this.itemsPP;
-  palabra:any
-
-  criterio: any;
-
-  items = [
-    { cant: 5 },
-    { cant: 10 },
-    { cant: 15 },
-    { cant: 20 },
-    { cant: 25 },
-  ]
-
-  criterios = [
-    { nombre: 'nombre', criterio: 'nombre' },
-    { nombre: 'clave', criterio: 'clave' },
-  ];
-
-  //Sort
-  key = 'nombre';
-  reverse: boolean = false;
 
   constructor(
     private tarifaService: TarifasService,
@@ -47,17 +30,21 @@ export class TarifasListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getTarifas();
+    this.getTarifas(this.currentPage);
 
     this.subscription = this.tarifaService.refresh$.subscribe(() => {
-      this.getTarifas();
+      this.getTarifas(this.currentPage);
     });
 
   }
 
-  getTarifas(){
-    this.tarifaService.getTarifas().subscribe( (res:any) =>{
-      this.tarifas = res;
+  getTarifas(page:number, limit:number=10){
+    this.tarifaService.getTarifasPaginadas(page, limit, this.busqueda).subscribe( (res:TarifaResponse) =>{
+      
+      this.tarifas = res.tarifasJSON;
+      this.totalPages = res.totalPages;
+      this.currentPage = res.currentPage;
+
     });
   }
 
@@ -112,32 +99,36 @@ export class TarifasListComponent implements OnInit {
     });
   }
 
-  cambiaItems(event) {
-    this.itemsPP = event.cant
+  generatePageRange(): number[] {
+
+    const pages: number[] = [];
+    const startPage = Math.max(1, this.currentPage - 2);
+    const endPage = Math.min(this.totalPages, this.currentPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
   }
 
-  getCriterio(event) {
-    this.criterio = event.criterio
-  }
-
-  search() {
-
-    if(this.criterio!= null && this.palabra!=null){
-      this.tarifaService.getTarifasByCriteria(this.criterio, this.palabra.toLocaleUpperCase() ).subscribe( res =>{
-        this.tarifas = res;
-      })
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.getTarifas(page);
     }
   }
 
-  limpiar(){
-    this.criterio=null;
-    this.palabra=null;
-    this.ngOnInit();
+  goToFirstPage(): void {
+    if (this.totalPages > 1 && this.currentPage !== 1) {
+      this.goToPage(1);
+    }
   }
 
-  sort(key:string){
-    this.key = key;
-    this.reverse = !this.reverse;
+  buscarElementos(terminoBusqueda: string) {
+
+    this.busqueda = terminoBusqueda;
+    this.getTarifas(1);
+
   }
 
 }

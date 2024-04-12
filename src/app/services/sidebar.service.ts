@@ -5,6 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class SidebarService {
 
+  barOpened = true;
+
   menu: any[] = [
 
     {
@@ -179,5 +181,6 @@ export class SidebarService {
       ]
 
     }];
+
   constructor() { }
 }

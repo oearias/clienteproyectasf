@@ -9,12 +9,12 @@
     <!-- <img src="../../../assets/images/proyecta_logo1.png" alt="AdminLTE Logo" class="brand-image"
       style="opacity: .8"> -->
 
-    <div id="logo1" class="logoShort abierto">
+    <div id="logo1" class="logoShort cerrado">
       <img style="height: 55px;" src="../../../assets/images/proyecta_logo1.png" alt="">
     </div>
 
 
-    <span id="logo2" class="brand-text font-weight-light cerrado">
+    <span id="logo2" class="brand-text font-weight-light abierto">
       <img src="../../../assets/images/proyecta_logo2.png" style="width: 200px;" alt="">
     </span>
 
@@ -30,6 +30,7 @@
 
       <div class="info">
         <a href="#" class="d-block">{{nombreUsuario}}</a>
+        <span class="d-block text-success" style="font-size: 14px; ">{{role}}</span>
       </div>
     </div>
 
@@ -40,7 +41,7 @@
         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
         <li class="nav-item has-treeview" *ngFor="let item of menuItems">
-          <a *ngIf="item?.role?.includes(role)" href="#" class="nav-link ">
+          <a href="#" class="nav-link ">
             <i class="{{item.icono}}"></i>
             <p class="ml-2">
               {{item.titulo}}

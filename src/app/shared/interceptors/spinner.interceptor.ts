@@ -24,8 +24,6 @@ export class SpinnerInterceptor implements HttpInterceptor {
 
                 // Obtén los parámetros de consulta de la URL
 
-                console.log(searchParams);
-
                 // Verifica si el parámetro "searchTerm" existe y si su valor es nulo o una cadena vacía
                 const searchTerm = searchParams.get('searchTerm');
                 hasSearchTermParam = searchTerm === null || searchTerm === '';

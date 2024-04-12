@@ -49,6 +49,8 @@ export class CreditosListaComponent implements OnInit {
 
     this.creditoService.getCreditosPaginados(page, limit, this.busqueda).subscribe((creditos) => {
 
+      console.log(creditos.creditosJSON);
+
       this.creditos = creditos.creditosJSON;
       this.totalPages = creditos.totalPages;
       this.currentPage = creditos.currentPage;

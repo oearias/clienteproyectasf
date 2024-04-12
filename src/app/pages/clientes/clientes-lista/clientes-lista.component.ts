@@ -25,7 +25,7 @@ export class ClientesListaComponent implements OnInit {
   constructor(
     private clienteService: ClientesService,
     private router: Router,
-    private toastr: ToastrService,
+    private toastr: ToastrService, 
   ) { }
 
   ngOnInit(): void {

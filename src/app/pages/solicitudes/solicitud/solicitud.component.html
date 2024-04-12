@@ -5,7 +5,7 @@
             <div class="step" data-target="#test-l-1">
                 <button class="step-trigger">
                     <span class="bs-stepper-circle">1</span>
-                    <span class="bs-stepper-label"></span>
+                    <span class="bs-stepper-label"></span> 
                 </button>
             </div>
             <div class="line"></div>
@@ -48,11 +48,14 @@
 
                             <div class="row">
 
-                                <div class="col-sm-12 col-md-12">
+                                <!-- <div class="col-sm-12 col-md-12">
                                     <div class="form-group">
-                                        <ng-select [items]="items$ | async" bindLabel="fullName" bindValue="id"
-                                            [typeahead]="input$" typeToSearchText="Teclee para buscar"
-                                            (clear)="onClearCliente()" (change)="onChangeCliente($event)"
+                                        <ng-select [items]="items$ | async" 
+                                            bindLabel="fullName" bindValue="id"
+                                            [typeahead]="input$" 
+                                            typeToSearchText="Teclee para buscar"
+                                            (clear)="onClearCliente()" 
+                                            (change)="onChangeCliente($event)"
                                             placeholder="Búsqueda por: Nombre o RFC">
                                             <ng-template ng-option-tmp let-item="item" let-index="index"
                                                 let-search="searchTerm">
@@ -61,7 +64,21 @@
                                             </ng-template>
                                         </ng-select>
                                     </div>
+                                </div> -->
+
+                                <div class="col-sm-12 col-md-12">
+                                    <div class="form-group">
+                                        <ng-select 
+                                            (change)="onChangeCliente($event)" 
+                                            (search)="buscarElementos($event)"
+                                            class="text-uppercase" [items]="clientesArray"
+                                            formControlName="id" bindLabel="fullname" [clearable]="false"
+                                            placeholder="Seleccione un cliente" bindValue="id">
+                                        </ng-select>
+                                    </div>
                                 </div>
+
+                                
 
                             </div>
 
@@ -172,8 +189,7 @@
                                             formControlName="agencia_id" placeholder="Seleccione agencia"></ng-select>
 
                                         <div *ngIf="(submitted && agencia_id.invalid )">
-                                            <span class="error invalid-feedback" *ngIf="agencia_id.errors.required">*La
-                                                agencia es obligatoria</span>
+                                            <span class="error invalid-feedback" *ngIf="agencia_id.errors.required">*La agencia es obligatoria</span>
                                         </div>
                                     </div>
                                 </div>
@@ -182,27 +198,26 @@
                                     <div class="form-group">
                                         <label>
                                             Monto solicitado</label>
-                                        <ng-select formControlName="monto" [items]="montos" bindLabel="monto"
-                                            (clear)="onClearMonto()" (change)="onChangeMonto($event)" bindValue="monto"
+                                        <ng-select formControlName="tarifa_id" [items]="tarifas" bindLabel="nombre"
+                                            (clear)="onClearMonto()" (change)="onChangeMonto($event)" bindValue="id"
                                             placeholder="Seleccione monto"></ng-select>
                                         <div *ngIf="(submitted && monto.invalid)">
-                                            <span class="error invalid-feedback" *ngIf="monto.errors.required">*El monto
-                                                es
-                                                obligatorio</span>
+                                            <span class="error invalid-feedback" *ngIf="tarifa.errors.required">*El monto es obligatorio</span>
                                         </div>
                                     </div>
 
                                 </div>
 
-                                <div class="col-sm-6 col-md-4">
+                                <!-- <div class="col-sm-6 col-md-4">
                                     <div class="form-group">
                                         <label>
                                             Plazo</label>
                                         <ng-select #selectTarifa formControlName="tarifa_id" [items]="tarifas"
                                             bindLabel="nombre" (change)="onChangeTarifa($event)" bindValue="id"
-                                            readonly=true placeholder="Plazo"></ng-select>
+                                            readonly=true placeholder="Plazo">
+                                        </ng-select>
                                     </div>
-                                </div>
+                                </div> -->
 
                             </div>
 
@@ -382,9 +397,9 @@
 
                                     <div class="col-sm-4 col-md-4">
                                         <div class="form-group">
-                                            <label for="numExtInput">Núm. int. <span
+                                            <label for="numIntInput">Núm. int. <span
                                                     class="opcional">(Opcional)</span></label>
-                                            <input id="numExtInput" formControlName="num_int" type="text"
+                                            <input id="numIntInput" formControlName="num_int" type="text"
                                                 class="form-control text-uppercase">
                                         </div>
                                     </div>

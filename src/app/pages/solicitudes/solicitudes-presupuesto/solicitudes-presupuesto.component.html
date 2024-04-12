@@ -23,51 +23,45 @@
             <h5>Sin solicitudes autorizadas para presupuesto aún</h5>
         </div>
 
-        <table *ngIf="solicitudes.length > 0" class="table table-striped table-hover table-sort table-sm table-responsive-lg"
-            style="font-size: 14px;">
+        <table *ngIf="solicitudes.length > 0"
+            class="table table-striped table-hover table-sort table-sm table-responsive-lg" style="font-size: 14px;">
             <thead>
                 <tr>
-                    <th class="text-center" (click)="sort('id')">N. Solicitud
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    <th class="text-center">N. Solicitud
                     </th>
-                    <th (click)="sort('fecha_solicitud')" class="text-center">Fecha solicitud
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    <th class="text-center">Fecha solicitud
                     </th>
-                    <th (click)="sort('nombre_completo')">Nombre
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    <th>Nombre
                     </th>
 
                     <th (click)="sort('estatus')" class="text-center">Zona
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
                     </th>
 
-                    <th (click)="sort('estatus')" class="text-center">Agencia
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    <th class="text-center">Agencia
                     </th>
 
-                    <th (click)="sort('estatus')" class="text-center">Cliente nuevo / renovación
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
+                    <th class="text-center">Cliente nuevo / renovación
                     </th>
                     <th (click)="sort('estatus')" class="text-center">Monto
-                        &nbsp;<i class="fas fa-sort text-muted"></i>
                     </th>
                     <th class="text-center" style="cursor: default;"></th>
                     <th class="text-center" style="cursor: default;"></th>
                 </tr>
             </thead>
             <tbody>
-                <tr class="align-middle" *ngFor="let solicitud of solicitudes | orderBy: key: reverse   ">
+                <tr class="align-middle" *ngFor="let solicitud of solicitudes ">
                     <td class="align-middle text-center">{{solicitud?.id}}</td>
                     <td class="align-middle text-center">{{solicitud?.fecha_solicitud | date:'dd/MM/yyyy' }}</td>
                     <td class="align-middle">{{solicitud?.nombre_completo}}</td>
 
                     <td class="align-middle text-center">
-                        {{solicitud?.zona}}
+                        {{solicitud?.agencia?.zona?.nombre}}
                     </td>
                     <td class="align-middle text-center">
-                        {{solicitud?.agencia}}
+                        {{solicitud?.agencia?.nombre}}
                     </td>
                     <td class="align-middle text-center">
+                        {{solicitud?.cn_r}}
                     </td>
                     <td class="align-middle text-right">
                         ${{solicitud?.monto | number:'1.2-2':'en-US' }}

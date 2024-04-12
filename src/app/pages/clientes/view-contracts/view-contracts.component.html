@@ -56,7 +56,7 @@
 
                     </th>
 
-                    <th class="text-center" >Estatus 2
+                    <th class="text-center" >Estatus del crédito
                     </th>
 
                     <th class="text-center">
@@ -90,12 +90,13 @@
 
                     <td class="align-middle text-center" style="min-width: 100px;">
 
-                        <span class="badge badge-primary"
-                            *ngIf="credito?.estatus_credito=='LIQUIDADO'; else elseBlockEstatus">
+                        <span class="badge badge-success" style="text-transform: uppercase;"
+                            *ngIf="credito?.estatus_credito_id == 1 ; else elseBlockEstatus">
                             {{credito?.estatus_credito}}
                         </span>
 
-                        <span class="badge badge-warning" *ngIf="credito?.estatus_credito=='SIN LIQUIDAR'; ">
+                        <span class="badge badge-primary" style="text-transform: uppercase;" 
+                            *ngIf="credito?.estatus_credito_id == 2; ">
                             {{credito?.estatus_credito}}
                         </span>
 

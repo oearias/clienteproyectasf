@@ -43,9 +43,15 @@ export class LoginComponent implements OnInit {
         
         if(res.token){
 
+          console.log(res);
+
           sessionStorage.setItem('nombreCompleto', `${res.nombre} ${res.apellido_paterno}`);
-          sessionStorage.setItem('role', `${res.role}`);
+          localStorage.setItem('role', `${res.role}`);
           sessionStorage.setItem('usuario', `${res.usuario}`);
+          localStorage.setItem('usuario_id', `${res.usuario_id}`);
+          sessionStorage.setItem('session_id', `${res.session.session_id}`);
+
+          localStorage.setItem('modulos', JSON.stringify(res.modulos));
           
           
           //this.router.navigateByUrl('/dashboard');

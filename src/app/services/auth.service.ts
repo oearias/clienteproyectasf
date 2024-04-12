@@ -24,4 +24,12 @@ export class AuthService {
         })
       )
   }
+
+  logout(){
+    return this.http.post<any>(this.URL_API + 'auth/logout',{
+      usuario_id: localStorage.getItem('usuario_id'),
+      session_id: sessionStorage.getItem('session_id')
+
+    })
+  }
 }

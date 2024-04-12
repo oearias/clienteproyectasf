@@ -23,7 +23,7 @@
 
                 <div class="row">
 
-                    <div class="col-sm-12 col-md-2">
+                    <div class="col-sm-12 col-md">
                         <div class="form-group">
                             <label>N. de crédito</label>
                             <input type="number" formControlName="num_contrato" type="number" class="form-control">
@@ -31,21 +31,21 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-2">
+                    <div class="col-sm-12 col-md">
                         <div class="form-group">
                             <label>N. de Solicitud</label>
                             <input type="number" formControlName="solicitud_credito_id" class="form-control">
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-2">
+                    <div class="col-sm-12 col-md">
                         <div class="form-group">
                             <label>N. de Contrato Histórico</label>
                             <input type="text" formControlName="num_contrato_historico" class="form-control">
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6">
+                    <div class="col-sm-12 col-md-12">
                         <div class="form-group">
                             <label>Cliente</label>
                             <input type="text" formControlName="nombre" class="form-control">
@@ -56,7 +56,7 @@
 
                 <div class="row">
 
-                    <div class="col-sm-8 col-md-2">
+                    <div class="col-sm-12 col-md-4">
                         <div class="form-group">
                             <label for="inputTarifa">Tarifa</label>
                             <ng-select class="text-uppercase" [items]="tarifas"
@@ -66,7 +66,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-8 col-md-4">
+                    <div class="col-sm-6 col-md-4">
                         <div class="form-group">
                             <label for="inputTipoCredito">Tipo de Crédito</label>
                             <ng-select class="text-uppercase" [items]="tipoCreditos" formControlName="tipo_credito_id"
@@ -76,17 +76,7 @@
                         </div>
                     </div>
 
-                    <!-- <div class="col-sm-8 col-md-4">
-                        <div class="form-group">
-                            <label for="inputTipoContrato">Tipo de Contrato</label>
-                            <ng-select class="text-uppercase" [items]="tipoContratos" formControlName="tipo_contrato_id"
-                                bindLabel="nombre" [clearable]="false" placeholder="Seleccione un tipo de crédito"
-                                bindValue="id">
-                            </ng-select>
-                        </div>
-                    </div> -->
-
-                    <div class="col-sm-6 col-md-2">
+                    <div class="col-sm-6 col-md-4">
                         <div class="form-group">
                             <label for="inputRenovacion">N. de renovación</label>
                             <input type="number" formControlName="renovacion" class="form-control">
@@ -97,7 +87,7 @@
 
                 <div class="row">
 
-                    <div class="col-sm-6 col-md-2">
+                    <div class="col-sm-6 col-md-4">
                         <div class="form-group">
                             <label for="inputFechaInicio">Fecha de inicio</label>
                             <input #fechaInicio type="date" formControlName="fecha_inicio_prog"
@@ -106,14 +96,14 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-6 col-md-2">
+                    <div class="col-sm-6 col-md-4">
                         <div class="form-group">
                             <label for="inputFechaFin">Fecha finalización</label>
                             <input type="date" formControlName="fecha_fin_prog" class="form-control">
                         </div>
                     </div>
 
-                    <div class="col-sm-6 col-md-2">
+                    <div class="col-sm-6 col-md-4">
                         <div class="form-group">
                             <label for="inputFechaEntrega">Fecha de entrega</label>
                             <input #fechaInicio type="date" formControlName="fecha_entrega_prog" class="form-control">
@@ -121,7 +111,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-6 col-md-2">
+                    <div class="col-sm-6 col-md-4">
                         <div class="form-group">
                             <label for="inputMontoOtorgado">Monto otorgado</label>
 
@@ -138,7 +128,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-6 col-md-2">
+                    <div class="col-sm-6 col-md-4">
                         <div class="form-group">
                             <label for="inputMontoTotal">Monto total a pagar</label>
 
@@ -153,7 +143,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-6 col-md-2">
+                    <div class="col-sm-6 col-md-4">
                         <div class="form-group">
                             <label for="inputMontoSemanal">Monto semanal</label>
 
@@ -315,159 +305,163 @@
 
             <div class="card-body pt-0">
 
-                <table class="table table-hover table-sm" style="font-size: 14px;">
-                    <thead>
-                        <th style="width: 30px;"></th>
-                        <!-- <th>Sem anio</th> -->
-                        <th style="width: 20px;" class="text-center align-middle">N. de semana</th>
-                        <th class="text-center align-middle">Fecha programada de pago</th>
-                        <th class="text-center align-middle">Tarifa semanal</th>
-                        <th class="text-center align-middle">Fecha real de pago</th>
-                        <th class="text-center align-middle">Pago realizado</th>
-                        <th class="text-center align-middle">Días de penalización</th>
-                        <th class="text-center align-middle">Penalización</th>
-                        <th class="text-center align-middle">Adeudo</th>
-                    </thead>
-                    <tbody>
-                        <ng-container *ngFor="let am of amortizacion; let i = index">
-                            <tr style="background-color: rgb(240, 243, 249);">
-
-                                <td class="text-center align-middle">
-                                    <!-- <button (click)="colapsa(am, i)" *ngIf="am?.pagos.length > 0 " class="btn btn-link ">
-                                        <i [ngClass]=" !am.expanded ? 'fas fa-plus-circle' : 'fas fa-minus-circle' "></i>
-                                    </button> -->
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm" style="font-size: 14px;">
+                        <thead>
+                            <th style="width: 30px;"></th>
+                            <!-- <th>Sem anio</th> -->
+                            <th style="width: 20px;" class="text-center align-middle">N. de semana</th>
+                            <th class="text-center align-middle">Fecha programada <br> de pago</th>
+                            <th class="text-center align-middle">Tarifa <br> semanal</th>
+                            <th class="text-center align-middle">Fecha real <br> de pago</th>
+                            <th class="text-center align-middle">Pago <br> realizado</th>
+                            <th class="text-center align-middle">Días de <br> penalización</th>
+                            <th class="text-center align-middle">Penalización</th>
+                            <th class="text-center align-middle">Adeudo</th>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let am of amortizacion; let i = index">
+                                <tr style="background-color: rgb(240, 243, 249);">
+    
+                                    <td class="text-center align-middle">
+                                        <!-- <button (click)="colapsa(am, i)" *ngIf="am?.pagos.length > 0 " class="btn btn-link ">
+                                            <i [ngClass]=" !am.expanded ? 'fas fa-plus-circle' : 'fas fa-minus-circle' "></i>
+                                        </button> -->
+                                    </td>
+                                    <!-- <td class="text-center">{{am?.weekyear}}</td> -->
+                                    <td class="text-center align-middle fw-bold">{{am?.num_semana}}</td>
+    
+                                    <td class="align-middle text-center programado">
+                                        <span *ngIf="am?.num_semana > 0" style="font-size: 14px; font-style: italic;">
+                                            {{am?.fecha_inicio | date:'EEEE'}}, {{am?.fecha_inicio | date:'dd/MM/yyyy'}}
+                                        </span>
+    
+                                        <span class="text-danger" *ngIf="am?.num_semana === '-' " style="font-size: 14px; font-style: italic;">
+                                            Pago fuera de tiempo
+                                        </span>
+    
+                                    </td>
+                                    <td class="text-right align-middle fw-bold programado">
+                                        <span *ngIf="am?.monto_semanal">
+                                            ${{am?.monto_semanal | number:'1.2-2':'en-US'}}
+                                        </span>
+                                    </td>
+                                    
+                                    <td colspan="2" class="align-middle real">
+                                        <table style="width: 100%;">
+                                            <tr *ngFor="let item of am?.pagos">
+    
+                                                <td class="align-top text-left" style="border: none;">
+    
+                                                    <span *ngIf="item?.bonificacion != true "
+                                                        style="font-style: italic;">Folio:
+                                                    </span>
+    
+                                                    <span *ngIf="item?.bonificacion != true"
+                                                        style="font-weight: bold; font-style: italic;">{{item?.folio}}&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    </span>
+    
+    
+                                                    <span *ngIf="item?.bonificacion === true"
+                                                        style="font-style: italic; font-weight: bold;" class="text-success">
+                                                        {{item?.concepto}}
+                                                    </span>
+    
+                                                    <span *ngIf="item?.bonificacion != true" style="font-style: italic;">
+                                                        {{item?.fecha| date:'EEEE':'+0100'}}, {{item?.fecha |
+                                                        date:'dd/MM/yyyy':'+0100'}}
+                                                    </span>
+                                                </td>
+    
+                                                <td class="align-middle text-right " style="border: none;">
+                                                    <span *ngIf="item?.bonificacion === true" class="text-success"
+                                                        style="font-weight: bold; text-decoration: line-through;">
+                                                        ${{item?.monto | number:'1.2-2':'en-US'}}
+                                                    </span>
+    
+                                                    <span *ngIf="item?.monto > 0 && item?.bonificacion != true"
+                                                        class="text-primary" style="font-weight: bold;">
+                                                        ${{item?.monto | number:'1.2-2':'en-US'}}
+                                                    </span>
+                                                </td>
+    
+                                            </tr>
+                                        </table>
+    
+                                    </td>
+                                    <!-- <td class="text-right align-middle real">
+                                        <span *ngIf="am?.suma_monto_pagado?.length > 0" style="font-weight: bold;">
+                                            ${{am?.suma_monto_pagado |
+                                            number:'1.2-2':'en-US'}}</span>
+                                    </td> -->
+                                    <td class="text-center align-middle" style="font-weight: bold;">
+                                        <span *ngIf="am?.dias_penalizacion > 0" class="text-danger">
+                                            {{am?.dias_penalizacion}}
+                                        </span>
+                                    </td>
+                                    <td class="text-right align-middle fw-bold">${{am?.penalizacion_semanal |
+                                        number:'1.2-2':'en-US'}}
+                                    </td>
+                                    <td class="text-right align-middle" style="font-weight: bold;">${{am?.adeudo_semanal |
+                                        number:'1.2-2':'en-US'}}</td>
+                                </tr>
+                                <!-- <tr *ngFor="let item of am.pagos" [@fadeInOut]="am.expanded?'in':'out'">
+                                    <ng-container *ngIf="am.expanded">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-center">
+    
+                                            <span *ngIf="item?.bonificacion != true" style="font-style: italic;">Folio: </span>
+                                            <span style="font-weight: bold; font-style: italic;">{{item?.folio}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </span>
+    
+                                            <span *ngIf="item?.bonificacion === true" style="font-style: italic; font-weight: bold;" class="text-success">
+                                                {{item?.concepto}}
+                                            </span>
+    
+                                            <span *ngIf="item?.bonificacion != true" style="font-style: italic;">
+                                                {{item?.fecha_pago| date:'EEEE'}}, {{item?.fecha_pago |
+                                                date:'dd/MM/yyyy'}}
+                                            </span>
+                                        </td>
+                                        <td class="text-right align-middle">
+    
+                                            <span *ngIf="item?.bonificacion === true" class="text-success" style="font-weight: bold; text-decoration: line-through;">
+                                                ${{item?.monto_pagado | number:'1.2-2':'en-US'}}
+                                            </span>
+    
+                                            <span *ngIf="item?.monto_pagado > 0 && item?.bonificacion != true" class="text-primary" style="font-weight: bold;">
+                                                ${{item?.monto_pagado | number:'1.2-2':'en-US'}}
+                                            </span>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </ng-container>
+                                </tr> -->
+                            </ng-container>
+    
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td class="text-right" style="font-weight: bold; font-size: 18px;">${{total_tarifas_semanales | number:'1.2-2':'en-US'}}</td>
+                                <td></td>
+                                <td class="text-right" style="font-weight: bold; font-size: 18px;">${{total_pagado |
+                                    number:'1.2-2':'en-US'}}</td>
+                                <td class="text-center" style="font-weight: bold; font-size: 18px;">
+                                    {{total_dias_penalizaciones}}
                                 </td>
-                                <!-- <td class="text-center">{{am?.weekyear}}</td> -->
-                                <td class="text-center align-middle fw-bold">{{am?.num_semana}}</td>
-
-                                <td class="align-middle text-center programado">
-                                    <span *ngIf="am?.num_semana > 0" style="font-size: 14px; font-style: italic;">
-                                        {{am?.fecha_inicio | date:'EEEE'}}, {{am?.fecha_inicio | date:'dd/MM/yyyy'}}
-                                    </span>
-
-                                    <span class="text-danger" *ngIf="am?.num_semana === '-' " style="font-size: 14px; font-style: italic;">
-                                        Pago fuera de tiempo
-                                    </span>
-
-                                </td>
-                                <td class="text-right align-middle fw-bold programado">
-                                    <span *ngIf="am?.monto_semanal">
-                                        ${{am?.monto_semanal | number:'1.2-2':'en-US'}}
-                                    </span>
-                                </td>
-                                
-                                <td colspan="2" class="align-middle real">
-                                    <table style="width: 100%;">
-                                        <tr *ngFor="let item of am?.pagos">
-
-                                            <td class="align-top text-left" style="border: none;">
-
-                                                <span *ngIf="item?.bonificacion != true "
-                                                    style="font-style: italic;">Folio:
-                                                </span>
-
-                                                <span *ngIf="item?.bonificacion != true"
-                                                    style="font-weight: bold; font-style: italic;">{{item?.folio}}&nbsp;&nbsp;&nbsp;&nbsp;
-                                                </span>
-
-
-                                                <span *ngIf="item?.bonificacion === true"
-                                                    style="font-style: italic; font-weight: bold;" class="text-success">
-                                                    {{item?.concepto}}
-                                                </span>
-
-                                                <span *ngIf="item?.bonificacion != true" style="font-style: italic;">
-                                                    {{item?.fecha_pago| date:'EEEE':'+0100'}}, {{item?.fecha_pago |
-                                                    date:'dd/MM/yyyy':'+0100'}}
-                                                </span>
-                                            </td>
-
-                                            <td class="align-top text-right" style="border: none;">
-                                                <span *ngIf="item?.bonificacion === true" class="text-success"
-                                                    style="font-weight: bold; text-decoration: line-through;">
-                                                    ${{item?.monto_pagado | number:'1.2-2':'en-US'}}
-                                                </span>
-
-                                                <span *ngIf="item?.monto_pagado > 0 && item?.bonificacion != true"
-                                                    class="text-primary" style="font-weight: bold;">
-                                                    ${{item?.monto_pagado | number:'1.2-2':'en-US'}}
-                                                </span>
-                                            </td>
-
-                                        </tr>
-                                    </table>
-
-                                </td>
-                                <!-- <td class="text-right align-middle real">
-                                    <span *ngIf="am?.suma_monto_pagado?.length > 0" style="font-weight: bold;">
-                                        ${{am?.suma_monto_pagado |
-                                        number:'1.2-2':'en-US'}}</span>
-                                </td> -->
-                                <td class="text-center align-middle" style="font-weight: bold;">
-                                    <span *ngIf="am?.dias_penalizacion > 0" class="text-danger">
-                                        {{am?.dias_penalizacion}}
-                                    </span>
-                                </td>
-                                <td class="text-right align-middle fw-bold">${{am?.penalizacion_semanal |
-                                    number:'1.2-2':'en-US'}}
-                                </td>
-                                <td class="text-right align-middle" style="font-weight: bold;">${{am?.adeudo_semanal |
+                                <td class="text-right" style="font-weight: bold; font-size: 18px;">${{total_penalizaciones |
+                                    number:'1.2-2':'en-US'}}</td>
+                                <td class="text-right" style="font-weight: bold; font-size: 18px;">${{grand_total |
                                     number:'1.2-2':'en-US'}}</td>
                             </tr>
-                            <!-- <tr *ngFor="let item of am.pagos" [@fadeInOut]="am.expanded?'in':'out'">
-                                <ng-container *ngIf="am.expanded">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="text-center">
-
-                                        <span *ngIf="item?.bonificacion != true" style="font-style: italic;">Folio: </span>
-                                        <span style="font-weight: bold; font-style: italic;">{{item?.folio}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        </span>
-
-                                        <span *ngIf="item?.bonificacion === true" style="font-style: italic; font-weight: bold;" class="text-success">
-                                            {{item?.concepto}}
-                                        </span>
-
-                                        <span *ngIf="item?.bonificacion != true" style="font-style: italic;">
-                                            {{item?.fecha_pago| date:'EEEE'}}, {{item?.fecha_pago |
-                                            date:'dd/MM/yyyy'}}
-                                        </span>
-                                    </td>
-                                    <td class="text-right align-middle">
-
-                                        <span *ngIf="item?.bonificacion === true" class="text-success" style="font-weight: bold; text-decoration: line-through;">
-                                            ${{item?.monto_pagado | number:'1.2-2':'en-US'}}
-                                        </span>
-
-                                        <span *ngIf="item?.monto_pagado > 0 && item?.bonificacion != true" class="text-primary" style="font-weight: bold;">
-                                            ${{item?.monto_pagado | number:'1.2-2':'en-US'}}
-                                        </span>
-                                    </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </ng-container>
-                            </tr> -->
-                        </ng-container>
-
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3"></td>
-                            <td class="text-right" style="font-weight: bold; font-size: 18px;">${{total_tarifas_semanales | number:'1.2-2':'en-US'}}</td>
-                            <td></td>
-                            <td class="text-right" style="font-weight: bold; font-size: 18px;">${{total_pagado |
-                                number:'1.2-2':'en-US'}}</td>
-                            <td></td>
-                            <td class="text-right" style="font-weight: bold; font-size: 18px;">${{total_penalizaciones |
-                                number:'1.2-2':'en-US'}}</td>
-                            <td class="text-right" style="font-weight: bold; font-size: 18px;">${{grand_total |
-                                number:'1.2-2':'en-US'}}</td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </tfoot>
+                    </table>
+                </div>
 
             </div>
 

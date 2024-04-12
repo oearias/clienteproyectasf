@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
 })
 export class ClientesListComponent implements OnInit {
 
-  dtOptions: DataTables.Settings = {};
+  dtOptions: DataTables.Settings = {}; 
   dtTrigger = new Subject();
   data: any;
 

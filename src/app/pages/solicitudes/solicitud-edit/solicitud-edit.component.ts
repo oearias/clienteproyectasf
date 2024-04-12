@@ -210,7 +210,7 @@ export class SolicitudEditComponent implements AfterViewInit {
       cliente_id: null,
       monto: null,
       tarifa_id: null,
-      estatus_sol_id: 1,  //ABIERTA
+      estatus_sol_id: 9,  //Requiere modificación
       fecha_creacion: null,
       fecha_solicitud: this.datePipe.transform(this.fechaHoy),
       observaciones: null,
@@ -342,6 +342,8 @@ export class SolicitudEditComponent implements AfterViewInit {
 
           this.editingSolicitud = res;
 
+          console.log(this.editingSolicitud);
+
           /////Populamos Selects
           const selects = {
             sucursal: {
@@ -367,6 +369,9 @@ export class SolicitudEditComponent implements AfterViewInit {
 
           //Cargamos los eventos...
           this.solEventosService.getEventosBySolicitudId(params.id).subscribe(res =>{
+
+            console.log(res);
+
             this.eventos = res;
 
           });
@@ -415,8 +420,9 @@ export class SolicitudEditComponent implements AfterViewInit {
   }
 
   loadTarifas() {
-    this.tarifaService.getTarifas().subscribe(res => {
+    this.tarifaService.getTarifasActivas().subscribe(res => {
       this.tarifas = res;
+
     })
   }
 
@@ -641,6 +647,11 @@ export class SolicitudEditComponent implements AfterViewInit {
   }
 
   populateSolicitudFields(data: Solicitud) {
+
+
+    console.log(this.tarifa_id);
+
+    console.log(data.tarifa_id);
 
     ////SELECTS
     this.sucursal_id.setValue(data.sucursal_id);

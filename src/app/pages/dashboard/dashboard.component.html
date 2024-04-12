@@ -13,7 +13,7 @@
     <div class="card-body">
       <div class="row">
 
-        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="submodulos_permitidos.includes('Clientes') ">
           <div class="small-box bg-info">
             <div class="inner">
               <h3 class="contador"></h3>
@@ -32,7 +32,26 @@
           </div>
         </div>
 
-        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="allowedRoles.includes(role)">
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="submodulos_permitidos.includes('Solicitudes') ">
+          <div class="small-box bg-warning">
+            <div class="inner">
+              <h3 class="contador"></h3>
+              <span style="font-weight: bold; font-size: 18px;">Solicitudes por modificar</span>
+              <div>&nbsp;</div>
+              <div style="font-size: 14px;">&nbsp;</div>
+              <div style="font-size: 14px;">&nbsp;</div>
+            </div>
+            <div class="icon">
+              <i class=" fas fa-clipboard"></i>
+            </div>
+            <a href=".#/dashboard/solicitudes_modificar" class="small-box-footer">
+              Ir
+              <i class="fas fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="submodulos_permitidos.includes('Solicitudes') ">
           <div class="small-box bg-danger">
             <div class="inner">
               <h3 class="contador"></h3>
@@ -51,11 +70,11 @@
           </div>
         </div>
 
-        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf=" role === 'ADMIN' || role === 'EDITOR'  ">
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="submodulos_permitidos.includes('Aprobar Solicitudes')  ">
           <div class="small-box bg-warning">
             <div class="inner">
               <h3 class="contador"></h3>
-              <span style="font-weight: bold; font-size: 18px;">Solicitudes por revisar</span>
+              <span style="font-weight: bold; font-size: 18px;">Solicitudes por aprobar</span>
               <div>&nbsp;</div>
               <div style="font-size: 14px;">&nbsp;</div>
               <div style="font-size: 14px;">&nbsp;</div>
@@ -63,16 +82,17 @@
             <div class="icon">
               <i class=" fas fa-clipboard"></i>
             </div>
-            <a [routerLink]="['/dashboard/solicitudes']" [queryParams]="{flag: 1}" class="small-box-footer">
+            <a [routerLink]="['/dashboard/aprueba_solicitudes']" [queryParams]="{flag: 1}" class="small-box-footer">
               Ir
               <i class="fas fa-arrow-circle-right"></i>
             </a>
           </div>
         </div>
 
-        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="submodulos_permitidos.includes('Validación Presupuestal') ">
           <div class="small-box bg-danger">
             <div class="inner">
+              <h3 class="contador"></h3>
               <!-- <h3 class="contador">{{total_solicitudes_presup}}</h3> -->
               <span style="font-weight: bold; font-size: 18px;">Solicitudes para presupuesto</span>
               <div>&nbsp;</div>
@@ -89,11 +109,14 @@
           </div>
         </div>
 
-        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
+        <!-- <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' "></div> -->
+
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="submodulos_permitidos.includes('Créditos') ">
           <div class="small-box bg-primary">
             <div class="inner">
+              <h3 class="contador"></h3>
               <!-- <h3 class="contador">{{total_creditos}}</h3> -->
-              <span style="font-weight: bold; font-size: 18px;">Créditos</span>
+              <span style="font-weight: bold; font-size: 18px;">Créditos&nbsp;&nbsp;</span>
               <div>&nbsp;</div>
               <div style="font-size: 14px;">&nbsp;</div>
               <div style="font-size: 14px;">&nbsp;</div>
@@ -108,10 +131,16 @@
           </div>
         </div>
 
-        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
+        <!-- TODO: 
+          
+          Pendiente hacer este módulo con sequelize, traer los creditos unicamente con el estatus_sol_id 7 
+          ya que tarda demasiado esta consulta
+        
+        -->
+        <!-- <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="submodulos_permitidos.includes('Programar Entregas') ">
           <div class="small-box bg-primary">
             <div class="inner">
-              <!-- <h3 class="contador">{{total_creditos_prog_entrega}}</h3> -->
+              <h3 class="contador"></h3>
               <span style="font-weight: bold; font-size: 18px;">Créditos para prog. entrega</span>
               <div>&nbsp;</div>
               <div style="font-size: 14px;">&nbsp;</div>
@@ -125,13 +154,13 @@
               <i class="fas fa-arrow-circle-right"></i>
             </a>
           </div>
-        </div>
+        </div> -->
 
-        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="submodulos_permitidos.includes('Programar Entregas') ">
           <div class="small-box bg-primary">
             <div class="inner">
               <h3 class="contador"></h3>
-              <span style="font-weight: bold; font-size: 18px;">Créditos para marcar entrega</span>
+              <span style="font-weight: bold; font-size: 18px;">Créditos para prog. entrega</span>
               <div>&nbsp;</div>
               <div style="font-size: 14px;">&nbsp;</div>
               <div style="font-size: 14px;">&nbsp;</div>
@@ -139,14 +168,33 @@
             <div class="icon">
               <i class="fas fa-file-contract"></i>
             </div>
-            <a href=".#/dashboard/creditos/checkCreditos" class="small-box-footer">
+            <a href=".#/dashboard/programar_entregas" class="small-box-footer">
               Ir
               <i class="fas fa-arrow-circle-right"></i>
             </a>
           </div>
         </div>
 
-        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="role === 'ADMIN' ">
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="submodulos_permitidos.includes('Capturar Entregas') ">
+          <div class="small-box bg-primary">
+            <div class="inner">
+              <h3 class="contador"></h3>
+              <span style="font-weight: bold; font-size: 18px;">Créditos para capturar entrega</span>
+              <div>&nbsp;</div>
+              <div style="font-size: 14px;">&nbsp;</div>
+              <div style="font-size: 14px;">&nbsp;</div>
+            </div>
+            <div class="icon">
+              <i class="fas fa-file-contract"></i>
+            </div>
+            <a href=".#/dashboard/capturar_entregas" class="small-box-footer">
+              Ir
+              <i class="fas fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngIf="submodulos_permitidos.includes('Pagos') ">
           <div class="small-box bg-success">
             <div class="inner">
               <h3 class="contador"></h3>

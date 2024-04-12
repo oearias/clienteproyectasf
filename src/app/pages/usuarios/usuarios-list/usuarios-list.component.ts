@@ -23,32 +23,13 @@ export class UsuariosListComponent implements OnInit {
     palabra: new FormControl(null, Validators.required)
   })
 
+  currentPage: number = 1;
+  totalPages: number = 1;
+  busqueda = '';
+
   subscription: Subscription;
 
-  //Paginate
-  p: number = 1;
-  itemsPP: number = 15;
-  selectedItem = this.itemsPP;
-  
-  items = [
-    { cant: 10 },
-    { cant: 15 },
-    { cant: 20 },
-    { cant: 25 },
-  ];
 
-  //Filter
-  criterios = [
-    { nombre: 'nombre', criterio: 'a.nombre' },
-    { nombre: 'apellido paterno', criterio: 'a.apellido_paterno' },
-    { nombre: 'apellido materno', criterio: 'a.apellido_materno' },
-    { nombre: 'email', criterio: 'a.email' },
-    { nombre: 'rol', criterio: 'b.nombre' },
-  ];
-
-  //Sort
-  key = 'nombre';
-  reverse: boolean = false;
 
   constructor(
     private usuarioService: UsuariosService,
@@ -63,21 +44,67 @@ export class UsuariosListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getUsuarios();
+    this.getUsuarios(this.currentPage);
 
     this.subscription = this.usuarioService.refresh$.subscribe(() => {
-      this.getUsuarios();
+      this.getUsuarios(this.currentPage);
     });
 
 
   }
 
-  getUsuarios() {
-    this.usuarioService.getUsuarios().subscribe((res: any) => {
+  // getUsuarios() {
 
-      this.usuarios = res;
+  //   this.usuarioService.getUsuarios().subscribe((res: any) => {
 
+  //     this.usuarios = res;
+
+  //   });
+  // }
+
+  getUsuarios(page: number, limit: number = 10) {
+
+    this.usuarioService.getUsuariosPaginados(page, limit, this.busqueda).subscribe(res => {
+
+      this.usuarios = res.usuariosJSON;
+      this.totalPages = res.totalPages;
+      this.currentPage = res.currentPage;
     });
+
+  }
+
+  generatePageRange(): number[] {
+
+    const pages: number[] = [];
+    const startPage = Math.max(1, this.currentPage - 2);
+    const endPage = Math.min(this.totalPages, this.currentPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.getUsuarios(page);
+    }
+  }
+
+  goToFirstPage(): void {
+    if (this.totalPages > 1 && this.currentPage !== 1) {
+      this.goToPage(1);
+    }
+  }
+
+  buscarElementos(terminoBusqueda: string) {
+
+    console.log(terminoBusqueda);
+
+    this.busqueda = terminoBusqueda;
+    this.getUsuarios(1);
+
   }
 
   createUsuario() {
@@ -86,11 +113,11 @@ export class UsuariosListComponent implements OnInit {
   }
 
   editUsuario(usuario: Usuario) {
-    
+
     this.router.navigate(['settings/usuarios/usuario', usuario.id]);
   }
 
-  changePassword(usuario: Usuario){
+  changePassword(usuario: Usuario) {
     this.router.navigate(['settings/usuarios/changePassword', usuario.id]);
   }
 
@@ -118,7 +145,7 @@ export class UsuariosListComponent implements OnInit {
 
           console.log(error);
 
-          if(error['msg']){
+          if (error['msg']) {
             return this.toastr.error(error['msg']);
           }
 
@@ -130,46 +157,17 @@ export class UsuariosListComponent implements OnInit {
     });
   }
 
-  selectUser(usuario: Usuario){
-    this.router.navigate(['settings/usuarios/usuario2',usuario.id])
+  selectUser(usuario: Usuario) {
+    this.router.navigate(['settings/usuarios/usuario2', usuario.id])
   }
 
-  cambiaItems(event) {
-    this.itemsPP = event.cant
-  }
 
-  search() {
+  // limpiar() {
+  //   this.busqueda='';
+  //   this.ngOnInit();
+  //   this.router.navigate(['settings/usuarios/usuario2']);
+  // }
 
-    if (this.filterForm.valid) {
-      this.usuarioService.getUsuariosByCriteria(this.filterForm.value.criterio, this.filterForm.value.palabra.toLocaleUpperCase()).subscribe((res) => {
-        this.usuarios = res;
-      }, err => {
-        this.toastr.error(err.error.msg);
-      })
 
-    } else {
-      this.toastr.error('Por favor llene todos los campos del filtro')
-    }
-
-  }
-
-  limpiar() {
-    this.filterForm.reset();
-    this.ngOnInit();
-    this.router.navigate(['settings/usuarios/usuario2']);
-  }
-
-  sort(key: string) {
-    this.key = key;
-    this.reverse = !this.reverse;
-  }
-
-  get criterio() {
-    return this.filterForm.get('criterio');
-  }
-
-  get palabra() {
-    return this.filterForm.get('palabra');
-  }
 
 }

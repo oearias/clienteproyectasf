@@ -19,7 +19,12 @@ import { DatePipe } from '@angular/common';
 export class DashboardComponent implements OnInit {
 
   role: any;
+  modulos_permitidos: any[];
+  submodulos_permitidos: any[] = [];
   allowedRoles = ['CREATOR', 'ADMIN'];
+
+  //Aqui debemos de obtener los permisos y mostrar las casillas
+
   fechaHoy: Date = new Date();
 
   creditos: Credito[] = [];
@@ -81,6 +86,22 @@ export class DashboardComponent implements OnInit {
       console.log('Bye Bye Bye');
       this.router.navigate(['/login']);
     }
+
+    const arreglo = localStorage.getItem('modulos');
+    this.modulos_permitidos = JSON.parse(arreglo);
+
+    this.modulos_permitidos.forEach( modulos =>{
+      
+      modulos.submenu.forEach(item=>{
+
+        this.submodulos_permitidos.push(item.titulo);
+      })
+
+    });
+
+    console.log(this.submodulos_permitidos);
+
+
 
     this.getTotales();
 

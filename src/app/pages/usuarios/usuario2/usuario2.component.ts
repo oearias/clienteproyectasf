@@ -8,6 +8,8 @@ import Swal from 'sweetalert2';
 
 import { Role } from 'src/app/interfaces/Role';
 import { RolesService } from '../../../services/roles.service';
+import { GrupoUsuario } from 'src/app/interfaces/GrupoUsuario';
+import { GrupoUsuarioService } from 'src/app/services/grupo-usuario.service';
 
 @Component({
   selector: 'app-usuario2',
@@ -17,6 +19,7 @@ import { RolesService } from '../../../services/roles.service';
 export class Usuario2Component implements OnInit {
 
   editingUsuario: Usuario;
+  gruposUsuarios: GrupoUsuario[] = [];
   roles: Role[] = [];
 
   labelNombre = '';
@@ -31,12 +34,13 @@ export class Usuario2Component implements OnInit {
     nombre: new FormControl(null, Validators.required),
     apellido_paterno: new FormControl(null, Validators.required),
     apellido_materno: new FormControl(null),
-    role_id: new FormControl(null, Validators.required)
+    user_group_id: new FormControl(null, Validators.required)
   });
 
   constructor(
     private fb: FormBuilder,
     private roleService: RolesService,
+    private grupoUsuarioService: GrupoUsuarioService,
     private usuarioService: UsuariosService,
     private route: ActivatedRoute,
     private router: Router,
@@ -50,13 +54,14 @@ export class Usuario2Component implements OnInit {
       nombre: null,
       apellido_paterno: null,
       apellido_materno: null,
-      role_id: null
+      user_group_id: null
     });
   }
 
   ngOnInit(): void {
 
     this.getRoles();
+    this.getGruposUsuarios();
 
     this.route.params.subscribe((params) => {
 
@@ -64,9 +69,13 @@ export class Usuario2Component implements OnInit {
 
         this.usuarioService.getUsuario(params.id).subscribe(usuario => {
 
+          console.log(usuario);
+
           this.labelNombre = usuario?.nombre_completo;
 
           this.editingUsuario = usuario;
+
+          console.log(this.editingUsuario);
 
           this.id?.setValue(this.editingUsuario?.id);
           this.email?.setValue(this.editingUsuario?.email);
@@ -75,7 +84,7 @@ export class Usuario2Component implements OnInit {
           this.nombre?.setValue(this.editingUsuario?.nombre);
           this.apellido_paterno?.setValue(this.editingUsuario?.apellido_paterno);
           this.apellido_materno?.setValue(this.editingUsuario?.apellido_materno);
-          this.role_id?.setValue(this.editingUsuario?.role_id);
+          this.user_group_id?.setValue(this.editingUsuario?.user_group_id);
         });
 
       }
@@ -85,6 +94,14 @@ export class Usuario2Component implements OnInit {
   getRoles() {
     this.roleService.getRoles().subscribe(roles => {
       this.roles = roles;
+    })
+  }
+
+  getGruposUsuarios(){
+    this.grupoUsuarioService.getGruposUsuariosList().subscribe(grupos =>{
+
+      this.gruposUsuarios = grupos.gruposUsuariosJSON
+
     })
   }
 
@@ -124,8 +141,6 @@ export class Usuario2Component implements OnInit {
 
 
       } else {
-
-        console.log(this.usuarioForm.value);
 
         this.usuarioService.insertUsuario(this.usuarioForm.value).subscribe((res: any) => {
 
@@ -219,8 +234,8 @@ export class Usuario2Component implements OnInit {
     return this.usuarioForm.get('apellido_materno');
   }
 
-  get role_id() {
-    return this.usuarioForm.get('role_id');
+  get user_group_id() {
+    return this.usuarioForm.get('user_group_id');
   }
 
 }

@@ -40,6 +40,18 @@ export class ClientesService {
 
   }
 
+  getClientesLimitados(searchTerm: string){
+
+    const params = new HttpParams()
+      // .set('page', page.toString())
+      // .set('limit', limit.toString())
+      .set('searchTerm', searchTerm.toString());
+
+    const url = `${this.URL_API}/clientes_list_limit?${params.toString()}`;
+
+    return this.http.post<ClienteResponse>(url,{});
+  }
+
   getClientesByCriteria(criterio, palabra){
     return this.http.get<Cliente[]>(`${this.URL_API}/${criterio}/${palabra}`);
   }

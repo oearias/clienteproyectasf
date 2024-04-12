@@ -26,6 +26,10 @@ export class CreditosCheckEntregadosComponent implements OnInit {
   selectAllCheckbox = false;
   readonlyMode: boolean = true;
 
+  busqueda = '';
+  currentPage: number = 1;
+  totalPages: number = 1;
+
   constructor(
     private datePipe: DatePipe,
     private creditoService: CreditosService,
@@ -35,21 +39,23 @@ export class CreditosCheckEntregadosComponent implements OnInit {
 
   ngOnInit(): void {
     this.setPath();
-    this.getCreditos();
+    this.getCreditos(this.currentPage);
 
     this.subscription = this.creditoService.refresh$.subscribe(() => {
-      this.getCreditos();
+      this.getCreditos(this.currentPage);
     });
   }
 
-  getCreditos(fechaParam?: Date) {
+  getCreditos(page:number, limit:number = 100, fechaParam?: Date) {
 
     this.arrayInicial = [];
     this.arrayToPrint = [];
 
-    this.creditoService.getCreditos().subscribe(creditos => {
+    this.creditoService.getCreditosProgramacionEntrega(page, limit, this.busqueda).subscribe(creditos => {
 
-      this.creditos = creditos
+      console.log(creditos.creditosJSON);
+
+      this.creditos = creditos.creditosJSON
         //Desaparemos los creditos no entregados
         .filter(item => item.no_entregado != 1)
         .filter(item => item.fecha_entrega_prog!= null && item.hora_entrega != null && item.num_cheque!=null )
@@ -57,8 +63,6 @@ export class CreditosCheckEntregadosComponent implements OnInit {
         .filter(item => !fechaParam || new Date(item.fecha_entrega_prog).toISOString().slice(0, 10) === new Date(fechaParam).toISOString().slice(0, 10))
         .map((item: any) => {
 
-          //Creditos aprobados para entrega
-          if (item.preaprobado === 1) {
 
             if (item.fecha_entrega_prog != null) {
               item.fecha_entrega_prog = this.datePipe.transform(item.fecha_entrega_prog, 'yyyy-MM-dd', '0+100');
@@ -81,11 +85,51 @@ export class CreditosCheckEntregadosComponent implements OnInit {
             this.addToArrayToPrint(item.id, item.printSelected, item.fecha_inicio_prog);
 
             return item;
-          }
+          
 
         })
         .filter((item: any) => item);
     });
+
+    // this.creditoService.getCreditos().subscribe(creditos => {
+
+    //   this.creditos = creditos
+    //     //Desaparemos los creditos no entregados
+    //     .filter(item => item.no_entregado != 1)
+    //     .filter(item => item.fecha_entrega_prog!= null && item.hora_entrega != null && item.num_cheque!=null )
+    //     //Filtramos los creditos visualmente si hay una fecha de entrega específica
+    //     .filter(item => !fechaParam || new Date(item.fecha_entrega_prog).toISOString().slice(0, 10) === new Date(fechaParam).toISOString().slice(0, 10))
+    //     .map((item: any) => {
+
+    //       //Creditos aprobados para entrega
+    //       if (item.preaprobado === 1) {
+
+    //         if (item.fecha_entrega_prog != null) {
+    //           item.fecha_entrega_prog = this.datePipe.transform(item.fecha_entrega_prog, 'yyyy-MM-dd', '0+100');
+    //         }
+
+    //         if (item.fecha_inicio_prog != null) {
+    //           item.fecha_inicio_prog = this.datePipe.transform(item.fecha_inicio_prog, 'yyyy-MM-dd', '0+100');
+    //         }
+
+
+    //         if (item.motivo === null) {
+    //           item.isChecked = false;
+    //         } else {
+    //           item.isChecked = true;
+    //         }
+
+    //         item.printSelected = false;
+
+    //         this.addToArrayInicial(item.id, item.fecha_entrega_prog, item.hora_entrega, item.fecha_inicio_prog, item.num_cheque, item.entregado, item.no_entregado, item.motivo, item.num_semanas);
+    //         this.addToArrayToPrint(item.id, item.printSelected, item.fecha_inicio_prog);
+
+    //         return item;
+    //       }
+
+    //     })
+    //     .filter((item: any) => item);
+    // });
 
 
   }

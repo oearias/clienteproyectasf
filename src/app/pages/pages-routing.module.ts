@@ -87,6 +87,19 @@ import { ReporteCartasComponent } from './reporte-cartas/reporte-cartas.componen
 import { CreditosListaComponent } from './creditos/creditos-lista/creditos-lista.component';
 import { PagosListaComponent } from './pagos/pagos-lista/pagos-lista.component';
 import { ClientesListaComponent } from './clientes/clientes-lista/clientes-lista.component';
+import { GruposUsuariosComponent } from './grupos-usuarios/grupos-usuarios.component';
+import { GruposUsuariosListComponent } from './grupos-usuarios/grupos-usuarios-list/grupos-usuarios-list.component';
+import { GruposUsuarioComponent } from './grupos-usuarios/grupos-usuario/grupos-usuario.component';
+import { GruposUsuarioShowComponent } from './grupos-usuarios/grupos-usuario-show/grupos-usuario-show.component';
+import { ApruebaSolicitudesComponent } from './solicitudes/aprueba-solicitudes/aprueba-solicitudes.component';
+import { ApruebaSolicitudComponent } from './solicitudes/aprueba-solicitud/aprueba-solicitud.component';
+import { ApruebaSolicitudesListaComponent } from './solicitudes/aprueba-solicitudes-lista/aprueba-solicitudes-lista.component';
+import { CreditosProgramarEntregasComponent } from './creditos/creditos-programar-entregas/creditos-programar-entregas.component';
+import { CreditosProgramarEntregasListaComponent } from './creditos/creditos-programar-entregas-lista/creditos-programar-entregas-lista.component';
+import { CreditosCapturarEntregasComponent } from './creditos/creditos-capturar-entregas/creditos-capturar-entregas.component';
+import { CreditosCapturarEntregasListaComponent } from './creditos/creditos-capturar-entregas-lista/creditos-capturar-entregas-lista.component';
+import { SolicitudesModificarComponent } from './solicitudes/solicitudes-modificar/solicitudes-modificar.component';
+import { SolicitudesModificarListaComponent } from './solicitudes/solicitudes-modificar-lista/solicitudes-modificar-lista.component';
 
 const routes: Routes = [
   {
@@ -115,6 +128,16 @@ const routes: Routes = [
           { path: 'usuario/:id', component: UsuarioComponent, data: { titulo: 'Usuarios' } },
           { path: 'usuario', component: UsuarioComponent, data: { titulo: 'Usuarios' } },
           { path: 'changePassword/:id', component: ChangePasswordComponent, data: { titulo: 'Reestablecer contraseña' } }
+        ]
+      },
+      {
+        path: 'gruposUsuarios', component: GruposUsuariosComponent,
+        data: { titulo: 'Grupos de usuarios' },
+        children: [
+          { path: '', component: GruposUsuariosListComponent },
+          { path: 'gruposUsuario/:id', component: GruposUsuarioComponent, data: { titulo: 'Grupo de usuario' } },
+          { path: 'gruposUsuario', component: GruposUsuarioComponent, data: { titulo: 'Grupo de usuario' } },
+          { path: 'gruposUsuarioView/:id', component: GruposUsuarioShowComponent, data: { titulo: 'Grupo de usuario' } },
         ]
       },
       {
@@ -262,106 +285,136 @@ const routes: Routes = [
   },
   {
     path: 'dashboard', component: PagesComponent,
-    children: [
-      { path: '', component: DashboardComponent },
-      { path: 'productos', component: ProductosComponent },
-      { path: 'stock', component: StockComponent },
-      {
-        path: 'solicitudes', component: SolicitudesComponent,
-        data: { titulo: 'Solicitudes' },
-        children: [
-          { path: '', component: SolicitudesListaComponent },
-          { path: 'solicitud/view/:id', component: SolicitudViewComponent, data: { titulo: 'Solicitudes' } },
-          { path: 'solicitud/:id', component: SolicitudComponent, data: { titulo: 'Solicitudes' } },
-          { path: 'solicitud/:id/flagEdit/:flag', component: SolicitudEditComponent, data: { titulo: 'Solicitudes' } },
-          { path: 'solicitud', component: SolicitudComponent, data: { titulo: 'Solicitudes' } },
-          { path: 'presupuesto', component: SolicitudesPresupuestoComponent, data:{ titulo: 'Solicitudes'} },
-        ]
-      },
-      {
-        path: 'creditos', component: CreditosComponent,
-        data: { titulo: 'Créditos' },
-        children: [
-          { path: '', component: CreditosListComponent },
-          { path: 'credito/view/:id', component: CreditoViewComponent, data: { titulo: 'Creditos' } },
-          { path: 'credito/:id', component: CreditoComponent, data: { titulo: 'Créditos' } },
-          { path: 'credito', component: CreditoComponent, data: { titulo: 'Créditos' } },
-          { path: 'createCreditos', component: CreditosMasivosComponent, data: { titulo: 'Créditos' } },
-          { path: 'checkCreditos', component: CreditosCheckEntregadosComponent, data: { titulo: 'Captura de créditos entregados' } },
-        ]
-      },
-      {
-        path: 'creditos2', component: CreditosComponent,
-        data: { titulo: 'Créditos' },
-        children: [
-          { path: '', component: CreditosListaComponent },
-          { path: 'credito/view/:id', component: CreditoViewComponent, data: { titulo: 'Creditos' } },
-          { path: 'credito/:id', component: CreditoComponent, data: { titulo: 'Créditos' } },
-          { path: 'credito', component: CreditoComponent, data: { titulo: 'Créditos' } },
-          { path: 'createCreditos', component: CreditosMasivosComponent, data: { titulo: 'Créditos' } },
-          { path: 'checkCreditos', component: CreditosCheckEntregadosComponent, data: { titulo: 'Captura de créditos entregados' } },
-        ]
-      },
-      {
-        path: 'inversiones', component: InversionesComponent,
-        data: { titulo: 'Inversión positiva' },
-        children: [
-          { path: '', component: InversionListComponent },
-          { path: 'inversion/:id', component: InversionComponent, data: { titulo: 'Inversión positiva' } },
-          { path: 'inversion', component: InversionComponent, data: { titulo: 'Inversión positiva' } },
-        ]
-      },
-      // {
-      //   path: 'pagos', component: PagosComponent,
-      //   data: { titulo: 'Pagos' },
-      //   children: [
-      //     { path: '', component: PagosListComponent },
-      //     { path: 'pago/view/:id', component: PagoViewComponent, data: { titulo: 'Pagos' } },
-      //     { path: 'pago/:id', component: PagoComponent, data: { titulo: 'Pagos' } },
-      //     { path: 'pago', component: PagoComponent, data: { titulo: 'Pagos' } },
-      //   ]
-      // },
-      {
-        path: 'pagos2', component: PagosComponent,
-        data: { titulo: 'Pagos' },
-        children: [
-          { path: '', component: PagosListaComponent },
-          { path: 'pago/view/:id', component: PagoViewComponent, data: { titulo: 'Pagos' } },
-          { path: 'pago/:id', component: PagoComponent, data: { titulo: 'Pagos' } },
-          { path: 'pago', component: PagoComponent, data: { titulo: 'Pagos' } },
-        ]
-      },
-      {
-        path: 'reporteCartas', component: ReporteCartasComponent,
-        data: { titulo: 'Reporte de Cartas' },
-        children: [
-        ]
-      },
-      {
-        path: 'clientes', component: ClientesComponent,
-        data: { titulo: 'Clientes' },
-        children: [
-          { path: '', component: ClientesListComponent },
-          { path: 'cliente/:id', component: ClienteComponent, data: { titulo: 'Clientes' } },
-          { path: 'cliente', component: ClienteComponent, data: { titulo: 'Clientes' } },
-          { path: 'creditos/cliente/:id', component: ViewContractsComponent, data: { titulo: 'Créditos por cliente' } },
-          //{ path: 'credito/view/:id', component: CreditoDetailComponent, data: { titulo: 'Créditos por cliente' } }
-          { path: 'credito/view/:id', component: CreditoViewComponent, data: { titulo: 'Créditos por cliente' } }
-        ]
-      },
-      {
-        path: 'clientes2', component: ClientesComponent,
-        data: { titulo: 'Clientes' },
-        children: [
-          { path: '', component: ClientesListaComponent },
-          { path: 'cliente/:id', component: ClienteComponent, data: { titulo: 'Clientes' } },
-          { path: 'cliente', component: ClienteComponent, data: { titulo: 'Clientes' } },
-          { path: 'creditos/cliente/:id', component: ViewContractsComponent, data: { titulo: 'Créditos por cliente' } },
-          //{ path: 'credito/view/:id', component: CreditoDetailComponent, data: { titulo: 'Créditos por cliente' } }
-          { path: 'credito/view/:id', component: CreditoViewComponent, data: { titulo: 'Créditos por cliente' } }
-        ]
-      },
-    ]
+    children:
+      [
+        { path: '', component: DashboardComponent },
+        { path: 'productos', component: ProductosComponent },
+        { path: 'stock', component: StockComponent },
+        {
+          path: 'solicitudes', component: SolicitudesComponent,
+          data: { titulo: 'Solicitudes' },
+          children: [
+            { path: '', component: SolicitudesListaComponent },
+            { path: 'solicitud/view/:id', component: SolicitudViewComponent, data: { titulo: 'Solicitudes' } },
+            { path: 'solicitud/:id', component: SolicitudComponent, data: { titulo: 'Solicitudes' } },
+            { path: 'solicitud/:id/flagEdit/:flag', component: SolicitudEditComponent, data: { titulo: 'Solicitudes' } },
+            { path: 'solicitud', component: SolicitudComponent, data: { titulo: 'Solicitudes' } },
+            { path: 'presupuesto', component: SolicitudesPresupuestoComponent, data: { titulo: 'Solicitudes' } },
+          ]
+        },
+        { 
+          path: 'solicitudes_modificar', component: ApruebaSolicitudesComponent,
+          data: { titulo: 'Solicitudes por Modificar' },
+          children: [
+            { path: '', component: SolicitudesModificarListaComponent },
+          ]
+        },
+        { 
+          path: 'aprueba_solicitudes', component: ApruebaSolicitudesComponent,
+          data: { titulo: 'Aprobar Solicitudes' },
+          children: [
+            { path: '', component: ApruebaSolicitudesListaComponent },
+            { path: 'solicitud/view/:id', component: ApruebaSolicitudComponent, data: { titulo: 'Aprobar Solicitudes' } },
+          ]
+        },
+        { 
+          path: 'programar_entregas', component: CreditosProgramarEntregasComponent,
+          data: { titulo: 'Programación de Entrega de Créditos' },
+          children: [
+            { path: '', component: CreditosProgramarEntregasListaComponent },
+          ]
+        },
+        { 
+          path: 'capturar_entregas', component: CreditosCapturarEntregasComponent,
+          data: { titulo: 'Capturar Entrega de Créditos' },
+          children: [
+            { path: '', component: CreditosCapturarEntregasListaComponent },
+          ]
+        },
+        {
+          path: 'creditos', component: CreditosComponent,
+          data: { titulo: 'Créditos' },
+          children: [
+            { path: '', component: CreditosListComponent },
+            { path: 'credito/view/:id', component: CreditoViewComponent, data: { titulo: 'Creditos' } },
+            { path: 'credito/:id', component: CreditoComponent, data: { titulo: 'Créditos' } },
+            { path: 'credito', component: CreditoComponent, data: { titulo: 'Créditos' } },
+            { path: 'createCreditos', component: CreditosMasivosComponent, data: { titulo: 'Créditos' } },
+            { path: 'checkCreditos', component: CreditosCheckEntregadosComponent, data: { titulo: 'Captura de créditos entregados' } },
+          ]
+        },
+        {
+          path: 'creditos2', component: CreditosComponent,
+          data: { titulo: 'Créditos' },
+          children: [
+            { path: '', component: CreditosListaComponent },
+            { path: 'credito/view/:id', component: CreditoViewComponent, data: { titulo: 'Creditos' } },
+            { path: 'credito/:id', component: CreditoComponent, data: { titulo: 'Créditos' } },
+            { path: 'credito', component: CreditoComponent, data: { titulo: 'Créditos' } },
+            { path: 'createCreditos', component: CreditosMasivosComponent, data: { titulo: 'Créditos' } },
+            { path: 'checkCreditos', component: CreditosCheckEntregadosComponent, data: { titulo: 'Captura de créditos entregados' } },
+          ]
+        },
+        {
+          path: 'inversiones', component: InversionesComponent,
+          data: { titulo: 'Inversión positiva' },
+          children: [
+            { path: '', component: InversionListComponent },
+            { path: 'inversion/:id', component: InversionComponent, data: { titulo: 'Inversión positiva' } },
+            { path: 'inversion', component: InversionComponent, data: { titulo: 'Inversión positiva' } },
+          ]
+        },
+        // {
+        //   path: 'pagos', component: PagosComponent,
+        //   data: { titulo: 'Pagos' },
+        //   children: [
+        //     { path: '', component: PagosListComponent },
+        //     { path: 'pago/view/:id', component: PagoViewComponent, data: { titulo: 'Pagos' } },
+        //     { path: 'pago/:id', component: PagoComponent, data: { titulo: 'Pagos' } },
+        //     { path: 'pago', component: PagoComponent, data: { titulo: 'Pagos' } },
+        //   ]
+        // },
+        {
+          path: 'pagos2', component: PagosComponent,
+          data: { titulo: 'Pagos' },
+          children: [
+            { path: '', component: PagosListaComponent },
+            { path: 'pago/view/:id', component: PagoViewComponent, data: { titulo: 'Pagos' } },
+            { path: 'pago/:id', component: PagoComponent, data: { titulo: 'Pagos' } },
+            { path: 'pago', component: PagoComponent, data: { titulo: 'Pagos' } },
+          ]
+        },
+        {
+          path: 'reporteCartas', component: ReporteCartasComponent,
+          data: { titulo: 'Reporte de Cartas' },
+          children: [
+          ]
+        },
+        {
+          path: 'clientes', component: ClientesComponent,
+          data: { titulo: 'Clientes' },
+          children: [
+            { path: '', component: ClientesListComponent },
+            { path: 'cliente/:id', component: ClienteComponent, data: { titulo: 'Clientes' } },
+            { path: 'cliente', component: ClienteComponent, data: { titulo: 'Clientes' } },
+            { path: 'creditos/cliente/:id', component: ViewContractsComponent, data: { titulo: 'Créditos por cliente' } },
+            //{ path: 'credito/view/:id', component: CreditoDetailComponent, data: { titulo: 'Créditos por cliente' } }
+            { path: 'credito/view/:id', component: CreditoViewComponent, data: { titulo: 'Créditos por cliente' } }
+          ]
+        },
+        {
+          path: 'clientes2', component: ClientesComponent,
+          data: { titulo: 'Clientes' },
+          children: [
+            { path: '', component: ClientesListaComponent },
+            { path: 'cliente/:id', component: ClienteComponent, data: { titulo: 'Clientes' } },
+            { path: 'cliente', component: ClienteComponent, data: { titulo: 'Clientes' } },
+            { path: 'creditos/cliente/:id', component: ViewContractsComponent, data: { titulo: 'Créditos por cliente' } },
+            //{ path: 'credito/view/:id', component: CreditoDetailComponent, data: { titulo: 'Créditos por cliente' } }
+            { path: 'credito/view/:id', component: CreditoViewComponent, data: { titulo: 'Créditos por cliente' } }
+          ]
+        },
+      ]
   }
 ];
 

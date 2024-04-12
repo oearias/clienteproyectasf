@@ -38,6 +38,33 @@ export class SolicitudesService {
     return this.http.post<SolicitudResponse>(url,{});
   }
 
+  getSolicitudesPorAprobarPaginadas(page:number, limit:number, searchTerm: string) {
+
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('searchTerm', searchTerm.toString());
+
+    const url = `${this.URL_API}/solicitudes_to_approve_credito_list?${params.toString()}`;
+
+    return this.http.post<SolicitudResponse>(url,{});
+  }
+
+  getSolicitudesPorModificar(page:number, limit:number, searchTerm: string){
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('searchTerm', searchTerm.toString());
+
+    const url = `${this.URL_API}/solicitudes_to_modify_list?${params.toString()}`;
+
+    return this.http.post<SolicitudResponse>(url,{});
+  }
+
+  getSolicitudesParaPresupuesto(){
+    return this.http.post<SolicitudResponse>(`${this.URL_API}/presupuesto`,{});
+  }
+
   getSolicitudesTotales() {  //TODO: Ojo aqui por que iba Soliciitud nada mas y no arreglo de solicitud
     return this.http.get<any>(`${this.URL_API}/total/total`);
   }
@@ -84,6 +111,16 @@ export class SolicitudesService {
         })
       )
   }
+
+  approveSolicitud(solicitud: Solicitud) {
+    return this.http.patch(`${this.URL_API}/approve_solicitudes`, solicitud)
+      .pipe(
+        tap(() => {
+          this.refresh$.next();
+        })
+      )
+  }
+
 
   deleteSolicitud(solicitud: Solicitud) {
     return this.http.delete(`${this.URL_API}/${solicitud.id}`)

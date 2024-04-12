@@ -45,6 +45,7 @@ import { SolicitudEvento } from 'src/app/interfaces/SolicitudEvento';
   styleUrls: ['./solicitud-view.component.css']
 })
 export class SolicitudViewComponent implements AfterViewInit {
+
   @ViewChild('bsStepper', { static: false }) stepperElement!: ElementRef<any>;
   @ViewChild('mapDiv') mapDivElement!: ElementRef;
   @ViewChild('selectSucursal') selectSucursal: NgSelectComponent;
@@ -556,9 +557,9 @@ export class SolicitudViewComponent implements AfterViewInit {
 
     this.creditoService.getCreditos().subscribe(creditos => {
 
-      this.creditos = creditos.filter(item => item.cliente_id === this.editingSolicitud?.cliente_id && item.entregado === 1);
+      console.log(creditos);
 
-      console.log(this.creditos);
+      this.creditos = creditos.filter(item => item.cliente_id === this.editingSolicitud?.cliente_id && item.entregado === 1);
 
       this.totalCreditos = this.creditos.length;
 
@@ -573,7 +574,6 @@ export class SolicitudViewComponent implements AfterViewInit {
 
   }
   
-
   onChangeSucursal(event: any) {
 
     this.zonas = Array.from(this.zonasArray).filter(zona =>

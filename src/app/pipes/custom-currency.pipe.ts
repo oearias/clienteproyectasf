@@ -7,8 +7,6 @@ export class CustomCurrencyPipe implements PipeTransform {
 
     transform(value: number | null): string | null {
 
-        console.log(typeof value);
-
         if (value === null || isNaN(value)) {
             return null; // Devuelve null si el valor no es válido
         }

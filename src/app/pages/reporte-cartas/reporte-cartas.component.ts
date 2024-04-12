@@ -60,6 +60,15 @@ export class ReporteCartasComponent implements OnInit {
     this.creditoService.downloadReporteCartas(this.weekyear2.value);
   }
 
+  printWeekXLS(){
+
+    if(this.weekyear2.value != null){
+
+      this.creditoService.downloadReporteCartasXLS(this.weekyear2.value);
+    }
+
+  }
+
   get weekyear2() {
     return this.reporteForm.get('weekyear2');
   }

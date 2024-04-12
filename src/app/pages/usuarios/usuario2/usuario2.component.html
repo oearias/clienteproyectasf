@@ -38,26 +38,8 @@
                         <button (click)="deleteUsuario(usuario)" class="dropdown-item text-danger" type="button">
                             <i class="fas fa-trash mr-2"></i> Eliminar
                         </button>
-                        <!-- <button class="dropdown-item" type="button">Another action</button>
-                        <button class="dropdown-item" type="button">Something else here</button> -->
                     </div>
                 </div>
-
-
-                <!-- <div class="btn-group">
-                    <button type="button" class="btn dropdown-toggle pt-1" aria-expanded="false"
-                        data-toggle="dropdown">
-                        <i class="fas fa-ellipsis-v"></i>
-                        <ul class="dropdown-menu" style="margin-right: 130px;">
-                            <li>
-                                <a href="javascript:void(0)" (click)="deleteUsuario()"
-                                    class="dropdown-item text-danger">
-                                    <i class="fas fa-trash mr-2"></i>
-                                    Eliminar</a>
-                            </li>
-                        </ul>
-                    </button>
-                </div> -->
 
             </div>
 
@@ -105,10 +87,10 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="nombreInput" class="col-sm-3 col-form-label">Rol</label>
+                    <label for="nombreInput" class="col-sm-3 col-form-label">Grupo de usuario</label>
                     <div class="col-sm-9">
-                        <ng-select bindLabel="nombre" bindValue="id" formControlName="role_id" [items]="roles"
-                            placeholder="Seleccione un rol"></ng-select>
+                        <ng-select bindLabel="nombre" bindValue="id" formControlName="user_group_id" [items]="gruposUsuarios"
+                            placeholder="Seleccione un grupo de usuarios"></ng-select>
                     </div>
                 </div>
             </div>

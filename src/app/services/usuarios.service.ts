@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Usuario } from '../interfaces/Usuario';
+import { UsuarioResponse } from '../interfaces/UsuarioResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,17 @@ export class UsuariosService {
   
   getUsuarios(){
     return this.http.get<Usuario[]>(this.URL_API);
+  }
+
+  getUsuariosPaginados(page:number, limit:number, searchTem: string){
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('searchTerm', searchTem.toString());
+
+      const url = `${this.URL_API}/usuarios_list?${params.toString()}`;
+
+      return this.http.post<UsuarioResponse>(url,{})
   }
 
   getUsuariosByCriteria(criterio, palabra){

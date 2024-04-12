@@ -26,18 +26,15 @@ export class SolicitudesListaComponent implements OnInit {
 
   busqueda = '';
 
-
   subscription: Subscription;
 
-
   role: any;
-
 
   //Estatus
   estatus: EstatusSolicitud[] = [];
   reverse: boolean = false;
 
-  allowedRoles = ['CREATOR', 'ADMIN'];
+  allowedRoles = ['CREATOR', 'ADMIN','SuperAdmin'];
 
   constructor(
     private route: ActivatedRoute,
@@ -46,7 +43,7 @@ export class SolicitudesListaComponent implements OnInit {
     private solEstatusService: SolEstatusService,
     private toastr: ToastrService,
   ) {
-    this.role = sessionStorage.getItem('role');
+    this.role = localStorage.getItem('role');
   }
 
   ngOnInit(): void {
@@ -80,7 +77,7 @@ export class SolicitudesListaComponent implements OnInit {
 
     this.solService.getSolicitudesPaginadas(page, limit, this.busqueda).subscribe((solicitudes) =>{
 
-      console.log(solicitudes);
+      console.log(solicitudes.solicitudesJSON);
 
       this.solicitudes = solicitudes.solicitudesJSON;
       this.totalPages = solicitudes.totalPages;

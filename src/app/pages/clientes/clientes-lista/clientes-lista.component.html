@@ -6,7 +6,7 @@
         Nuevo cliente
     </button>
 
-</div>
+</div> 
 
 
 
@@ -18,85 +18,87 @@
 
     </div>
 
-    <div class="card-body table-responsive">
+    <div class="card-body">
 
-        <table *ngIf="clientes.length > 0" class="table table-striped table-hover table-sort table-sm table-responsive-lg"
-            style="font-size: 14px;">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th class="text-center" >Num. Cliente
- 
-                    </th>
-                    <th>Nombre
-                    </th>
-                    <th class="text-center" >Zona
-                    </th>
-                    <th class="text-center">Agencia
-                    </th>
-
-                    <th colspan="3" class="text-center" style="cursor: default;">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="align-middle"
-                    *ngFor="let cliente of clientes | orderBy: key: reverse   ; let i = index;  ">
-                    <td></td>
-                    <td class="text-center align-middle" style="min-width: 180px;">{{cliente?.num_cliente}}</td>
-                    <td class="align-middle" style="min-width: 350px;">{{cliente?.nombre_completo}}</td>
-                    <td class="text-center align-middle" >{{cliente?.agencia?.zona?.nombre}}</td>
-                    <td class="text-center align-middle" >{{cliente?.agencia?.nombre}}</td>
-
-                    <td class="text-center align-middle" style="min-width: 60px;">
-                        <button *ngIf=" cliente?.num_creditos > 0" (click)="viewContractsByCliente(cliente)" class="btn btn-outline-secondary none"
-                            data-toggle="tooltip" data-placement="top" title="Ver créditos">
-                            <i class="fas fa-file-contract"></i>
-                        </button>
-                    </td>
-                    <td class="text-center align-middle" style="min-width: 60px;">
-                        <button (click)="editCliente(cliente)" class="btn btn-outline-secondary none"
-                            data-toggle="tooltip" data-placement="top" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </td>
-                    <td class="text-center align-middle" style="min-width: 60px;">
-                        <button (click)="deleteCliente(cliente)" class="btn btn-outline-danger none"
-                            data-toggle="tooltip" data-placement="top" title="Eliminar">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                    <!-- <td class="text-center" style="font-size: 17px;">
-
-                        <div class="btn-group">
-                            <button type="button" class="btn dropdown-toggle" aria-expanded="false"
-                                data-toggle="dropdown">
-                                <i class="fas fa-ellipsis-v"></i>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="#" class="dropdown-item text-muted">
-                                            <i class="fas fa-search mr-2"></i>Ver
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)" (click)="editCliente(cliente)"
-                                            class="dropdown-item text-muted">
-                                            <i class="fas fa-edit mr-2"></i>
-                                            Editar</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)" (click)="deleteCliente(cliente)"
-                                            class="dropdown-item text-danger">
-                                            <i class="fas fa-trash mr-2"></i>
-                                            Eliminar</a>
-                                    </li>
-                                </ul>
+        <div class="table-responsive">
+            <table *ngIf="clientes.length > 0" class="table table-striped table-hover table-sort table-sm"
+                style="font-size: 14px;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="text-center" >Num. Cliente
+     
+                        </th>
+                        <th>Nombre
+                        </th>
+                        <th class="text-center" >Zona
+                        </th>
+                        <th class="text-center">Agencia
+                        </th>
+    
+                        <th colspan="3" class="text-center" style="cursor: default;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="align-middle"
+                        *ngFor="let cliente of clientes ">
+                        <td></td>
+                        <td class="text-center align-middle" style="min-width: 180px;">{{cliente?.num_cliente}}</td>
+                        <td class="align-middle" style="min-width: 350px;">{{cliente?.nombre_completo}}</td>
+                        <td class="text-center align-middle" >{{cliente?.agencia?.zona?.nombre}}</td>
+                        <td class="text-center align-middle" >{{cliente?.agencia?.nombre}}</td>
+    
+                        <td class="text-center align-middle" style="min-width: 60px;">
+                            <button *ngIf=" cliente?.num_creditos > 0" (click)="viewContractsByCliente(cliente)" class="btn btn-outline-secondary none"
+                                data-toggle="tooltip" data-placement="top" title="Ver créditos">
+                                <i class="fas fa-file-contract"></i>
                             </button>
-                        </div>
-                        
-                    </td> -->
-                </tr>
-            </tbody>
-        </table>
+                        </td>
+                        <td class="text-center align-middle" style="min-width: 60px;">
+                            <button (click)="editCliente(cliente)" class="btn btn-outline-secondary none"
+                                data-toggle="tooltip" data-placement="top" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                        <td class="text-center align-middle" style="min-width: 60px;">
+                            <button (click)="deleteCliente(cliente)" class="btn btn-outline-danger none"
+                                data-toggle="tooltip" data-placement="top" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                        <!-- <td class="text-center" style="font-size: 17px;">
+    
+                            <div class="btn-group">
+                                <button type="button" class="btn dropdown-toggle" aria-expanded="false"
+                                    data-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="#" class="dropdown-item text-muted">
+                                                <i class="fas fa-search mr-2"></i>Ver
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)" (click)="editCliente(cliente)"
+                                                class="dropdown-item text-muted">
+                                                <i class="fas fa-edit mr-2"></i>
+                                                Editar</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)" (click)="deleteCliente(cliente)"
+                                                class="dropdown-item text-danger">
+                                                <i class="fas fa-trash mr-2"></i>
+                                                Eliminar</a>
+                                        </li>
+                                    </ul>
+                                </button>
+                            </div>
+                            
+                        </td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
 
     </div>

@@ -42,7 +42,7 @@ export class CreditosService {
     const url = `${this.URL_API}/creditos_list?${params.toString()}`;
 
 
-    return this.http.post<any>(url,{});
+    return this.http.post<CreditoResponse>(url,{});
 
   }
 
@@ -102,6 +102,19 @@ export class CreditosService {
 
     return this.http.post<CreditoResponse>(url,{});
 
+  }
+
+  getCreditosProgramacionEntrega(page:number, limit:number, searchTerm: string){
+
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('searchTerm', searchTerm.toString());
+
+    const url = `${this.URL_API}/creditos_list/programacion_entrega?${params.toString()}`;
+
+
+    return this.http.post<CreditoResponse>(url,{});
   }
 
   getCreditosTotales() {
@@ -250,6 +263,36 @@ export class CreditosService {
     });
 
   }
+
+  downloadReporteCartasXLS(semana_id: number): void {
+    this.http.post(`${this.URL_API}/print/reporte_cartasXLS/${semana_id}`, {}, { responseType: 'blob' })
+      .subscribe(
+        (res: Blob) => {
+          // Crear una URL para el blob recibido
+          const fileURL = URL.createObjectURL(res);
+  
+          // Crear un enlace temporal para descargar el archivo
+          const a = document.createElement('a');
+          document.body.appendChild(a);
+          a.href = fileURL;
+  
+          // Establecer el nombre del archivo
+          a.download = 'reporte_cartas.xlsx';
+  
+          // Simular el clic en el enlace para descargar el archivo
+          a.click();
+  
+          // Limpiar el enlace y el blob
+          URL.revokeObjectURL(fileURL);
+          document.body.removeChild(a);
+        },
+        error => {
+          console.error('Error al descargar el archivo:', error);
+          // Manejar el error según sea necesario
+        }
+      );
+  }
+  
 
   setInversionPositiva(credito: Credito) {
     return this.http.patch(`${this.URL_API}/inversion/${credito.id}`, credito)

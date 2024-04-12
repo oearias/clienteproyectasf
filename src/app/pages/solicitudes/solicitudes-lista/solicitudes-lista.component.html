@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-end">
 
-    <button *ngIf="allowedRoles.includes(role)" (click)="createSolicitud()" class="btn btn-primary">
+    <button (click)="createSolicitud()" class="btn btn-primary">
         <i class="fas fa-plus-circle"></i>
         Nueva solicitud
     </button>
@@ -19,156 +19,158 @@
             <h5>Sin registros aún</h5>
         </div> -->
 
-        <table *ngIf="solicitudes.length > 0" class="table table-striped table-hover table-sort table-sm table-responsive-lg"
-            style="font-size: 14px;">
-            <thead>
-                <tr>
-                    <th>N. Solicitud
-                    </th>
-
-                    <th class="text-center align-middle">Fecha de la solicitud
-                    </th>
-
-                    <th class="align-middle" >Nombre
-                    </th>
-
-                    <th class="text-center align-middle" >Zona
-                    </th>
-                    <th class="text-center align-middle" >Agencia
-                    </th>
-                    <th class="text-center align-middle" >Monto
-                    </th>
-
-                    <th class="text-center align-middle" >Estatus
-                    </th>
-                    <th colspan="3" class="text-center align-middle" style="cursor: default;">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="align-middle"
-                    *ngFor="let solicitud of solicitudes | orderBy: key: reverse   ; let i = index;  ">
-                    <td class="align-middle text-center" style="min-width: 120px;">{{solicitud?.id}}</td>
-                    <td class="align-middle text-center" style="min-width: 120px;">{{solicitud?.fecha_solicitud |
-                        date:'dd/MM/yyyy' : '+0100' }}</td>
-                    <td class="align-middle" style="min-width: 200px;">{{solicitud?.nombre_completo}}</td>
-
-                    <td class="text-center align-middle" style="min-width: 100px;">{{solicitud?.zona}}</td>
-                    <td class="text-center align-middle" style="min-width: 100px;">{{solicitud?.agencia}}</td>
-                    <td class="text-right align-middle">${{solicitud?.monto | number:'1.2-2':'en-US'}}</td>
-
-                    <td class="align-middle text-center">
-
-
-                        <!-- SOLICITUDES IDS:
-
-                        ABIERTA-1
-                        APROBADA-5 
-                        RECHAZADA-2
-                        ENVIADA A REVISIÓN-3
-                        AUTORIZADA PARA PRESUPUESTO-6
-                        APROBADA PARA ENTREGA 7
-                    -->
-
-                        <span class="badge badge-primary" *ngIf="solicitud.estatus_sol_id === 7; else elseBlock">
-                            {{solicitud?.estatus}}
-                        </span>
-
-                        <ng-template #elseBlock>
-
-                            <span class="badge badge-warning" *ngIf="solicitud.estatus_sol_id === 3; else elseBlock3">
+        <div class="table-responsive">
+            <table *ngIf="solicitudes.length > 0" class="table table-striped table-hover table-sort table-sm"
+                style="font-size: 14px;">
+                <thead>
+                    <tr>
+                        <th class="text-center align-middle">N. Solicitud
+                        </th>
+    
+                        <th class="text-center align-middle">Fecha de la solicitud
+                        </th>
+    
+                        <th class="align-middle" >Nombre
+                        </th>
+    
+                        <th class="text-center align-middle" >Zona
+                        </th>
+                        <th class="text-center align-middle" >Agencia
+                        </th>
+                        <th class="text-center align-middle" >Monto
+                        </th>
+    
+                        <th class="text-center align-middle" >Estatus
+                        </th>
+                        <th colspan="3" class="text-center align-middle" style="cursor: default;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="align-middle"
+                        *ngFor="let solicitud of solicitudes | orderBy: key: reverse   ; let i = index;  ">
+                        <td class="align-middle text-center" style="min-width: 120px;">{{solicitud?.id}}</td>
+                        <td class="align-middle text-center" style="min-width: 120px;">{{solicitud?.fecha_solicitud |
+                            date:'dd/MM/yyyy' : '+0100' }}</td>
+                        <td class="align-middle" style="min-width: 200px;">{{solicitud?.nombre_completo}}</td>
+    
+                        <td class="text-center align-middle" style="min-width: 100px;">{{solicitud?.zona}}</td>
+                        <td class="text-center align-middle" style="min-width: 100px;">{{solicitud?.agencia}}</td>
+                        <td class="text-right align-middle">${{solicitud?.tarifa?.monto | number:'1.2-2':'en-US'}}</td>
+    
+                        <td class="align-middle text-center">
+    
+    
+                            <!-- SOLICITUDES IDS:
+    
+                            ABIERTA-1
+                            APROBADA-5 
+                            RECHAZADA-2
+                            ENVIADA A REVISIÓN-3
+                            AUTORIZADA PARA PRESUPUESTO-6
+                            APROBADA PARA ENTREGA 7
+                        -->
+    
+                            <span class="badge badge-primary" *ngIf="solicitud.estatus_sol_id === 7; else elseBlock">
                                 {{solicitud?.estatus}}
                             </span>
-
-                            <ng-template #elseBlock3>
-
-                                <span class="badge badge-danger"
-                                    *ngIf="solicitud.estatus_sol_id === 2; else elseBlock4">
+    
+                            <ng-template #elseBlock>
+    
+                                <span class="badge badge-warning" *ngIf="solicitud.estatus_sol_id === 3; else elseBlock3">
                                     {{solicitud?.estatus}}
                                 </span>
-
-                                <ng-template #elseBlock4>
-
-                                    <span *ngIf="solicitud.estatus_sol_id === 5; else elseBlock5"
-                                        class="badge badge-success">
+    
+                                <ng-template #elseBlock3>
+    
+                                    <span class="badge badge-danger"
+                                        *ngIf="solicitud.estatus_sol_id === 2; else elseBlock4">
                                         {{solicitud?.estatus}}
                                     </span>
-
-                                    <ng-template #elseBlock5>
-
-                                        <span *ngIf="solicitud.estatus_sol_id === 6; else elseBlock6"
-                                            class="badge badge-cyan">
+    
+                                    <ng-template #elseBlock4>
+    
+                                        <span *ngIf="solicitud.estatus_sol_id === 5; else elseBlock5"
+                                            class="badge badge-success">
                                             {{solicitud?.estatus}}
                                         </span>
-
-                                        <ng-template #elseBlock6>
-
-                                            <span class="badge badge-indigo">{{solicitud?.estatus}}</span>
-
+    
+                                        <ng-template #elseBlock5>
+    
+                                            <span *ngIf="solicitud.estatus_sol_id === 6; else elseBlock6"
+                                                class="badge badge-cyan">
+                                                {{solicitud?.estatus}}
+                                            </span>
+    
+                                            <ng-template #elseBlock6>
+    
+                                                <span class="badge badge-indigo">{{solicitud?.estatus}}</span>
+    
+                                            </ng-template>
+    
                                         </ng-template>
-
+    
+    
                                     </ng-template>
-
-
+    
+    
+    
                                 </ng-template>
-
-
-
+    
+    
+    
                             </ng-template>
-
-
-
-                        </ng-template>
-
-                    </td>
-
-                    <td class="text-center align-middle">
-                        <button class="btn btn-outline-primary none" type="button" (click)="viewSolicitud(solicitud)">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </td>
-
-                    <td class="text-center align-middle">
-                        <button *ngIf=" solicitud?.estatus === 'ABIERTA' && (role === 'CREATOR' || role === 'ADMIN' ) " class="btn btn-outline-secondary none"
-                            (click)="editSolicitud(solicitud)" type="button">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                    </td>
-
-                    <td class="text-center align-middle">
-                        <button *ngIf="solicitud?.estatus === 'ABIERTA' && (role === 'CREATOR' || role === 'ADMIN' ) " (click)="deleteSolicitud(solicitud)"
-                            class="btn btn-outline-danger none" type="button">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-
-                    <!-- <td class="text-center" style="font-size: 17px;">
-
-                        <div class="dropdown">
-                            <button style="border: none;" type="button"
-                                class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
+    
+                        </td>
+    
+                        <td class="text-center align-middle">
+                            <button class="btn btn-outline-primary none" type="button" (click)="viewSolicitud(solicitud)">
+                                <i class="fas fa-search"></i>
                             </button>
-                            <div class="dropdown-menu dropdown-menu-right">
-
-                                <button class="dropdown-item" type="button" (click)="viewSolicitud(solicitud)">
-                                    <i class="fas fa-search mr-2"></i> Ver
+                        </td>
+    
+                        <td class="text-center align-middle">
+                            <button *ngIf=" solicitud?.estatus == 'ABIERTA' && (role == 'CREATOR' || role == 'ADMIN' || role == 'SuperAdmin'  ) " class="btn btn-outline-secondary none"
+                                (click)="editSolicitud(solicitud)" type="button">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+    
+                        <td class="text-center align-middle">
+                            <button *ngIf="solicitud?.estatus == 'ABIERTA' && (role == 'CREATOR' || role == 'ADMIN' || role == 'SuperAdmin'  ) " (click)="deleteSolicitud(solicitud)"
+                                class="btn btn-outline-danger none" type="button">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+    
+                        <!-- <td class="text-center" style="font-size: 17px;">
+    
+                            <div class="dropdown">
+                                <button style="border: none;" type="button"
+                                    class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
                                 </button>
-                                <button *ngIf="solicitud.estatus=='ABIERTA' " (click)="editSolicitud(solicitud)"
-                                    class="dropdown-item" type="button">
-                                    <i class="fas fa-edit mr-2"></i> Editar
-                                </button>
-                                <button *ngIf="solicitud.estatus=='ABIERTA' " (click)="deleteSolicitud(solicitud)"
-                                    class="dropdown-item text-danger" type="button">
-                                    <i class="fas fa-trash mr-2"></i> Eliminar
-                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+    
+                                    <button class="dropdown-item" type="button" (click)="viewSolicitud(solicitud)">
+                                        <i class="fas fa-search mr-2"></i> Ver
+                                    </button>
+                                    <button *ngIf="solicitud.estatus=='ABIERTA' " (click)="editSolicitud(solicitud)"
+                                        class="dropdown-item" type="button">
+                                        <i class="fas fa-edit mr-2"></i> Editar
+                                    </button>
+                                    <button *ngIf="solicitud.estatus=='ABIERTA' " (click)="deleteSolicitud(solicitud)"
+                                        class="dropdown-item text-danger" type="button">
+                                        <i class="fas fa-trash mr-2"></i> Eliminar
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-
-                    </td> -->
-                </tr>
-            </tbody>
-        </table>
+    
+                        </td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </div>
 

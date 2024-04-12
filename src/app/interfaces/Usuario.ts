@@ -1,3 +1,5 @@
+import { GrupoUsuario } from "./GrupoUsuario";
+
 export interface Usuario{
     id: number;
     nombre: string;
@@ -10,6 +12,9 @@ export interface Usuario{
     reset_token: string;
     created_at: Date;
     role_id: number;
+    user_group: GrupoUsuario;
+    user_group_id: number;
     role_nombre: string;
+    user_group_nombre: string;
     role: string;
 }

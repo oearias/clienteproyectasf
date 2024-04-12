@@ -590,6 +590,9 @@
 
         if (this._options.enableRemember) {
           localStorage.setItem("remember" + EVENT_KEY, ClassName.OPEN);
+        }else{
+          console.log('aqui entramos');
+          console.log(this._options);
         }
 
         var shownEvent = $.Event(Event.SHOWN);
@@ -617,8 +620,10 @@
       _proto.toggle = function toggle() {
         if (!$(Selector.BODY).hasClass(ClassName.COLLAPSED)) {
           this.collapse();
-          $('#logo1').removeClass('cerrado')
-          $('#logo1').addClass('abierto')
+          $('#logo1').removeClass('cerrado');
+          $('#logo1').addClass('abierto');
+
+          console.log('Estatus cerrado');
 
           $('#logo2').removeClass('abierto')
           $('#logo2').addClass('cerrado')
@@ -629,7 +634,11 @@
 
           $('#logo2').removeClass('cerrado')
           $('#logo2').addClass('abierto')
+
+          console.log('Estatus abierto');
+
         }
+
       };
 
       _proto.autoCollapse = function autoCollapse(resize) {
@@ -703,6 +712,7 @@
       ;
 
       PushMenu._jQueryInterface = function _jQueryInterface(operation) {
+
         return this.each(function () {
           var data = $(this).data(DATA_KEY);
 
@@ -739,6 +749,7 @@
     });
     $(window).on('load', function () {
       PushMenu._jQueryInterface.call($(Selector.TOGGLE_BUTTON));
+
     });
     /**
      * jQuery API

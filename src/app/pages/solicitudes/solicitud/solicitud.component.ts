@@ -39,6 +39,7 @@ import { map } from 'rxjs/operators';
   templateUrl: './solicitud.component.html',
   styleUrls: ['./solicitud.component.css']
 })
+
 export class SolicitudComponent implements AfterViewInit {
   @ViewChild('bsStepper', { static: false }) stepperElement!: ElementRef<any>;
   @ViewChild('mapDiv') mapDivElement!: ElementRef;
@@ -55,6 +56,8 @@ export class SolicitudComponent implements AfterViewInit {
   public stepper!: Stepper;
 
   fechaHoy : Date;
+
+  busqueda = '';
 
   sucursales: any = [];
   zonas: any = [];
@@ -99,7 +102,7 @@ export class SolicitudComponent implements AfterViewInit {
     cliente_id:             new FormControl(null),
     tarifa_id:              new FormControl(null, [Validators.required]),
     estatus_sol_id:         new FormControl(null, [Validators.required]),
-    monto:                  new FormControl(null, [Validators.required]),
+    monto:                  new FormControl(null),
     ocupacion_id:           new FormControl(null, [Validators.required]),
     tipo_empleo_id:         new FormControl(null, [Validators.required]),
     tipo_identificacion_id: new FormControl(null, [Validators.required]),
@@ -116,7 +119,7 @@ export class SolicitudComponent implements AfterViewInit {
     telefono_contacto2:     new FormControl(null, [Validators.required]),
     direccion_contacto1:    new FormControl(null, [Validators.required]),
     direccion_contacto2:    new FormControl(null, [Validators.required]),
-    ingreso_mensual:        new FormControl(null, Validators.required),
+    ingreso_mensual:        new FormControl(null, [Validators.required]),
     tiempo_vivienda_años:   new FormControl(null),
     tiempo_vivienda_meses:  new FormControl(null),
     observaciones_negocio:  new FormControl(null),
@@ -318,6 +321,7 @@ export class SolicitudComponent implements AfterViewInit {
 
     //Llenamos la solicitud si existen parametros
     this.route.params.subscribe(params => {
+
       if (params.id) {
 
         this.solicitudService.getSolicitud(params.id).subscribe((res: any) => {
@@ -391,7 +395,8 @@ export class SolicitudComponent implements AfterViewInit {
   }
 
   loadTarifas() {
-    this.tarifaService.getTarifas().subscribe(res => {
+    this.tarifaService.getTarifasActivas().subscribe(res => {
+
       this.tarifas = res;
     })
   }
@@ -403,14 +408,21 @@ export class SolicitudComponent implements AfterViewInit {
   }
 
   loadClientes() {
-    this.clienteService.getClientes().subscribe((clientes: any) => {
-      this.clientes = clientes.map((cliente: any) => {
-        cliente.fullName = `${cliente.nombre_completo} |  ${cliente.rfc} `;
-        return cliente;
-      });
 
-      this.clientesArray = clientes;
-    });
+    this.clienteService.getClientesLimitados(this.busqueda).subscribe(clientes=>{
+
+      this.clientesArray = clientes.clientesJSON;
+
+    })
+
+  }
+
+  buscarElementos(terminoBusqueda: any) {
+
+    this.busqueda = terminoBusqueda.term;
+
+    this.loadClientes();
+
   }
 
   loadColonias() {
@@ -488,7 +500,7 @@ export class SolicitudComponent implements AfterViewInit {
   onChangeMonto(event: any) {
 
     if (event) {
-      this.tarifa_id.setValue(event.tarifa_id);
+      this.tarifa_id.setValue(event.id);
     }
   }
 
@@ -516,6 +528,8 @@ export class SolicitudComponent implements AfterViewInit {
     if (event) {
 
       this.clienteSelected = this.clientesArray.filter(cliente => cliente.id === event.id);
+
+      console.log(this.clienteSelected);
 
       this.populateClienteFields(this.clienteSelected[0]);
 
@@ -548,10 +562,13 @@ export class SolicitudComponent implements AfterViewInit {
           this.cliente.get('localidad')?.setValue(solicitud.localidad);
           this.cliente.get('estado')?.setValue(solicitud.estado);
 
+
         }
       });
 
     }
+
+    console.log(this.solicitudForm.value);
 
   }
 
@@ -604,8 +621,7 @@ export class SolicitudComponent implements AfterViewInit {
     this.onLoadColonia(data.cp);
 
     //Procedemos  llenar los selects de sucursal, zona y agencia al que pertenece el cliente
-    console.log(data.zona_id);
-    console.log(data.agencia_id);
+
     this.zona_id?.setValue(data.zona_id);
     
     this.agenciaService.getAgencias().subscribe( (res:any) =>{
@@ -628,7 +644,8 @@ export class SolicitudComponent implements AfterViewInit {
 
     //Datos de la solicitud
     this.id?.setValue(data.id);
-    this.fecha_solicitud?.setValue(this.formatFecha(data.fecha_solicitud));
+
+    //this.fecha_solicitud?.setValue(this.formatFecha(data.fecha_solicitud));
     this.monto?.setValue(data.monto);
     this.tarifa_id?.setValue(data.tarifa_id);
     this.vivienda?.setValue(data.vivienda);
@@ -732,6 +749,8 @@ export class SolicitudComponent implements AfterViewInit {
         // //Por default enviamos la solicitud a revision.
         // this.estatus_sol_id?.setValue(3);
 
+        console.log(this.solicitudForm.value);
+
         this.solicitudService.insertSolicitud(this.solicitudForm.value).subscribe((res: any) => {
           this.toastr.success(res);
 
@@ -746,6 +765,9 @@ export class SolicitudComponent implements AfterViewInit {
 
 
     } else {
+
+      console.log(this.solicitudForm.value);
+
       this.toastr.error('Formulario no valido');
     }
   }
@@ -773,19 +795,19 @@ export class SolicitudComponent implements AfterViewInit {
 
   }
 
+  //Este codigo es el que hace que no se me desplieguen todos los clientes
   searchCliente(term:any) {
+
+    console.log(term);
 
     if(term === null || term.length < 1 ) return term;
 
-    //const searchTerm = term ? term : '';
-
-    return this.clientesArray?.filter((cliente: any) => {
-      const fullName = cliente.fullName ?? '';
-      const email = cliente.email ?? '';
-      const searchTerm = term ? term : '';
-      return fullName.toUpperCase().includes(searchTerm.toUpperCase()) || email.toUpperCase().includes(searchTerm.toUpperCase());
-    });
-
+    // return this.clientesArray?.filter((cliente: any) => {
+    //   const fullName = cliente.fullName ?? '';
+    //   const email = cliente.email ?? '';
+    //   const searchTerm = term ? term : '';
+    //   return fullName.toUpperCase().includes(searchTerm.toUpperCase()) || email.toUpperCase().includes(searchTerm.toUpperCase());
+    // });
 
   }
 

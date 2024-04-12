@@ -1,0 +1,123 @@
+
+<div class="card mt-3">
+
+
+    <div class="card-header">
+        <div class="d-flex justify-content-end">
+
+
+            <button *ngIf="creditos?.length > 0" (click)="changeStatus()" class="btn btn-success ml-3">
+                <i class="fas fa-save"></i>
+                Guardar cambios
+            </button>
+
+
+        </div>
+
+    </div>
+
+    <div class="card-body ">
+
+        <div *ngIf="creditos.length < 1" class="d-flex justify-content-center align-items-center">
+            <h5>Sin créditos para marcar como entregados</h5>
+        </div>
+
+        <div class="table-responsive">
+            <table *ngIf="creditos.length > 0" class="table table-striped table-hover table-sort table-sm table-responsive-lg"
+                style="font-size: 14px;">
+                <thead>
+                    <tr>
+    
+                        <th></th>
+    
+                        <th id="checkbox-column" class="align-middle">
+    
+                        </th>
+    
+                        <th class="text-center align-middle">N. Solicitud
+                        </th>
+                        <th class="align-middle">Nombre
+                        </th>
+                        <th class="text-center align-middle">Monto
+                        </th>
+                        <th class="text-center align-middle">Fecha de entrega</th>
+                        <th class="text-center align-middle">Hora de entrega</th>
+                        <th class="text-center align-middle">Fecha de inicio</th>
+                        <th class="text-center align-middle">N. de cheque</th>
+                        <th colspan="2" class="text-center align-middle" style="cursor: default;">
+                            Entregado
+                        </th>
+                        <th class="text-center align-middle">Motivo</th>
+                    </tr>
+                    <tr>
+                        <th colspan="9"></th>
+                        <th class="text-center p-0">
+                            <i class="fas fa-check text-success"></i>
+                        </th>
+                        <th class="text-center p-0">
+                            <i class="fas fa-times text-danger"></i>
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="align-middle" *ngFor="let credito of creditos | orderBy: key: reverse ">
+    
+                        <td></td>
+                        <td class="text-center">
+    
+                            <input type="hidden" value="{{credito?.id}}">
+                        </td>
+    
+                        <td class="align-middle text-center">{{credito?.solicitud_credito_id}}</td>
+                        <td class="align-middle">{{credito?.nombre_completo}}</td>
+    
+                        <td class="align-middle text-right">
+                            ${{credito?.monto_otorgado | number:'1.2-2':'en-US' }}
+                        </td>
+    
+                        <td class="align-middle">
+                            <input #fechaEntrega 
+                                type="date" class="form-control" [value]="credito?.fecha_entrega_prog" [readonly]="readonlyMode" >
+                        </td>
+    
+                        <td class="align-middle">
+                            <input #horaEntrega type="time"
+                                class="form-control" [value]="credito?.hora_entrega" [readonly]="readonlyMode">
+                        </td>
+    
+                        <td class="align-middle">
+                            <input #fechaInicio 
+                                type="date" class="form-control" [value]="credito?.fecha_inicio_prog" [readonly]="readonlyMode">
+                        </td>
+    
+                        <td class="align-middle" style="width: 100px;"><input  #numCheque
+                                type="number" class="form-control text-center" [value]="credito?.num_cheque" [readonly]="readonlyMode"></td>
+    
+                        <td class="text-center align-middle">
+                            <div style="width: 100%;" class="d-flex justify-content-center">
+                                <input #entregado
+                                    (click)="onCheckEntregado($event, credito, fechaEntrega, fechaInicio, numCheque, horaEntrega, entregado, noEntregado, motivo)"
+                                    style="width: 20px;" type="checkbox" class="form-control">
+                            </div>
+                        </td>
+    
+                        <td class="text-center align-middle">
+                            <div style="width: 100%;" class="d-flex justify-content-center">
+                                <input #noEntregado (click)="onCheckNoEntregado($event, credito, entregado, motivo)"
+                                    [checked]="credito?.isChecked" style="width: 20px;" type="checkbox"
+                                    class="form-control">
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <input #motivo readonly [value]="credito?.motivo" (keyup)="onChangeMotivo($event, credito)"
+                                type="text" class="form-control">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>

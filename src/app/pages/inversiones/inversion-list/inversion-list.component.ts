@@ -38,6 +38,7 @@ export class InversionListComponent implements OnInit {
     this.subscription = this.creditoService.refresh$.subscribe(() => {
       this.getInversiones(this.currentPage);
     });
+    
   }
 
   getInversiones(page: number, limit: number = 10) {

@@ -109,8 +109,6 @@ export class PagoComponent implements OnInit {
 
           this.editingPago = results[0];
 
-          console.log(results[1]);
-
           this.creditos = results[1]
             .map((credito) => {
               credito.nombre = `${credito.num_contrato} | ${credito.num_cliente} | ${credito.apellido_paterno} ${credito.apellido_materno} ${credito.nombre}`
@@ -201,7 +199,7 @@ export class PagoComponent implements OnInit {
 
           });
 
-          this.router.navigateByUrl('/dashboard/pagos');
+          this.router.navigateByUrl('/dashboard/pagos2');
 
         }
 
@@ -285,6 +283,8 @@ export class PagoComponent implements OnInit {
   loadCreditos() {
 
     this.creditoService.getCreditosLimitados(this.busqueda).subscribe(creditos => {
+
+      console.log(creditos);
 
       this.pruebas = creditos.creditosJSON;
 

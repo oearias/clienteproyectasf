@@ -104,7 +104,7 @@
                                             </td>
                                             <td class="text-center" style="font-weight: bold;">{{evento?.evento}}</td>
                                             <td>{{evento?.observacion}}</td>
-                                            <td class="text-center">{{evento?.usuario}}</td>
+                                            <td class="text-center">{{evento?.usuario?.usuario}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -225,19 +225,12 @@
                                     <div class="form-group">
                                         <label>
                                             Monto solicitado</label>
-                                        <ng-select formControlName="monto" [items]="montos" bindLabel="monto"
-                                            (clear)="onClearMonto()" (change)="onChangeMonto($event)" bindValue="monto"
+                                        <ng-select formControlName="tarifa_id" [items]="tarifas" bindLabel="nombre"
+                                            (clear)="onClearMonto()" (change)="onChangeMonto($event)" bindValue="id"
                                             placeholder="Seleccione monto"></ng-select>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-6 col-md-4">
-                                    <div class="form-group">
-                                        <label>
-                                            Plazo</label>
-                                        <ng-select #selectTarifa formControlName="tarifa_id" [items]="tarifas"
-                                            bindLabel="nombre" (change)="onChangeTarifa($event)" bindValue="id"
-                                            readonly=true placeholder="Plazo"></ng-select>
+                                        <div *ngIf="(submitted && monto.invalid)">
+                                            <span class="error invalid-feedback" *ngIf="tarifa.errors.required">*El monto es obligatorio</span>
+                                        </div>
                                     </div>
                                 </div>
 

@@ -79,7 +79,7 @@
             </thead>
             <tbody>
                 <tr class="align-middle"
-                    *ngFor="let cliente of clientes | orderBy: key: reverse   ; let i = index;  ">
+                    *ngFor="let cliente of clientes ">
                     <td></td>
                     <td class="text-center align-middle" style="min-width: 180px;">{{cliente?.num_cliente2}}</td>
                     <td class="align-middle" style="min-width: 350px;">{{cliente?.nombre_completo}}</td>

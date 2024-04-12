@@ -104,6 +104,20 @@ import { ReporteCartasComponent } from './reporte-cartas/reporte-cartas.componen
 import { CreditosListaComponent } from './creditos/creditos-lista/creditos-lista.component';
 import { PagosListaComponent } from './pagos/pagos-lista/pagos-lista.component';
 import { ClientesListaComponent } from './clientes/clientes-lista/clientes-lista.component';
+import { GruposUsuariosComponent } from './grupos-usuarios/grupos-usuarios.component';
+import { GruposUsuariosListComponent } from './grupos-usuarios/grupos-usuarios-list/grupos-usuarios-list.component';
+import { GruposUsuarioComponent } from './grupos-usuarios/grupos-usuario/grupos-usuario.component';
+import { GruposUsuarioShowComponent } from './grupos-usuarios/grupos-usuario-show/grupos-usuario-show.component';
+import { ApruebaSolicitudesComponent } from './solicitudes/aprueba-solicitudes/aprueba-solicitudes.component';
+import { ApruebaSolicitudComponent } from './solicitudes/aprueba-solicitud/aprueba-solicitud.component';
+import { ApruebaSolicitudesListaComponent } from './solicitudes/aprueba-solicitudes-lista/aprueba-solicitudes-lista.component';
+import { CreditosProgramarEntregasListaComponent } from './creditos/creditos-programar-entregas-lista/creditos-programar-entregas-lista.component';
+import { CreditosProgramarEntregasComponent } from './creditos/creditos-programar-entregas/creditos-programar-entregas.component';
+import { CreditosProgramarEntregaComponent } from './creditos/creditos-programar-entrega/creditos-programar-entrega.component';
+import { CreditosCapturarEntregasListaComponent } from './creditos/creditos-capturar-entregas-lista/creditos-capturar-entregas-lista.component';
+import { CreditosCapturarEntregasComponent } from './creditos/creditos-capturar-entregas/creditos-capturar-entregas.component';
+import { SolicitudesModificarComponent } from './solicitudes/solicitudes-modificar/solicitudes-modificar.component';
+import { SolicitudesModificarListaComponent } from './solicitudes/solicitudes-modificar-lista/solicitudes-modificar-lista.component';
 
 
 @NgModule({
@@ -195,6 +209,20 @@ import { ClientesListaComponent } from './clientes/clientes-lista/clientes-lista
     CreditosListaComponent,
     PagosListaComponent,
     ClientesListaComponent,
+    GruposUsuariosComponent,
+    GruposUsuariosListComponent,
+    GruposUsuarioComponent,
+    GruposUsuarioShowComponent,
+    ApruebaSolicitudesComponent,
+    ApruebaSolicitudComponent,
+    ApruebaSolicitudesListaComponent,
+    CreditosProgramarEntregasListaComponent,
+    CreditosProgramarEntregasComponent,
+    CreditosProgramarEntregaComponent,
+    CreditosCapturarEntregasListaComponent,
+    CreditosCapturarEntregasComponent,
+    SolicitudesModificarComponent,
+    SolicitudesModificarListaComponent,
   ],
   exports: [
     DashboardComponent,

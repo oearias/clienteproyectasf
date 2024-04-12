@@ -1,7 +1,12 @@
+import { Tarifa } from "./Tarifa";
+import { Usuario } from "./Usuario";
+
 export interface Solicitud{
     id:number;
     cliente_id: number;
     tarifa_id: number;
+    tarifa: Tarifa,
+    creado_por_id: Usuario,
     nombre: string;
     apellido_paterno: string;
     apellido_materno: string;
@@ -21,6 +26,7 @@ export interface Solicitud{
     parentesco_contacto1: string;
     parentesco_contacto2: string;
     fecha_solicitud: Date;
+    fecha_aprobacion: Date;
     calle: string;
     num_ext: string;
     num_int: string;

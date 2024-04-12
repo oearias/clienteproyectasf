@@ -21,6 +21,7 @@ export interface Credito {
     tarifa: Tarifa;
     año: number;
     nombre: string;
+    motivo: string;
     cliente: Cliente;
     cliente_id: number;
     num_cliente: string;
@@ -43,4 +44,5 @@ export interface Credito {
     no_entregado: number;
     inversion_positiva: boolean;
     dias_penalizaciones: number;
+    aux_num_penalizaciones: number;
 }

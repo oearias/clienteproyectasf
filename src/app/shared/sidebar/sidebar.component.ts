@@ -5,6 +5,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Usuario } from 'src/app/interfaces/Usuario';
 import { UsuariosService } from '../../services/usuarios.service';
 import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -21,11 +22,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
   nombreUsuario: string;
   role: string;
 
+  modulos: any[];
+
   constructor(
     private sidebarService: SidebarService,
     private route: ActivatedRoute,
     private router: Router,
     private usuarioService: UsuariosService,
+    private authService: AuthService
   ) {
 
     //this.menuItems = sidebarService.menu;
@@ -33,14 +37,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     //este fragmento de código permite la recarga de los archivos js si se trae el parametro reload
-    this.navigationSubscription = this.router.events.subscribe( (event)=>{
-      if(event instanceof NavigationEnd){
-        if(event.url.includes('?reload=true')){
+    this.navigationSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        if (event.url.includes('?reload=true')) {
           location.reload();
         }
       }
     });
-    
+
   }
 
   ngOnInit(): void {
@@ -50,6 +54,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
     //     location.reload();
     //   }
     // });
+
+    
 
     this.route.params.subscribe((params: Usuario) => {
 
@@ -64,23 +70,47 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
         this.nombreUsuario = `${this.usuario.nombre} ${this.usuario.apellido_paterno}`;
         this.role = `${this.usuario.role}`;
-      }else{
+
+      } else {
+
         this.nombreUsuario = sessionStorage.getItem('nombreCompleto');
-        this.role = sessionStorage.getItem('role');
       }
-
+      
     })
+    
+    //Aqui es donde podemos obtener los modulos a los cuales tiene acceso
+    //esto lo podemos hacer simplemente leyendo el storage item
+    
+    const arreglo = localStorage.getItem('modulos');
+    this.role = localStorage.getItem('role');
 
-    this.menuItems = this.sidebarService.menu;
+
+
+    if (arreglo) {
+      this.modulos = JSON.parse(arreglo);
+    }
+    //this.menuItems = this.sidebarService.menu;
+
+    this.menuItems = this.modulos;
 
   }
 
-  logOut(){
+  logOut() {
     console.log('Bye Bye');
-    sessionStorage.removeItem('nombreCompleto');
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('role');
-    this.router.navigate(['/login']);
+
+    this.authService.logout().subscribe((res: any) => {
+
+      if (res && res.message == 'Sesión finalizada correctamente') {
+
+        // Limpiar datos de sesión después de cerrar sesión
+        sessionStorage.removeItem('nombreCompleto');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('role');
+        // Redirigir al usuario a la página de inicio de sesión
+        this.router.navigate(['/login']);
+      }
+
+    });
   }
 
 }

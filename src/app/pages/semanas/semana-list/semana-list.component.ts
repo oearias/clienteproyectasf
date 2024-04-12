@@ -8,6 +8,7 @@ import { SemanasService } from '../../../services/semanas.service';
 import Swal from 'sweetalert2';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { SemanaResponse } from 'src/app/interfaces/SemanaResponse';
 
 @Component({
   selector: 'app-semana-list',
@@ -26,37 +27,12 @@ export class SemanaListComponent implements OnInit {
   })
 
   semanas: Semana[] = [];
-  
+  currentPage: number = 1;
+  totalPages: number = 1;
+
+  busqueda = '';
+
   subscription: Subscription;
-
-  //Paginate
-  p: number = 1;
-  itemsPP: number = 10;
-  selectedItem = this.itemsPP;
-
-  items = [
-    { cant: 5 },
-    { cant: 10 },
-    { cant: 15 },
-    { cant: 20 },
-    { cant: 25 },
-  ]
-
-  criterios = [
-    { nombre: 'estatus', criterio: 'estatus' },
-    { nombre: 'año', criterio: 'year' },
-    { nombre: 'n. de semana', criterio: 'weekyear' },
-    { nombre: 'serie', criterio: 'serie' },
-  ];
-
-  estatus = [
-    {nombre: 'ABIERTA', value: true},
-    {nombre: 'CERRADA', value: false},
-  ]
-
-  //Sort
-  key = 'year';
-  reverse: boolean = false;
 
   constructor(
     private semanaService: SemanasService,
@@ -66,29 +42,69 @@ export class SemanaListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getSemanas();
+    this.getSemanas(this.currentPage);
 
     this.subscription = this.semanaService.refresh$.subscribe(() => {
-      this.getSemanas();
+      this.getSemanas(this.currentPage);
     });
   }
 
 
-  getSemanas() {
-    this.semanaService.getSemanas().subscribe((res: any) => {
-      this.semanas = res;
+  getSemanas(page: number, limit: number = 10) {
+
+    this.semanaService.getSemanasPaginados(page, limit, this.busqueda).subscribe((res: SemanaResponse) => {
+
+      console.log(res.semanasJSON);
+
+      this.semanas = res.semanasJSON;
+      this.totalPages = res.totalPages;
+      this.currentPage = res.currentPage;
+
     });
+
+  }
+
+  generatePageRange(): number[] {
+
+    const pages: number[] = [];
+    const startPage = Math.max(1, this.currentPage - 2);
+    const endPage = Math.min(this.totalPages, this.currentPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.getSemanas(page);
+    }
+  }
+
+  goToFirstPage(): void {
+    if (this.totalPages > 1 && this.currentPage !== 1) {
+      this.goToPage(1);
+    }
+  }
+
+  buscarElementos(terminoBusqueda: string) {
+
+    this.busqueda = terminoBusqueda;
+    this.getSemanas(1);
+
   }
 
   createSemana() {
     this.router.navigateByUrl('catalogos/semanas/semana');
   }
 
-  createYear(){
+  createYear() {
     this.router.navigateByUrl('catalogos/semanas/year')
   }
 
-  createSemanasMasivas(){
+  createSemanasMasivas() {
     this.router.navigateByUrl('catalogos/semanas/semanasMasivas');
   }
 
@@ -141,18 +157,18 @@ export class SemanaListComponent implements OnInit {
 
   }
 
-  onChangeCriterio(event: any){
-    if(event){
+  onChangeCriterio(event: any) {
+    if (event) {
 
       this.inputAux.nativeElement.value = null;
       this.palabra.setValue(null);
 
-      if(event.criterio === 'estatus'){
+      if (event.criterio === 'estatus') {
 
         this.selectEstatus.readonly = false;
         this.inputAux.nativeElement.disabled = true;
 
-      }else{
+      } else {
 
         this.palabra.enable();
         this.inputAux.nativeElement.disabled = false;
@@ -163,24 +179,19 @@ export class SemanaListComponent implements OnInit {
     }
   }
 
-  onChangeSelectEstatus(event:any){
-    if(event){
+  onChangeSelectEstatus(event: any) {
+    if (event) {
 
       this.palabra?.setValue(event?.value);
     }
   }
 
-  onKeyUp(){
+  onKeyUp() {
     this.palabra.setValue(this.inputAux.nativeElement.value);
   }
 
-  cambiaItems(event:any) {
-    this.itemsPP = event.cant
-  }
 
   search() {
-
-    console.log(this.filterForm.value);
 
     if (this.filterForm.valid) {
       this.semanaService.getSemanasByCriteria(this.filterForm.value.criterio, this.filterForm.value.palabra).subscribe((res) => {
@@ -201,13 +212,8 @@ export class SemanaListComponent implements OnInit {
     this.ngOnInit();
   }
 
-  onClearSelectStatus(){
+  onClearSelectStatus() {
     this.palabra?.setValue(null);
-  }
-
-  sort(key: string) {
-    this.key = key;
-    this.reverse = !this.reverse;
   }
 
   get criterio() {

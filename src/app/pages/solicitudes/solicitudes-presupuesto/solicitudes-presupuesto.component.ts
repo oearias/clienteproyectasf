@@ -14,6 +14,7 @@ export class SolicitudesPresupuestoComponent implements OnInit {
 
   subscription: Subscription;
   solicitudes: Solicitud[] = [];
+  solicitudes_presupuesto: Solicitud[] = [];
   monto_sol_checked: number = 0;
   total: number = 0;
 
@@ -38,14 +39,34 @@ export class SolicitudesPresupuestoComponent implements OnInit {
 
   getSolicitudes() {
 
-    this.solService.getSolicitudes().subscribe(solicitudes => {
-      this.solicitudes = solicitudes.map(item => {
-        if (item.estatus_sol_id === 6) {
-          this.total += Number(item.monto);
-          return item;
-        }
-      }).filter(item => item);
+    // this.solService.getSolicitudes().subscribe(solicitudes => {
+    //   this.solicitudes = solicitudes.map(item => {
+    //     if (item.estatus_sol_id === 6) {
+    //       this.total += Number(item.monto);
+    //       return item;
+    //     }
+    //   }).filter(item => item);
+    // });
+
+    this.solService.getSolicitudesParaPresupuesto().subscribe( (res) => {
+
+
+      this.solicitudes = res.solicitudesJSON;
+
+      this.solicitudes.map(item =>{
+
+        console.log(item);
+
+        this.total += Number(item.monto);
+
+      });
+
+
+
     });
+
+
+
 
   }
 
