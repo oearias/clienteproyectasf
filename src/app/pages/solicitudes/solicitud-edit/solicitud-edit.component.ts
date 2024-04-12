@@ -342,8 +342,6 @@ export class SolicitudEditComponent implements AfterViewInit {
 
           this.editingSolicitud = res;
 
-          console.log(this.editingSolicitud);
-
           /////Populamos Selects
           const selects = {
             sucursal: {
