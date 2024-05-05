@@ -26,6 +26,10 @@ export class SemanasService {
     return this.http.get<Semana[]>(this.URL_API);
   }
 
+  getSemanaOpened(){
+    return this.http.post<Semana>(this.URL_API+'/opened',{});
+  }
+
   getSemanasPaginados(page: number, limit:number, searchTerm: string){
 
     const params = new HttpParams()

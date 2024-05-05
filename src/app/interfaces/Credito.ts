@@ -1,4 +1,5 @@
 import { Cliente } from './Cliente';
+import { Solicitud } from './Solicitud';
 import { Tarifa } from './Tarifa';
 import { TipoContrato } from './TipoContrato';
 import { TipoCredito } from './TipoCredito';
@@ -16,6 +17,7 @@ export interface Credito {
     fecha_entrega_prog: Date;
     fecha_entrega_real: Date;
     fecha_fin_prog: Date;
+    fecha_fin_prog_proyecta: Date;
     hora_entrega: Date;
     tarifa_id: number;
     tarifa: Tarifa;
@@ -28,6 +30,7 @@ export interface Credito {
     apellido_paterno: string;
     apellido_materno: string;
     solicitud_credito_id: number;
+    solicitudCredito: Solicitud,
     tipo_credito_id: number;
     tipoCredito: TipoCredito,
     tipo_contrato_id: number;

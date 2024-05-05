@@ -9,16 +9,16 @@
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#test-l-2">
+            <!-- <div class="step" data-target="#test-l-2">
                 <button class="step-trigger">
                     <span class="bs-stepper-circle">2</span>
                     <span class="bs-stepper-label"></span>
                 </button>
             </div>
-            <div class="line"></div>
-            <div class="step" data-target="#test-l-3">
+            <div class="line"></div> -->
+            <div class="step" data-target="#test-l-2">
                 <button class="step-trigger">
-                    <span class="bs-stepper-circle">3</span>
+                    <span class="bs-stepper-circle">2</span>
                     <span class="bs-stepper-label"></span>
                 </button>
             </div>
@@ -48,42 +48,311 @@
 
                             <div class="row">
 
-                                <!-- <div class="col-sm-12 col-md-12">
-                                    <div class="form-group">
-                                        <ng-select [items]="items$ | async" 
-                                            bindLabel="fullName" bindValue="id"
-                                            [typeahead]="input$" 
-                                            typeToSearchText="Teclee para buscar"
-                                            (clear)="onClearCliente()" 
-                                            (change)="onChangeCliente($event)"
-                                            placeholder="Búsqueda por: Nombre o RFC">
-                                            <ng-template ng-option-tmp let-item="item" let-index="index"
-                                                let-search="searchTerm">
-                                                <div>{{item.nombre_completo}} | <span
-                                                        style="font-weight:bold;">{{item.rfc}}</span></div>
-                                            </ng-template>
-                                        </ng-select>
-                                    </div>
-                                </div> -->
+                                <div class="col-sm-4">
 
-                                <div class="col-sm-12 col-md-12">
                                     <div class="form-group">
+
+                                        <label for="">Tipo de solicitud</label>
+
+                                        <ng-select #selectTipoSolicitud 
+                                            (change)="onChangeTipoSolicitud($event)"
+                                            [items]="arrayTipoSolicitud" 
+                                            formControlName="tipo_solicitud"
+                                            bindValue="id" bindLabel="nombre" placeholder="Seleccione tipo de solicitud">
+                                        </ng-select>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-sm-12 col-md-8">
+                                    <div class="form-group">
+
+                                        <label for="">Cliente / Propietario</label>
+
                                         <ng-select 
                                             (change)="onChangeCliente($event)" 
                                             (search)="buscarElementos($event)"
                                             class="text-uppercase" [items]="clientesArray"
                                             formControlName="id" bindLabel="fullname" [clearable]="false"
-                                            placeholder="Seleccione un cliente" bindValue="id">
+                                            placeholder="Seleccione un cliente/propietario" bindValue="id">
                                         </ng-select>
                                     </div>
                                 </div>
-
-                                
 
                             </div>
 
                         </div>
 
+                    </div>
+
+                    <div formGroupName="aval">
+                        <div *ngIf="formularioMicroNegocioIsRequired" class="card card-default rounded-0 mb-0">
+                            <div class="card-header rounded-0 bg-primary">
+    
+                                <h5 class="card-title"><b>
+                                        Datos del aval
+                                    </b></h5>
+    
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+    
+                            <div class="card-body" style="display: block;">
+    
+                                <div class="form-row">
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label>Nombre</label>
+    
+                                            <input type="text" formControlName="nombre"
+                                                class="form-control text-uppercase">
+
+                                            <div *ngIf="(submitted && aval_nombre.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="aval_nombre.errors.required">*El nombre es obligatorio</span>
+                                            </div>
+                                        </div>
+    
+                                    </div>
+    
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-group">
+                                            <label>Apellido paterno</label>
+                                            <input type="text" formControlName="apellido_paterno"
+                                                class="form-control text-uppercase">
+
+                                            <div *ngIf="(submitted && aval_apellido_paterno.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="aval_apellido_paterno.errors.required">*El apellido paterno es obligatorio</span>
+                                            </div>
+                                        </div>
+    
+                                    </div>
+    
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-group">
+                                            <label>Apellido materno</label>
+                                            <input type="text" formControlName="apellido_materno"
+                                                class="form-control text-uppercase">
+                                        </div>
+                                    </div>
+    
+                                </div>
+    
+                                <div class="form-row">
+    
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label>Fecha de nacimiento</label>
+                                            <input type="date" formControlName="fecha_nacimiento" class="form-control">
+
+                                            <div *ngIf="(submitted && aval_fecha_nacimiento.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="aval_fecha_nacimiento.errors.required">*La fecha de nacimiento es obligatoria</span>
+                                            </div>
+                                        </div>
+    
+                                    </div>
+    
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-group">
+                                            <label>Teléfono</label>
+    
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="basic-addon1">
+                                                        <i class="fas fa-phone"></i>
+                                                    </span>
+                                                </div>
+                                                <input type="number" formControlName="telefono" class="form-control"
+                                                    placeholder="Teléfono" aria-label="Username"
+                                                    aria-describedby="basic-addon1">
+                                            </div>
+
+                                            <div *ngIf="(submitted && aval_telefono.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="aval_telefono.errors.required">*El teléfono es obligatorio</span>
+                                            </div>
+                                        </div>
+                                    </div>
+    
+                                </div>
+
+                                <div class="form-row">
+                                    
+                                    <div class="col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <label for="calleInput">Calle</label>
+                                            <input id="calleInput" type="text" formControlName="calle"
+                                                class="form-control text-uppercase">
+                                                <div *ngIf="(submitted && aval_calle.invalid )">
+                                                    <span class="error invalid-feedback" *ngIf="aval_calle.errors.required">*La calle es obligatoria</span>
+                                                </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label>Núm. ext.</label>
+                                            <input type="text" formControlName="num_ext" class="form-control">
+                                            <div *ngIf="(submitted && aval_num_ext.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="aval_num_ext.errors.required">*El número exterior es obligatorio</span>
+                                            </div>
+                                        </div>
+    
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="form-group">
+                                            <label for="coloniaInput">Colonia</label>
+                                            <ng-select [items]="colonias" formControlName="colonia_id"
+                                                bindLabel="nombre" bindValue="id" [clearable]="false"
+                                                class="text-uppercase"
+                                                placeholder="Seleccione una colonia...">
+                                            </ng-select>
+                                            <div *ngIf="(submitted && aval_colonia_id.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="aval_colonia_id.errors.required">*La colonia es obligatoria</span>
+                                            </div>
+                                        </div>
+                                    </div>
+    
+                                </div>
+    
+                            </div>
+    
+                        </div>
+                    </div>
+
+                    <div formGroupName="negocio">
+                        <div *ngIf="formularioMicroNegocioIsRequired" class="card card-default rounded-0 mb-0">
+                            <div class="card-header rounded-0 bg-primary">
+    
+                                <h5 class="card-title"><b>
+                                        Datos del negocio
+                                    </b></h5>
+    
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+    
+                            <div class="card-body" style="display: block;">
+    
+                                <div class="form-row">
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="form-group">
+                                            <label>Nombre</label>
+    
+                                            <input type="text" formControlName="nombre"
+                                                class="form-control text-uppercase">
+
+                                            <div *ngIf="(submitted && negocio_nombre.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="negocio_nombre.errors.required">*El nombre es obligatorio</span>
+                                            </div>
+                                        </div>
+    
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label>Giro</label>
+    
+                                            <input type="text" formControlName="giro"
+                                                class="form-control text-uppercase">
+
+                                            <div *ngIf="(submitted && negocio_giro.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="negocio_giro.errors.required">*El giro es obligatorio</span>
+                                            </div>
+                                        </div>
+    
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="form-group">
+                                            <label>Teléfono</label>
+    
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="basic-addon1">
+                                                        <i class="fas fa-phone"></i>
+                                                    </span>
+                                                </div>
+                                                <input type="number" formControlName="telefono" class="form-control"
+                                                    placeholder="Teléfono" aria-label="Username"
+                                                    aria-describedby="basic-addon1">
+                                            </div>
+
+                                            <div *ngIf="(submitted && negocio_telefono.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="negocio_telefono.errors.required">*El teléfono es obligatorio</span>
+                                            </div>
+                                        </div>
+                                    </div>
+    
+                                </div>
+
+                                <div class="form-row">
+                                    
+                                    <div class="col-sm-6 col-md-6">
+                                        <div class="form-group">
+                                            <label for="calleInput">Calle</label>
+                                            <input id="calleInput" type="text" formControlName="calle"
+                                                class="form-control text-uppercase">
+                                                <div *ngIf="(submitted && negocio_calle.invalid )">
+                                                    <span class="error invalid-feedback" *ngIf="negocio_calle.errors.required">*La calle es obligatoria</span>
+                                                </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label>Núm. ext.</label>
+                                            <input type="text" formControlName="num_ext" class="form-control">
+
+                                            <div *ngIf="(submitted && negocio_num_ext.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="negocio_num_ext.errors.required">*El número exterior es obligatorio</span>
+                                            </div>
+                                        </div>
+    
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="form-group">
+                                            <label for="coloniaInput">Colonia</label>
+                                            <ng-select [items]="colonias" formControlName="colonia_id"
+                                                bindLabel="nombre" bindValue="id" [clearable]="false"
+                                                class="text-uppercase"
+                                                placeholder="Seleccione una colonia...">
+                                            </ng-select>
+                                            <div *ngIf="(submitted && negocio_colonia_id.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="negocio_colonia_id.errors.required">*La colonia es obligatoria</span>
+                                            </div>
+                                        </div>
+                                    </div>
+    
+                                </div>
+    
+                                <div class="form-row">
+                                    
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="form-group">
+                                            <label for="calleInput">Hora de pago</label>
+                                            <input id="calleInput" type="time" formControlName="hora_pago"
+                                                class="form-control text-uppercase">
+                                                <div *ngIf="(submitted && negocio_hora_pago.invalid )">
+                                                    <span class="error invalid-feedback" *ngIf="negocio_hora_pago.errors.required">*La hora de pago es obligatoria</span>
+                                                </div>
+                                        </div>
+                                    </div>
+
+                                    
+    
+                                </div>
+    
+                            </div>
+    
+                        </div>
                     </div>
 
                     <div class="card card-default rounded-0 mb-0">
@@ -128,11 +397,6 @@
                                             </span>
 
                                         </div>
-                                        <!-- <ng-select #selectEstatus formControlName="estatus_sol_id" [items]="estatuss"
-                                            bindLabel="nombre" bindValue="id" (clear)="onClearEstatus()"
-                                            (open)="onClickEstatus()" (change)="onChangeEstatus($event)"
-                                            placeholder="Seleccione accion">
-                                        </ng-select> -->
                                     </div>
                                 </div>
 
@@ -177,6 +441,10 @@
                                         <ng-select #selectZona formControlName="zona_id" [items]="zonas"
                                             bindLabel="nombre" bindValue="id" (change)="onChangeZona($event)"
                                             placeholder="Seleccione zona"></ng-select>
+
+                                            <div *ngIf="(submitted && zona_id.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="zona_id.errors.required">*La zona es obligatoria</span>
+                                            </div>
                                     </div>
                                 </div>
 
@@ -198,26 +466,17 @@
                                     <div class="form-group">
                                         <label>
                                             Monto solicitado</label>
-                                        <ng-select formControlName="tarifa_id" [items]="tarifas" bindLabel="nombre"
-                                            (clear)="onClearMonto()" (change)="onChangeMonto($event)" bindValue="id"
-                                            placeholder="Seleccione monto"></ng-select>
-                                        <div *ngIf="(submitted && monto.invalid)">
-                                            <span class="error invalid-feedback" *ngIf="tarifa.errors.required">*El monto es obligatorio</span>
+                                        <ng-select formControlName="tarifa_id" [items]="tarifas" 
+                                            bindLabel="nombre"
+                                            bindValue="id"
+                                            placeholder="Seleccione monto">
+                                        </ng-select>
+                                        <div *ngIf="(submitted && tarifa_id.invalid )">
+                                            <span class="error invalid-feedback" *ngIf="tarifa_id.errors.required">*El monto es obligatorio</span>
                                         </div>
                                     </div>
 
                                 </div>
-
-                                <!-- <div class="col-sm-6 col-md-4">
-                                    <div class="form-group">
-                                        <label>
-                                            Plazo</label>
-                                        <ng-select #selectTarifa formControlName="tarifa_id" [items]="tarifas"
-                                            bindLabel="nombre" (change)="onChangeTarifa($event)" bindValue="id"
-                                            readonly=true placeholder="Plazo">
-                                        </ng-select>
-                                    </div>
-                                </div> -->
 
                             </div>
 
@@ -249,6 +508,10 @@
 
                                             <input type="text" formControlName="nombre"
                                                 class="form-control text-uppercase">
+                                            
+                                            <div *ngIf="(submitted && nombre.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="nombre.errors.required">*El nombre es obligatorio</span>
+                                            </div>
                                         </div>
 
                                     </div>
@@ -258,6 +521,10 @@
                                             <label>Apellido paterno</label>
                                             <input type="text" formControlName="apellido_paterno"
                                                 class="form-control text-uppercase">
+
+                                            <div *ngIf="(submitted && apellido_paterno.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="apellido_paterno.errors.required">*El apellido paterno es obligatorio</span>
+                                            </div>
                                         </div>
 
                                     </div>
@@ -278,6 +545,10 @@
                                         <div class="form-group">
                                             <label>Fecha de nacimiento</label>
                                             <input type="date" formControlName="fecha_nacimiento" class="form-control">
+
+                                            <div *ngIf="(submitted && fecha_nacimiento.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="fecha_nacimiento.errors.required">*La fecha de nacimiento es obligatoria</span>
+                                            </div>
                                         </div>
 
                                     </div>
@@ -288,6 +559,10 @@
                                             <ng-select [items]="arrSexo" bindLabel="nombre" bindValue="nombre"
                                                 placeholder="Seleccione sexo" formControlName="sexo">
                                             </ng-select>
+
+                                            <div *ngIf="(submitted && sexo.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="sexo.errors.required">*El sexo es obligatorio</span>
+                                            </div>
                                         </div>
 
                                     </div>
@@ -297,7 +572,7 @@
                                             <label>Teléfono</label>
                                             <!-- <input type="number" formControlName="telefono" class="form-control"> -->
 
-                                            <div class="input-group mb-3">
+                                            <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id="basic-addon1">
                                                         <i class="fas fa-phone"></i>
@@ -306,6 +581,12 @@
                                                 <input type="number" formControlName="telefono" class="form-control"
                                                     placeholder="Teléfono" aria-label="Username"
                                                     aria-describedby="basic-addon1">
+
+                                                
+                                            </div>
+
+                                            <div *ngIf="(submitted && telefono.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="telefono.errors.required">*El teléfono es obligatorio</span>
                                             </div>
                                         </div>
                                     </div>
@@ -315,7 +596,7 @@
                                 <div class="form-row">
                                     <div class="col-sm-12 col-md-4">
                                         <div class="form-group">
-                                            <label>RFC</label>
+                                            <label>RFC <span class="opcional">(Opcional)</span></label>
                                             <input type="text" formControlName="rfc"
                                                 class="form-control text-uppercase">
                                         </div>
@@ -324,7 +605,7 @@
 
                                     <div class="col-sm-6 col-md-4">
                                         <div class="form-group">
-                                            <label>CURP</label>
+                                            <label>CURP<span class="opcional">(Opcional)</span></label>
                                             <input type="text" formControlName="curp"
                                                 class="form-control text-uppercase">
                                         </div>
@@ -368,6 +649,9 @@
                                             <label for="calleInput">Calle</label>
                                             <input id="calleInput" type="text" formControlName="calle"
                                                 class="form-control text-uppercase">
+                                                <div *ngIf="(submitted && calle.invalid )">
+                                                    <span class="error invalid-feedback" *ngIf="calle.errors.required">*La calle es obligatoria</span>
+                                                </div>
                                         </div>
 
                                     </div>
@@ -380,6 +664,9 @@
                                                 class="text-uppercase" (change)="onChangeColonia($event,1)"
                                                 placeholder="Seleccione una colonia...">
                                             </ng-select>
+                                            <div *ngIf="(submitted && colonia_id.invalid )">
+                                                <span class="error invalid-feedback" *ngIf="colonia_id.errors.required">*La colonia es obligatoria</span>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -389,9 +676,12 @@
 
                                     <div class="col-sm-4 col-md-4">
                                         <div class="form-group">
-                                            <label for="numIntInput">Núm. ext.</label>
-                                            <input id="numIntInput" formControlName="num_ext" type="text"
+                                            <label for="numExtInput">Núm. ext.</label>
+                                            <input id="numExtInput" formControlName="num_ext" type="text"
                                                 class="form-control text-uppercase">
+                                                <div *ngIf="(submitted && num_ext.invalid )">
+                                                    <span class="error invalid-feedback" *ngIf="num_ext.errors.required">*El número exterior es obligatorio</span>
+                                                </div>
                                         </div>
                                     </div>
 
@@ -561,7 +851,7 @@
 
                 </div>
 
-                <div id="test-l-2" class="content">
+                <!-- <div id="test-l-2" class="content">
 
                     <div class="card card-default rounded-0 mb-0">
                         <div class="card-header bg-primary">
@@ -800,9 +1090,9 @@
                         </div>
 
                     </div>
-                </div>
+                </div> -->
 
-                <div id="test-l-3" class="content">
+                <div id="test-l-2" class="content">
 
                     <div class="card card-default rounded-0 mb-0">
 
@@ -1000,19 +1290,6 @@
                                     </div>
                                 </div>
 
-                                <!-- <div class="col-sm-12 col-md">
-                                    <div class="form-group">
-                                        <label></label>
-                                        <button class="btn btn-primary mb-3" (click)="loadMap()">
-                                            <i class="fas fa-map"></i>
-                                            Establecer ubicación</button>
-                                        <div #mapDiv id="mapa-mapbox" style="width: 100%; height: 600px"></div>
-                                    </div>
-                                </div> -->
-
-
-
-
                             </div>
 
                         </div>
@@ -1037,7 +1314,7 @@
                             <div class="form-group">
 
                                 <div class="col-sm-12 col-md d-flex align-items-center">
-                                    <label>Referencia 1</label>
+                                    <label>Referencia 1 <span class="opcional">(Opcional)</span></label>
                                 </div>
 
                             </div>
@@ -1128,7 +1405,7 @@
                             <div class="form-group">
 
                                 <div class="col-sm-12 col-md d-flex align-items-center">
-                                    <label>Referencia 2</label>
+                                    <label>Referencia 1 <span class="opcional">(Opcional)</span></label>
                                 </div>
 
                             </div>
@@ -1223,7 +1500,7 @@
                                 <button (click)="previous()" class="btn btn-primary">
                                     <i class="fas fa-arrow-alt-circle-left"></i>
                                     Anterior</button>
-                                <button (click)="changeStatus()" class="btn btn-success ml-3">
+                                <button  (click)="changeStatus()" class="btn btn-success ml-3">
                                     <i class="fas fa-paper-plane"></i>
                                     Enviar</button>
                                 <!-- <button (click)="saveSolicitud()" class="btn btn-success ml-3">

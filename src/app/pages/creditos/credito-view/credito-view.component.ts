@@ -313,7 +313,7 @@ export class CreditoViewComponent implements OnInit {
             this.monto_otorgado.setValue(montoOtorgadoF);
             this.monto_total.setValue(montoTotalF);
             this.fecha_inicio_prog.setValue(this.editingCredito.fecha_inicio_prog);
-            this.fecha_fin_prog.setValue(this.editingCredito.fecha_fin_prog);
+            this.fecha_fin_prog.setValue(this.editingCredito?.fecha_fin_prog_proyecta);
             this.fecha_entrega_prog.setValue(this.editingCredito.fecha_entrega_prog);
             this.solicitud_credito_id.setValue(this.editingCredito.solicitud_credito_id);
             this.nombre.setValue(this.editingCredito.cliente.nombre_completo);

@@ -34,7 +34,7 @@ export class AgenciasService {
   }
 
   getAgenciasByZonaId(id:number){
-    return this.http.get<Agencia>(`${this.URL_API}/zona/${id}`);
+    return this.http.post<Agencia[]>(`${this.URL_API}/zona/${id}`,{});
   }
 
   insertAgencia(agencia: Agencia){

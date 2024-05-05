@@ -55,6 +55,8 @@ export class CreditosProgramarEntregasListaComponent implements OnInit {
 
     this.creditoService.getCreditosProgramacionEntrega(page, limit, this.busqueda).subscribe(creditos => {
 
+      console.log(creditos.creditosJSON);
+
       this.creditos = creditos.creditosJSON
         .filter(item => item.no_entregado != 1)
         .filter(item => !fechaParam || new Date(item.fecha_entrega_prog).toISOString().slice(0, 10) === new Date(fechaParam).toISOString().slice(0, 10))
@@ -77,8 +79,10 @@ export class CreditosProgramarEntregasListaComponent implements OnInit {
 
           item.printSelected = false;
 
+          item.tipo_credito = item.solicitudCredito.tipo_solicitud_credito;
+
           this.addToArrayInicial(item.id, item.fecha_entrega_prog, item.hora_entrega, item.fecha_inicio_prog, item.num_cheque, item.entregado, item.no_entregado, item.motivo, item.num_semanas);
-          this.addToArrayToPrint(item.id, item.printSelected, item.fecha_inicio_prog);
+          this.addToArrayToPrint(item.id, item.printSelected, item.fecha_inicio_prog, item.tipo_credito);
 
           return item;
         }
@@ -258,12 +262,13 @@ export class CreditosProgramarEntregasListaComponent implements OnInit {
 
   }
 
-  addToArrayToPrint(id: number, flag: boolean, fechaInicio) {
+  addToArrayToPrint(id: number, flag: boolean, fechaInicio, tipoCredito: string) {
 
     this.arrayToPrint.push({
       credito_id: id,
       printSelected: flag,
-      fecha_inicio: fechaInicio
+      fecha_inicio: fechaInicio,
+      tipo_credito: tipoCredito
     });
 
   }

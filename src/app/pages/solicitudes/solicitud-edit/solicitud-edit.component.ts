@@ -85,6 +85,8 @@ export class SolicitudEditComponent implements AfterViewInit {
   public items$: Observable<Cliente[]>;
   public input$ = new Subject<string | null>();
 
+  formularioMicroNegocioIsRequired: boolean = false;
+
   submitted: boolean;
 
   arrSexo: any[] = [
@@ -100,27 +102,28 @@ export class SolicitudEditComponent implements AfterViewInit {
 
   solicitudForm = this.fb.group({
     id: new FormControl(null),
+    tipo_solicitud_credito: new FormControl(null, [Validators.required]),
     cliente_id: new FormControl(null),
     tarifa_id: new FormControl(null, [Validators.required]),
     estatus_sol_id: new FormControl(null, [Validators.required]),
-    monto: new FormControl(null, [Validators.required]),
-    ocupacion_id: new FormControl(null, [Validators.required]),
-    tipo_empleo_id: new FormControl(null, [Validators.required]),
-    tipo_identificacion_id: new FormControl(null, [Validators.required]),
-    num_identificacion: new FormControl(null, [Validators.required]),
-    periodicidad_ingresos: new FormControl(null, [Validators.required]),
+    monto: new FormControl(null),
+    ocupacion_id: new FormControl(null),
+    tipo_empleo_id: new FormControl(null),
+    tipo_identificacion_id: new FormControl(null),
+    num_identificacion: new FormControl(null),
+    periodicidad_ingresos: new FormControl(null),
     color_casa: new FormControl(null),
     color_porton: new FormControl(null),
     niveles_casa: new FormControl(null),
-    parentesco_contacto1: new FormControl(null, [Validators.required]),
-    parentesco_contacto2: new FormControl(null, [Validators.required]),
-    nombre_contacto1: new FormControl(null, [Validators.required]),
-    nombre_contacto2: new FormControl(null, [Validators.required]),
-    telefono_contacto1: new FormControl(null, [Validators.required]),
-    telefono_contacto2: new FormControl(null, [Validators.required]),
-    direccion_contacto1: new FormControl(null, [Validators.required]),
-    direccion_contacto2: new FormControl(null, [Validators.required]),
-    ingreso_mensual: new FormControl(null, Validators.required),
+    parentesco_contacto1: new FormControl(null),
+    parentesco_contacto2: new FormControl(null),
+    nombre_contacto1: new FormControl(null),
+    nombre_contacto2: new FormControl(null),
+    telefono_contacto1: new FormControl(null),
+    telefono_contacto2: new FormControl(null),
+    direccion_contacto1: new FormControl(null),
+    direccion_contacto2: new FormControl(null),
+    ingreso_mensual: new FormControl(null),
     tiempo_vivienda_años: new FormControl(null),
     tiempo_vivienda_meses: new FormControl(null),
     tiempo_empleo_años: new FormControl(null),
@@ -164,9 +167,28 @@ export class SolicitudEditComponent implements AfterViewInit {
       tv: new FormControl(null),
       alumbrado_publico: new FormControl(null),
     }),
+    aval: new FormGroup({
+      nombre:           new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      apellido_paterno: new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      apellido_materno: new FormControl(null, this.formularioMicroNegocioIsRequired ? [] : []),
+      fecha_nacimiento: new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      telefono:         new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      calle:            new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      colonia_id:       new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      num_ext:          new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+    }),
+    negocio: new FormGroup({
+      nombre:           new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      giro:             new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      telefono:         new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      calle:            new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      colonia_id:       new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      num_ext:          new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      hora_pago:        new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+    }),
     personas_viviendo: new FormControl(null),
     num_dependientes: new FormControl(null),
-    vivienda: new FormControl(null, [Validators.required]),
+    vivienda: new FormControl(null),
     vivienda_otra: new FormControl(null),
     colonia_id: new FormControl(null),
     dependientes: this.fb.array([]),
@@ -207,6 +229,7 @@ export class SolicitudEditComponent implements AfterViewInit {
 
     this.solicitudForm.setValue({
       id: null,
+      tipo_solicitud_credito: null,
       cliente_id: null,
       monto: null,
       tarifa_id: null,
@@ -276,6 +299,25 @@ export class SolicitudEditComponent implements AfterViewInit {
         tv: false,
         alumbrado_publico: false
       },
+      aval: {
+        nombre: null,
+        apellido_paterno: null,
+        apellido_materno: null,
+        fecha_nacimiento: null,
+        telefono: null,
+        calle: null,
+        colonia_id: null,
+        num_ext: null,
+      },
+      negocio: {
+        nombre: null,
+        giro: null,
+        telefono: null,
+        calle: null,
+        colonia_id: null,
+        num_ext: null,
+        hora_pago:null,
+      },
       colonia_id: null,
 
     });
@@ -338,14 +380,16 @@ export class SolicitudEditComponent implements AfterViewInit {
     this.route.params.subscribe(params => {
       if (params.id) {
 
-        this.solicitudService.getSolicitud(params.id).subscribe((res: any) => {
+        this.solicitudService.getSolicitud(params.id).subscribe((res: Solicitud) => {
 
           this.editingSolicitud = res;
+
+          console.log(res);
 
           /////Populamos Selects
           const selects = {
             sucursal: {
-              id: res.sucursal_id
+              id: res.agencia.zona.sucursal_id
             },
             zona: {
               id: res.zona_id
@@ -358,7 +402,7 @@ export class SolicitudEditComponent implements AfterViewInit {
           //Datos de la Solilcitud
           this.populateSolicitudFields(res);
           //Datos del Cliente/Solicitante
-          this.populateClienteFields(res);
+          this.populateClienteFields(res.cliente);
 
           //Activamos el input si la vivienda_otra
           if (this.vivienda_otra.value != null) {
@@ -367,8 +411,6 @@ export class SolicitudEditComponent implements AfterViewInit {
 
           //Cargamos los eventos...
           this.solEventosService.getEventosBySolicitudId(params.id).subscribe(res =>{
-
-            console.log(res);
 
             this.eventos = res;
 
@@ -389,7 +431,7 @@ export class SolicitudEditComponent implements AfterViewInit {
     this.loadAgencias();
     this.loadTarifas();
     this.loadMontos();
-    this.loadClientes();
+    //this.loadClientes();
     this.loadColonias();
     this.loadEstados();
     this.loadOcupaciones();
@@ -413,7 +455,10 @@ export class SolicitudEditComponent implements AfterViewInit {
 
   loadAgencias() {
     this.agenciaService.getAgencias().subscribe((res: any) => {
+
       this.agenciasArray = res;
+
+      this.agencias = res;
     })
   }
 
@@ -491,6 +536,8 @@ export class SolicitudEditComponent implements AfterViewInit {
 
     if (event) {
 
+      console.log(event.id);
+
       this.zonas = Array.from(this.zonasArray).filter(zona =>
         zona.sucursal_id === event.id
       );
@@ -503,7 +550,7 @@ export class SolicitudEditComponent implements AfterViewInit {
       //this.selectZona.handleClearClick();
       this.selectZona.clearModel();
       this.selectAgencia.clearModel();
-      this.onChangeZona(444); //Resetea el evento
+      this.onChangeZona(444444); //Resetea el evento
     }
 
   }
@@ -571,7 +618,7 @@ export class SolicitudEditComponent implements AfterViewInit {
           }
 
           this.onChangeSucursal(zona);
-          this.onChangeZona(agencia);
+          //this.onChangeZona(agencia);
 
           this.populateSolicitudFields(solicitud);
 
@@ -647,20 +694,26 @@ export class SolicitudEditComponent implements AfterViewInit {
   populateSolicitudFields(data: Solicitud) {
 
 
-    console.log(this.tarifa_id);
-
-    console.log(data.tarifa_id);
-
     ////SELECTS
-    this.sucursal_id.setValue(data.sucursal_id);
-    this.zona_id.setValue(data.zona_id);
-    this.agencia_id.setValue(data.agencia_id);
+    this.sucursal_id.setValue(data.agencia.zona.sucursal_id);
+    this.zona_id.setValue(data.agencia.zona_id);
+    this.agencia_id.setValue(data.agencia.id);
     this.tipo_empleo_id?.setValue(data.tipo_empleo_id);
     this.ocupacion_id?.setValue(data.ocupacion_id);
     this.tipo_identificacion_id?.setValue(data.tipo_identificacion_id);
 
     //Datos de la solicitud
     this.id?.setValue(data.id);
+
+    let tipo_solicitud = null;
+
+    if(data.tipo_solicitud_credito == 2){
+      tipo_solicitud = 'MICRONEGOCIO'
+    }else{
+      tipo_solicitud = 'PERSONAL'
+    }
+
+    this.tipo_solicitud_credito?.setValue(tipo_solicitud);
     this.fecha_solicitud?.setValue(this.datePipe.transform(data.fecha_solicitud, 'yyyy-MM-dd', '0+100'));
     this.monto?.setValue(data.monto);
     this.tarifa_id?.setValue(data.tarifa_id);
@@ -687,18 +740,45 @@ export class SolicitudEditComponent implements AfterViewInit {
     this.niveles_casa?.setValue(data.niveles_casa);
     //this.observaciones?.setValue(data.observaciones);
 
+    //Populamos datos del aval
+    this.avalForm.get('nombre').setValue(data.aval.nombre);
+    this.avalForm.get('apellido_paterno').setValue(data.aval.apellido_paterno);
+    this.avalForm.get('apellido_materno').setValue(data.aval.apellido_materno);
+    this.avalForm.get('fecha_nacimiento').setValue(data.aval.fecha_nacimiento);
+    this.avalForm.get('telefono').setValue(data.aval.telefono);
+    this.avalForm.get('calle').setValue(data.aval.calle);
+    this.avalForm.get('num_ext').setValue(data.aval.num_ext);
+    this.avalForm.get('colonia_id').setValue(data.aval.colonia.id);
+
+    //Populamos datos del negocio
+    this.negocioForm.get('nombre').setValue(data.negocio.nombre);
+    this.negocioForm.get('giro').setValue(data.negocio.giro);
+    this.negocioForm.get('telefono').setValue(data.negocio.telefono);
+    this.negocioForm.get('calle').setValue(data.negocio.calle);
+    this.negocioForm.get('num_ext').setValue(data.negocio.num_ext);
+    this.negocioForm.get('colonia_id').setValue(data.negocio.colonia.id);
+
+    let hora_formateada = data.negocio.hora_pago.toString();
+    // Crea una nueva fecha usando solo la parte de la hora, ignorando la fecha
+    const date = new Date(); // Fecha actual
+    const [hours, minutes, seconds] = hora_formateada.split(':'); // Divide para obtener la parte de la hora
+    date.setHours(+hours, +minutes, +seconds?.slice(0, 2) || 0); // Usa 0 si seconds es undefined
+    hora_formateada = this.datePipe.transform(date, 'HH:mm'); // Formato 24 horas
+
+    this.negocioForm.get('hora_pago').setValue(hora_formateada);
+
     //Servicios
-    this.servicios.get('luz')?.setValue(data.luz);
-    this.servicios.get('agua_potable')?.setValue(data.agua_potable);
-    this.servicios.get('auto_propio')?.setValue(data.auto_propio);
-    this.servicios.get('telefono_fijo')?.setValue(data.telefono_fijo);
-    this.servicios.get('telefono_movil')?.setValue(data.telefono_movil);
-    this.servicios.get('refrigerador')?.setValue(data.refrigerador);
-    this.servicios.get('estufa')?.setValue(data.estufa);
-    this.servicios.get('internet')?.setValue(data.internet);
-    this.servicios.get('gas')?.setValue(data.gas);
-    this.servicios.get('tv')?.setValue(data.tv);
-    this.servicios.get('alumbrado_publico')?.setValue(data.alumbrado_publico);
+    this.servicios.get('luz')?.setValue(data.solicitudServicio?.luz);
+    this.servicios.get('agua_potable')?.setValue(data.solicitudServicio?.agua_potable);
+    this.servicios.get('auto_propio')?.setValue(data.solicitudServicio?.auto_propio);
+    this.servicios.get('telefono_fijo')?.setValue(data.solicitudServicio?.telefono_fijo);
+    this.servicios.get('telefono_movil')?.setValue(data.solicitudServicio?.telefono_movil);
+    this.servicios.get('refrigerador')?.setValue(data.solicitudServicio?.refrigerador);
+    this.servicios.get('estufa')?.setValue(data.solicitudServicio?.estufa);
+    this.servicios.get('internet')?.setValue(data.solicitudServicio?.internet);
+    this.servicios.get('gas')?.setValue(data.solicitudServicio?.gas);
+    this.servicios.get('tv')?.setValue(data.solicitudServicio?.tv);
+    this.servicios.get('alumbrado_publico')?.setValue(data.solicitudServicio?.alumbrado_publico);
   }
 
   onClearCliente() {
@@ -735,11 +815,13 @@ export class SolicitudEditComponent implements AfterViewInit {
 
       if (this.solicitudForm.value.id != null) {
 
+        console.log(this.solicitudForm.value);
+
         this.solicitudService.updateSolicitud(this.solicitudForm.getRawValue()).subscribe((res: any) => {
 
           this.toastr.success(res);
 
-          this.router.navigateByUrl('/dashboard/solicitudes');
+          this.router.navigateByUrl('/dashboard/solicitudes_modificar');
         })
 
       } 
@@ -790,16 +872,31 @@ export class SolicitudEditComponent implements AfterViewInit {
   }
 
   volver() {
-    this.router.navigate(['/dashboard/solicitudes'])
+    this.router.navigate(['/dashboard/solicitudes_modificar'])
   }
 
   setPath() {
-    this.pathService.path = '/dashboard/solicitudes';
+    this.pathService.path = '/dashboard/solicitudes_modificar';
   }
 
   //Getters
+
+  //Formularios
+
+  get avalForm() {
+    return this.solicitudForm.get('aval') as FormGroup;
+  }
+
+  get negocioForm() {
+    return this.solicitudForm.get('negocio') as FormGroup;
+  }
+
   get id() {
     return this.solicitudForm.get('id');
+  }
+
+  get tipo_solicitud_credito() {
+    return this.solicitudForm.get('tipo_solicitud_credito');
   }
 
   get fecha_solicitud() {

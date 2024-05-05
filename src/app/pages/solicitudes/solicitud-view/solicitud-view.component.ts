@@ -38,6 +38,7 @@ import { filter } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
 import { SolEventosService } from '../../../services/sol-eventos.service';
 import { SolicitudEvento } from 'src/app/interfaces/SolicitudEvento';
+import { SolicitudServicio } from '../../../interfaces/Solicitud_Servicio';
 
 @Component({
   selector: 'app-solicitud-view',
@@ -336,14 +337,14 @@ export class SolicitudViewComponent implements AfterViewInit {
     this.route.params.subscribe(params => {
       if (params.id) {
 
-        this.solicitudService.getSolicitud(params.id).subscribe((res: any) => {
+        this.solicitudService.getSolicitud(params.id).subscribe((res: Solicitud) => {
 
           this.editingSolicitud = res;
 
-          this.nombreCompleto.nativeElement.value = res['nombre_completo'];
-          this.inputSucursal.nativeElement.value = res['sucursal'];
-          this.inputZona.nativeElement.value = res['zona'];
-          this.inputAgencia.nativeElement.value = res['agencia'];
+          this.nombreCompleto.nativeElement.value = `${res.cliente.nombre} ${res.cliente.apellido_paterno} ${res.cliente.apellido_materno}`;
+          this.inputSucursal.nativeElement.value = res.agencia?.zona.sucursal_id;
+          this.inputZona.nativeElement.value = res.agencia.zona_id;
+          this.inputAgencia.nativeElement.value = res.agencia.id;
 
           /////Populamos Selects
           const selects = {
@@ -362,7 +363,7 @@ export class SolicitudViewComponent implements AfterViewInit {
 
           this.id?.setValue(res.id);
           this.fecha_solicitud?.setValue(this.datePipe.transform(res.fecha_solicitud, 'yyyy-MM-dd', '0+100'));
-          this.monto?.setValue(res.monto);
+          this.monto?.setValue(res.tarifa.monto);
           this.tarifa_id?.setValue(res.tarifa_id);
           this.vivienda?.setValue(res.vivienda);
           this.vivienda_otra?.setValue(res.vivienda_otra);
@@ -397,33 +398,32 @@ export class SolicitudViewComponent implements AfterViewInit {
           this.colonia_id?.setValue(res.colonia_id);
           this.estatus_sol_id?.setValue(res.estatus_sol_id);
 
-          this.servicios.get('luz').setValue(res.luz);
-          this.servicios.get('agua_potable').setValue(res.agua_potable);
-          this.servicios.get('auto_propio').setValue(res.auto_propio);
-          this.servicios.get('telefono_fijo').setValue(res.telefono_fijo);
-          this.servicios.get('telefono_movil').setValue(res.telefono_movil);
-          this.servicios.get('refrigerador').setValue(res.refrigerador);
-          this.servicios.get('estufa').setValue(res.estufa);
-          this.servicios.get('internet').setValue(res.internet);
-          this.servicios.get('gas').setValue(res.gas);
-          this.servicios.get('tv').setValue(res.tv);
-          this.servicios.get('alumbrado_publico').setValue(res.alumbrado_publico);
+          this.servicios.get('luz').setValue(res.solicitudServicio?.luz);
+          this.servicios.get('agua_potable').setValue(res.solicitudServicio?.agua_potable);
+          this.servicios.get('auto_propio').setValue(res.solicitudServicio?.auto_propio);
+          this.servicios.get('telefono_fijo').setValue(res.solicitudServicio?.telefono_fijo);
+          this.servicios.get('telefono_movil').setValue(res.solicitudServicio?.telefono_movil);
+          this.servicios.get('refrigerador').setValue(res.solicitudServicio?.refrigerador);
+          this.servicios.get('estufa').setValue(res.solicitudServicio?.estufa);
+          this.servicios.get('internet').setValue(res.solicitudServicio?.internet);
+          this.servicios.get('gas').setValue(res.solicitudServicio?.gas);
+          this.servicios.get('tv').setValue(res.solicitudServicio?.tv);
+          this.servicios.get('alumbrado_publico').setValue(res.solicitudServicio?.alumbrado_publico);
+
 
           //Datos del solicitante
-          this.populateClienteFields(res);
-          this.numCliente.nativeElement.value = res.num_cliente;
+          this.populateClienteFields(this.editingSolicitud, res.cliente);
+          this.numCliente.nativeElement.value = res.cliente.num_cliente;
+          this.cp.nativeElement.value = res.colonia.cp;
+        
 
           //Cargamos los eventos...
           this.solEventosService.getEventosBySolicitudId(params.id).subscribe(res =>{
+
             this.eventos = res;
 
           });
 
-          //Esto se cambió por dos botones
-          //Desactivamos los botones si ya está aprobada o rechazada
-          // if ((this.editingSolicitud.estatus === 'RECHAZADA') || (this.editingSolicitud.estatus === 'APROBADA')) {
-          //   this.btnChangeEstatus.nativeElement.disabled = true;
-          // }
 
           if (
             (this.role === 'ADMIN' || this.role === 'EDITOR')
@@ -454,7 +454,7 @@ export class SolicitudViewComponent implements AfterViewInit {
     this.loadAgencias();
     this.loadTarifas();
     this.loadMontos();
-    this.loadClientes();
+    //this.loadClientes();
     this.loadColonias();
     this.loadEstados();
     this.loadOcupaciones();
@@ -462,7 +462,7 @@ export class SolicitudViewComponent implements AfterViewInit {
     this.loadTipoEmpleo();
     this.loadTipoIdentificacion();
     this.loadEstatus();
-    this.loadCreditos();
+    //this.loadCreditos();
 
   }
 
@@ -497,6 +497,7 @@ export class SolicitudViewComponent implements AfterViewInit {
   }
 
   loadClientes() {
+
     this.clienteService.getClientes().subscribe((clientes: any) => {
       this.clientes = clientes.map((cliente) => {
         cliente.fullName = `${cliente.nombre_completo} |  ${cliente.rfc} `;
@@ -505,6 +506,8 @@ export class SolicitudViewComponent implements AfterViewInit {
 
       this.clientesArray = clientes;
     });
+
+
   }
 
   loadColonias() {
@@ -556,8 +559,6 @@ export class SolicitudViewComponent implements AfterViewInit {
   loadCreditos() {
 
     this.creditoService.getCreditos().subscribe(creditos => {
-
-      console.log(creditos);
 
       this.creditos = creditos.filter(item => item.cliente_id === this.editingSolicitud?.cliente_id && item.entregado === 1);
 
@@ -635,7 +636,7 @@ export class SolicitudViewComponent implements AfterViewInit {
 
       this.clienteSelected = this.clientesArray.filter(cliente => cliente.id == event.id);
 
-      this.populateClienteFields(this.clienteSelected[0]);
+      this.populateClienteFields(this.editingSolicitud, this.clienteSelected[0]);
 
     }
   }
@@ -662,7 +663,7 @@ export class SolicitudViewComponent implements AfterViewInit {
     this.changeSolicitud(this.estatus_sol_id.value);
   }
 
-  populateClienteFields(data: Cliente) {
+  populateClienteFields(data_solicitud: Solicitud, data: Cliente) {
 
     this.cliente_id?.setValue(data.id);
 
@@ -675,18 +676,20 @@ export class SolicitudViewComponent implements AfterViewInit {
     this.cliente.get('rfc')?.setValue(data.rfc);
     this.cliente.get('curp')?.setValue(data.curp);
     this.cliente.get('email')?.setValue(data.email);
-    this.cliente.get('calle')?.setValue(data.calle);
-    this.cliente.get('colonia_id')?.setValue(data.colonia_id);
-    this.cliente.get('num_ext')?.setValue(data.num_ext);
-    this.cliente.get('num_int')?.setValue(data.num_int);
-    this.cliente.get('cp')?.setValue(data.cp);
-    this.cliente.get('cruzamientos')?.setValue(data.cruzamientos);
-    this.cliente.get('referencia')?.setValue(data.referencia);
-    this.cliente.get('municipio')?.setValue(data.municipio);
-    this.cliente.get('localidad')?.setValue(data.localidad);
-    this.cliente.get('estado')?.setValue(data.estado);
+    this.cliente.get('calle')?.setValue(data_solicitud.calle);
+    this.cliente.get('colonia_id')?.setValue(data_solicitud.colonia_id);
+    this.cliente.get('num_ext')?.setValue(data_solicitud.num_ext);
+    this.cliente.get('num_int')?.setValue(data_solicitud.num_int);
+    this.cliente.get('cp')?.setValue(data_solicitud.colonia.cp);
+    this.cliente.get('cruzamientos')?.setValue(data_solicitud.cruzamientos);
+    this.cliente.get('referencia')?.setValue(data_solicitud.referencia);
+    this.cliente.get('municipio')?.setValue(data_solicitud.municipio);
+    this.cliente.get('localidad')?.setValue(data_solicitud.localidad);
+    this.cliente.get('estado')?.setValue(data_solicitud.estado);
 
-    this.onLoadColonia(data.cp);
+
+    //FIXME:
+    //this.onLoadColonia(data.colonia?.cp);
   }
 
   populateSolicitudFields(data: Solicitud) {
@@ -727,17 +730,17 @@ export class SolicitudViewComponent implements AfterViewInit {
     this.niveles_casa?.setValue(data.niveles_casa);
 
     //Servicios
-    this.servicios.get('luz')?.setValue(data.luz);
-    this.servicios.get('agua_potable')?.setValue(data.agua_potable);
-    this.servicios.get('auto_propio')?.setValue(data.auto_propio);
-    this.servicios.get('telefono_fijo')?.setValue(data.telefono_fijo);
-    this.servicios.get('telefono_movil')?.setValue(data.telefono_movil);
-    this.servicios.get('refrigerador')?.setValue(data.refrigerador);
-    this.servicios.get('estufa')?.setValue(data.estufa);
-    this.servicios.get('internet')?.setValue(data.internet);
-    this.servicios.get('gas')?.setValue(data.gas);
-    this.servicios.get('tv')?.setValue(data.tv);
-    this.servicios.get('alumbrado_publico')?.setValue(data.alumbrado_publico);
+    this.servicios.get('luz')?.setValue(data.solicitudServicio?.luz);
+    this.servicios.get('agua_potable')?.setValue(data.solicitudServicio?.agua_potable);
+    this.servicios.get('auto_propio')?.setValue(data.solicitudServicio?.auto_propio);
+    this.servicios.get('telefono_fijo')?.setValue(data.solicitudServicio?.telefono_fijo);
+    this.servicios.get('telefono_movil')?.setValue(data.solicitudServicio?.telefono_movil);
+    this.servicios.get('refrigerador')?.setValue(data.solicitudServicio?.refrigerador);
+    this.servicios.get('estufa')?.setValue(data.solicitudServicio?.estufa);
+    this.servicios.get('internet')?.setValue(data.solicitudServicio?.internet);
+    this.servicios.get('gas')?.setValue(data.solicitudServicio?.gas);
+    this.servicios.get('tv')?.setValue(data.solicitudServicio?.tv);
+    this.servicios.get('alumbrado_publico')?.setValue(data.solicitudServicio?.alumbrado_publico);
   }
 
   onClearCliente() {

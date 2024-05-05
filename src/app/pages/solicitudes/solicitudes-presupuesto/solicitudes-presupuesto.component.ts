@@ -55,8 +55,6 @@ export class SolicitudesPresupuestoComponent implements OnInit {
 
       this.solicitudes.map(item =>{
 
-        console.log(item);
-
         this.total += Number(item.monto);
 
       });
@@ -111,10 +109,6 @@ export class SolicitudesPresupuestoComponent implements OnInit {
         this.total = 0;
 
       }
-
-
-
-
 
     })
   }

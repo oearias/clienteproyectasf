@@ -1,8 +1,19 @@
+import { Agencia } from "./Agencia";
+import { Aval } from "./Aval";
+import { Cliente } from "./Cliente";
+import { Colonia } from "./Colonia";
+import { Negocio } from "./Negocio";
+import { SolicitudServicio } from "./Solicitud_Servicio";
 import { Tarifa } from "./Tarifa";
 import { Usuario } from "./Usuario";
 
 export interface Solicitud{
     id:number;
+    cliente: Cliente,
+    aval: Aval,
+    negocio: Negocio,
+    agencia: Agencia,
+    colonia: Colonia,
     cliente_id: number;
     tarifa_id: number;
     tarifa: Tarifa,
@@ -53,7 +64,6 @@ export interface Solicitud{
     agencia_id: number;
     sucursal: string;
     zona: string;
-    agencia: string;
     tipo_empleo_id: number
     ingreso_mensual: number;
     periodicidad_ingresos: string;
@@ -65,16 +75,7 @@ export interface Solicitud{
     referencia: string;
     cruzamientos: string;
     //Servicios
-    luz: boolean;
-    agua_potable: boolean;
-    auto_propio: boolean;
-    telefono_fijo: boolean;
-    telefono_movil: boolean;
-    refrigerador: boolean;
-    estufa: boolean;
-    internet: boolean;
-    gas: boolean;
-    tv: boolean;
-    alumbrado_publico: boolean;
+    solicitudServicio: SolicitudServicio
     locked: number;
+    tipo_solicitud_credito: number
 }

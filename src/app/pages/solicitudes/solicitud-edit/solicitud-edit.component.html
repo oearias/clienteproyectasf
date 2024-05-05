@@ -9,16 +9,16 @@
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#test-l-2">
+            <!-- <div class="step" data-target="#test-l-2">
                 <button class="step-trigger">
                     <span class="bs-stepper-circle">2</span>
                     <span class="bs-stepper-label"></span>
                 </button>
             </div>
-            <div class="line"></div>
-            <div class="step" data-target="#test-l-3">
+            <div class="line"></div> -->
+            <div class="step" data-target="#test-l-2">
                 <button class="step-trigger">
-                    <span class="bs-stepper-circle">3</span>
+                    <span class="bs-stepper-circle">2</span>
                     <span class="bs-stepper-label"></span>
                 </button>
             </div>
@@ -29,45 +29,6 @@
             <form [formGroup]="solicitudForm" (ngSubmit)="onSubmit()">
 
                 <div id="test-l-1" class="content">
-
-                    <!-- <div class="card card-default rounded-0 mb-0">
-                        <div class="card-header bg-primary">
-
-                            <h5 class="card-title"><b>
-                                    Búsqueda del solicitante / cliente
-                                </b></h5>
-
-                            <div class="card-tools">
-                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="card-body" style="display: block;">
-
-                            <div class="row">
-
-                                <div class="col-sm-12 col-md-12">
-                                    <div class="form-group">
-                                        <ng-select [items]="items$ | async" bindLabel="fullName" bindValue="id"
-                                            [typeahead]="input$" typeToSearchText="Teclee para buscar"
-                                            (clear)="onClearCliente()" (change)="onChangeCliente($event)"
-                                            placeholder="Búsqueda por: Nombre o RFC">
-                                            <ng-template ng-option-tmp let-item="item" let-index="index"
-                                                let-search="searchTerm">
-                                                <div>{{item.nombre_completo}} | <span
-                                                        style="font-weight:bold;">{{item.rfc}}</span></div>
-                                            </ng-template>
-                                        </ng-select>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div> -->
 
                     <div class="card card-default mb-0">
 
@@ -135,14 +96,21 @@
 
                             <div *ngIf="editingSolicitud" class="form-row">
 
-                                <div class="col-sm-6 col-md-3">
+                                <div class="col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label>Tipo de solicitud</label>
+                                        <input readonly="true" formControlName="tipo_solicitud_credito" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-4">
                                     <div class="form-group">
                                         <label>N. de la solicitud</label>
                                         <input readonly="true" formControlName="id" class="form-control">
                                     </div>
                                 </div>
 
-                                <div class="col-sm-6 col-md-3">
+                                <div class="col-sm-6 col-md-4">
                                     <div class="form-group">
                                         <label>Estatus</label>
                                         <ng-select #selectEstatus formControlName="estatus_sol_id" [items]="estatuss"
@@ -239,6 +207,208 @@
 
                         </div>
 
+                    </div>
+
+                    <div formGroupName="aval">
+
+                        <div *ngIf="editingSolicitud?.tipo_solicitud_credito == 2" class="card card-default rounded-0 mb-0">
+                            <div class="card-header rounded-0 bg-primary">
+    
+                                <h5 class="card-title"><b>
+                                        Datos del aval
+                                    </b></h5>
+    
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+    
+                            <div class="card-body">
+    
+                                <div class="form-row">
+    
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label>Nombre</label>
+                                            <input type="text" formControlName="nombre" class="form-control">
+                                        </div>
+                                    </div>
+    
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label>Apellido paterno</label>
+                                            <input type="text" formControlName="apellido_paterno" class="form-control">
+                                        </div>
+                                    </div>
+    
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label>Apellido materno</label>
+                                            <input type="text" formControlName="apellido_materno" class="form-control">
+                                        </div>
+                                    </div>
+    
+                                </div>
+
+                                <div class="form-row">
+    
+                                    <div class="col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <label>Fecha de nacimiento</label>
+                                            <input type="date" formControlName="fecha_nacimiento" class="form-control">
+                                        </div>
+                                    </div>
+    
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-group">
+                                            <label>Teléfono</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="basic-addon1">
+                                                        <i class="fas fa-phone"></i>
+                                                    </span>
+                                                </div>
+                                                <input type="number" formControlName="telefono" class="form-control"
+                                                    placeholder="Teléfono" aria-label="Username"
+                                                    aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                    </div>
+
+    
+                                </div>
+
+                                <div class="form-row">
+    
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="form-group">
+                                            <label>Calle</label>
+                                            <input type="text" formControlName="calle" class="form-control">
+                                        </div>
+                                    </div>
+    
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label>Núm. ext.</label>
+                                            <input type="text" formControlName="num_ext" class="form-control">
+                                        </div>
+                                    </div>
+    
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label>Colonia</label>
+                                            <ng-select [items]="colonias" formControlName="colonia_id"
+                                                bindLabel="nombre" bindValue="id" [clearable]="false"
+                                                class="text-uppercase" 
+                                                placeholder="Seleccione una colonia...">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+    
+                                </div>
+    
+                            </div>
+    
+                        </div>
+                    </div>
+
+                    <div formGroupName="negocio">
+
+                        <div *ngIf="editingSolicitud?.tipo_solicitud_credito == 2" class="card card-default rounded-0 mb-0">
+                            <div class="card-header rounded-0 bg-primary">
+    
+                                <h5 class="card-title"><b>
+                                        Datos del negocio
+                                    </b></h5>
+    
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+    
+                            <div class="card-body">
+    
+                                <div class="form-row">
+    
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="form-group">
+                                            <label>Nombre</label>
+                                            <input type="text" formControlName="nombre" class="form-control">
+                                        </div>
+                                    </div>
+    
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label>Giro</label>
+                                            <input type="text" formControlName="giro" class="form-control">
+                                        </div>
+                                    </div>
+    
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="form-group">
+                                            <label>Teléfono</label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="basic-addon1">
+                                                        <i class="fas fa-phone"></i>
+                                                    </span>
+                                                </div>
+                                                <input type="number" formControlName="telefono" class="form-control"
+                                                    placeholder="Teléfono" aria-label="Username"
+                                                    aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+                                    </div>
+    
+                                </div>
+
+                                <div class="form-row">
+    
+                                    <div class="col-sm-12 col-md-6">
+                                        <div class="form-group">
+                                            <label>Calle</label>
+                                            <input type="text" formControlName="calle" class="form-control">
+                                        </div>
+                                    </div>
+    
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="form-group">
+                                            <label>Núm. ext.</label>
+                                            <input type="text" formControlName="num_ext" class="form-control">
+                                        </div>
+                                    </div>
+    
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="form-group">
+                                            <label>Colonia</label>
+                                            <ng-select [items]="colonias" formControlName="colonia_id"
+                                                bindLabel="nombre" bindValue="id" [clearable]="false"
+                                                class="text-uppercase" 
+                                                placeholder="Seleccione una colonia...">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+    
+                                </div>
+
+                                <div class="form-row">
+    
+                                    <div class="col-sm-12 col-md-3">
+                                        <div class="form-group">
+                                            <label>Hora de pago</label>
+                                            <input type="time" formControlName="hora_pago" class="form-control">
+                                        </div>
+                                    </div>
+    
+                                </div>
+    
+                            </div>
+    
+                        </div>
                     </div>
 
                     <div formGroupName="cliente">
@@ -576,7 +746,7 @@
 
                 </div>
 
-                <div id="test-l-2" class="content">
+                <!-- <div id="test-l-2" class="content">
 
                     <div class="card card-default rounded-0 mb-0">
                         <div class="card-header bg-primary">
@@ -776,9 +946,9 @@
                         </div>
 
                     </div>
-                </div>
+                </div> -->
 
-                <div id="test-l-3" class="content">
+                <div id="test-l-2" class="content">
 
                     <div class="card card-default rounded-0 mb-0">
 

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Colonia } from '../interfaces/Colonia';
 import { environment } from 'src/environments/environment';
 import { Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { ColoniaResponse } from '../interfaces/ColoniaResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,20 @@ export class ColoniasService {
 
   getColonias(){
     return this.http.get<Colonia>(this.URL_API);
+  }
+  
+  getColoniasPaginadas(page:number, limit:number, searchTerm: string) {
+
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString())
+      .set('searchTerm', searchTerm.toString());
+
+    const url = `${this.URL_API}/colonias_list?${params.toString()}`;
+
+
+    return this.http.post<ColoniaResponse>(url,{});
+
   }
   
   getColoniasByCriteria(criterio, palabra){

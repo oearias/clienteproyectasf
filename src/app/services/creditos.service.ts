@@ -252,9 +252,9 @@ export class CreditosService {
     });
   }
 
-  downloadReporteCartas(semana_id: number){
+  downloadReporteCartasPDF(semana: Semana){
 
-    return this.http.post(`${this.URL_API}/print/reporte_cartas/${semana_id}`, {}, { responseType: 'blob' }).subscribe(res => {
+    return this.http.post(`${this.URL_API}/print/reporte_cartas/${semana.id}`, semana, { responseType: 'blob' }).subscribe(res => {
 
       var file = new Blob([res], { type: 'application/pdf' });
       var fileURL = URL.createObjectURL(file);
@@ -264,8 +264,20 @@ export class CreditosService {
 
   }
 
-  downloadReporteCartasXLS(semana_id: number): void {
-    this.http.post(`${this.URL_API}/print/reporte_cartasXLS/${semana_id}`, {}, { responseType: 'blob' })
+  downloadReporteDebitoAgenciasPDF(semana: Semana){
+
+    return this.http.post(`${this.URL_API}/print/reporte_debito_agencias_pdf/${semana.id}`, semana, { responseType: 'blob' }).subscribe(res => {
+
+      var file = new Blob([res], { type: 'application/pdf' });
+      var fileURL = URL.createObjectURL(file);
+      window.open(fileURL);
+
+    });
+
+  }
+  
+  downloadReporteCartasXLS(semana: Semana): void {
+    this.http.post(`${this.URL_API}/print/reporte_cartasXLS/${semana.id}`, semana, { responseType: 'blob' })
       .subscribe(
         (res: Blob) => {
           // Crear una URL para el blob recibido
@@ -292,7 +304,35 @@ export class CreditosService {
         }
       );
   }
+
+  downloadReporteDebitoAgenciasXLS(semana: Semana): void {
+    this.http.post(`${this.URL_API}/print/reporte_debito_agenciasXLS/${semana.id}`, semana, { responseType: 'blob' })
+      .subscribe(
+        (res: Blob) => {
+          // Crear una URL para el blob recibido
+          const fileURL = URL.createObjectURL(res);
   
+          // Crear un enlace temporal para descargar el archivo
+          const a = document.createElement('a');
+          document.body.appendChild(a);
+          a.href = fileURL;
+  
+          // Establecer el nombre del archivo
+          a.download = 'reporte_cartas.xlsx';
+  
+          // Simular el clic en el enlace para descargar el archivo
+          a.click();
+  
+          // Limpiar el enlace y el blob
+          URL.revokeObjectURL(fileURL);
+          document.body.removeChild(a);
+        },
+        error => {
+          console.error('Error al descargar el archivo:', error);
+          // Manejar el error según sea necesario
+        }
+      );
+  }
 
   setInversionPositiva(credito: Credito) {
     return this.http.patch(`${this.URL_API}/inversion/${credito.id}`, credito)

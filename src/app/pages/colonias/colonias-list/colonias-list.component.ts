@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 
 import { ColoniasService } from '../../../services/colonias.service';
+import { ColoniaResponse } from 'src/app/interfaces/ColoniaResponse';
 import { Colonia } from '../../../interfaces/Colonia';
 import { ToastrService } from 'ngx-toastr';
 
@@ -17,30 +18,13 @@ import { ToastrService } from 'ngx-toastr';
 export class ColoniasListComponent implements OnInit {
 
   colonias: Colonia[] = [];
-  p: number = 1;
-  itemsPP: number = 10;
+  currentPage: number = 1; // Inicializa currentPage con 1 por defecto
+  totalPages: number = 1; // Inicializa totalPages con 1 por defecto
+
+  busqueda = '';
+
   subscription: Subscription;
-  selectedItem = this.itemsPP;
-  palabra:any
 
-  criterio: any;
-
-  items = [
-    { cant: 5 },
-    { cant: 10 },
-    { cant: 15 },
-    { cant: 20 },
-    { cant: 25 },
-  ]
-
-  criterios = [
-    { nombre: 'código postal', criterio: 'cp' },
-    { nombre: 'nombre', criterio: 'nombre' },
-  ];
-
-  //Sort
-  key = 'id';
-  reverse: boolean = false;
 
   constructor(
     private coloniaService: ColoniasService,
@@ -49,23 +33,25 @@ export class ColoniasListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getColonias();
+    this.getColonias(this.currentPage);
 
     this.subscription = this.coloniaService.refresh$.subscribe(() => {
-      this.getColonias();
+      this.getColonias(this.currentPage);
     });
 
-    // //Actualiza la lista despues de la acción del Modal
-    // this.subscription = this.modalService.refresh$.subscribe(() => {
-    //   this.getColonias();
-    // });
   }
 
 
-  getColonias() {
-    this.coloniaService.getColonias().subscribe((res: any) => {
+  getColonias(page:number, limit:number = 10) {
+    this.coloniaService.getColoniasPaginadas(page, limit, this.busqueda).subscribe((res: ColoniaResponse) => {
 
-      this.colonias = res;
+
+
+      this.colonias = res.coloniasJSON;
+      this.totalPages = res.totalPages;
+      this.currentPage = res.currentPage;
+
+      console.log(this.colonias);
 
     });
   }
@@ -120,32 +106,36 @@ export class ColoniasListComponent implements OnInit {
     });
   }
 
-  cambiaItems(event) {
-    this.itemsPP = event.cant
+  generatePageRange(): number[] {
+
+    const pages: number[] = [];
+    const startPage = Math.max(1, this.currentPage - 2);
+    const endPage = Math.min(this.totalPages, this.currentPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
   }
 
-  getCriterio(event) {
-    this.criterio = event.criterio
-  }
-
-  search() {
-
-    if(this.criterio!= null && this.palabra!=null){
-      this.coloniaService.getColoniasByCriteria(this.criterio, this.palabra.toLocaleUpperCase() ).subscribe( res =>{
-        this.colonias = res;
-      })
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+      this.getColonias(page);
     }
   }
 
-  limpiar(){
-    this.criterio=null;
-    this.palabra=null;
-    this.ngOnInit();
+  goToFirstPage(): void {
+    if (this.totalPages > 1 && this.currentPage !== 1) {
+      this.goToPage(1);
+    }
   }
 
-  sort(key:string){
-    this.key = key;
-    this.reverse = !this.reverse;
+  buscarElementos(terminoBusqueda: string) {
+
+    this.busqueda = terminoBusqueda;
+    this.getColonias(1);
+
   }
 
 }

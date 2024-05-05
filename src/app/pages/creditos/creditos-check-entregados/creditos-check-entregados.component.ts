@@ -53,8 +53,6 @@ export class CreditosCheckEntregadosComponent implements OnInit {
 
     this.creditoService.getCreditosProgramacionEntrega(page, limit, this.busqueda).subscribe(creditos => {
 
-      console.log(creditos.creditosJSON);
-
       this.creditos = creditos.creditosJSON
         //Desaparemos los creditos no entregados
         .filter(item => item.no_entregado != 1)
@@ -323,7 +321,6 @@ export class CreditosCheckEntregadosComponent implements OnInit {
 
     return true;
   }
-
 
   updateArrayToPrint(id: number, flag: boolean) {
 

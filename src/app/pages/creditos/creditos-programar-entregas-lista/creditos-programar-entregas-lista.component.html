@@ -64,6 +64,7 @@
     
                         <th class="text-center align-middle">N. Solicitud
                         </th>
+                        <th class="align-middle">Tipo de crédito</th>
                         <th class="align-middle">Nombre
                         </th>
                         <th class="text-center align-middle">Monto
@@ -87,6 +88,17 @@
                         </td>
     
                         <td class="align-middle text-center">{{credito?.solicitud_credito_id}}</td>
+                        <td class="align-middle text-center">
+
+                            <span  *ngIf="credito?.solicitudCredito.tipo_solicitud_credito == 2; else elseBlock">
+                                MICRONEGOCIO
+                            </span>
+
+                            <ng-template #elseBlock>
+                                PERSONAL
+                            </ng-template>
+
+                        </td>
                         <td class="align-middle">{{credito?.nombre_completo}}</td>
     
                         <td class="align-middle text-right">

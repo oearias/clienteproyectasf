@@ -6,7 +6,7 @@
     <form [formGroup]="reporteForm">
 
         <div class="formularioCard card card-default rounded-0 mb-0">
-    
+
             <div class="card-header bg-primary">
                 <h5 class="card-title">
                     <b>
@@ -14,39 +14,75 @@
                     </b>
                 </h5>
             </div>
-    
+
             <div class="card-body mb-4" style="display: block;">
-    
+
                 <div class="row">
-    
+
                     <div class="col-sm-6 col-md-6">
                         <div class="form-group">
-                            <label for="inputCredito">N. de Semana</label>
-                            <ng-select #selectWeekyear [items]="semanas"
-                                bindLabel="weekyear" formControlName="weekyear2" [clearable]="false"
-                                placeholder="Seleccione una semana correspondiente" bindValue="id">
+                            <label for="inputWeekyear">Reporte</label>
+                            <ng-select #selectReportType (change)="onChangeReportType($event)" [items]="reportes" bindLabel="name" formControlName="report_id"
+                                placeholder="Seleccione una reporte correspondiente" bindValue="id">
                             </ng-select>
-                            <input type="hidden" formControlName="weekyear">
+
                         </div>
                     </div>
-    
-                    
-    
-                </div>
-    
-    
-                <button type="button" (click)="printWeek()" class="btn btn-primary mt-4">
-                    <i class="fas fa-save"></i>
-                    Generar Reporte PDF</button>
 
-                <button type="button" (click)="printWeekXLS()" class="btn btn-success mt-4 ml-5">
-                        <i class="fas fa-file-excel"></i>
-                        Generar Reporte XLS</button>
-    
-    
+                </div>
+
+                <div class="row">
+
+                    <div class="col-sm-6 col-md-6">
+                        <div class="form-group">
+                            <label for="inputWeekyear">N. de Semana</label>
+                            <input class="form-control" formControlName="weekyear">
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-sm-6 col-md-6">
+                        <div class="form-group">
+                            <label for="inputZona">Zona:</label>
+                            <ng-select #selectZona (change)="onChangeZona($event)" (clear)="onClearZona()" [items]="zonas" bindLabel="nombre" formControlName="zona_id"
+                                placeholder="Seleccione una zona correspondiente" bindValue="id">
+                            </ng-select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-sm-6 col-md-6">
+                        <div class="form-group">
+                            <label for="inputAgencia">Agencia:</label>
+                            <ng-select #selectAgencia [items]="agencias" (clear)="onClearAgencia()" bindLabel="nombre" formControlName="agencia_id"
+                                placeholder="Seleccione una agencia correspondiente" bindValue="id">
+                            </ng-select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button type="button" (click)="printWeek()" [disabled]="!reporteForm.valid" class="btn btn-primary mt-4">
+                    <i class="fas fa-save"></i>
+                    Generar Reporte PDF
+                </button>
+
+                <button type="button" (click)="printWeekXLS()" [disabled]="!reporteForm.valid" class="btn btn-success mt-4 ml-5">
+                    <i class="fas fa-file-excel"></i>
+                    Generar Reporte XLS
+                </button>
+
+
             </div>
-    
+
         </div>
-    
+
     </form>
 </div>

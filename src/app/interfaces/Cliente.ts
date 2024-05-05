@@ -1,4 +1,5 @@
 import { Agencia } from "./Agencia";
+import { Colonia } from "./Colonia";
 
 export interface Cliente {
     id: number;
@@ -31,4 +32,5 @@ export interface Cliente {
     localidad: string;
     estado: string;
     num_creditos: number;
+    colonia: Colonia
 }

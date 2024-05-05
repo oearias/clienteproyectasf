@@ -62,6 +62,8 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
   @ViewChild('inputAgencia') inputAgencia: ElementRef;
   @ViewChild('inputTotalCreditos') inputTotalCreditos: ElementRef;
 
+  @ViewChild('inputTipoSolicitud') inputTipoSolicitud: ElementRef;
+
   public stepper!: Stepper;
 
   sucursales: any = [];
@@ -93,6 +95,7 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
 
   totalCreditos: number = 0;
   totalCreditosSinLiquidar: number = 0;
+  formularioMicroNegocioIsRequired: boolean = false;
 
   role: any;
 
@@ -177,6 +180,25 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
       gas: new FormControl(null),
       tv: new FormControl(null),
       alumbrado_publico: new FormControl(null),
+    }),
+    aval: new FormGroup({
+      nombre:           new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      apellido_paterno: new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      apellido_materno: new FormControl(null, this.formularioMicroNegocioIsRequired ? [] : []),
+      fecha_nacimiento: new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      telefono:         new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      calle:            new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      colonia_id:       new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      num_ext:          new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+    }),
+    negocio: new FormGroup({
+      nombre:           new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      giro:             new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      telefono:         new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      calle:            new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      colonia_id:       new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      num_ext:          new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
+      hora_pago:        new FormControl(null, this.formularioMicroNegocioIsRequired ? [Validators.required] : []),
     }),
     personas_viviendo: new FormControl(null),
     num_dependientes: new FormControl(null),
@@ -289,6 +311,25 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
         tv: false,
         alumbrado_publico: false
       },
+      aval: {
+        nombre: null,
+        apellido_paterno: null,
+        apellido_materno: null,
+        fecha_nacimiento: null,
+        telefono: null,
+        calle: null,
+        colonia_id: null,
+        num_ext: null,
+      },
+      negocio: {
+        nombre: null,
+        giro: null,
+        telefono: null,
+        calle: null,
+        colonia_id: null,
+        num_ext: null,
+        hora_pago:null,
+      },
       colonia_id: null,
 
     });
@@ -310,6 +351,8 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+
+    console.log('aqui aprobamos');
 
     this.setPath();
 
@@ -338,14 +381,27 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
     this.route.params.subscribe(params => {
       if (params.id) {
 
-        this.solicitudService.getSolicitud(params.id).subscribe((res: any) => {
+        this.solicitudService.getSolicitud(params.id).subscribe((res: Solicitud) => {
 
           this.editingSolicitud = res;
 
-          this.nombreCompleto.nativeElement.value = res['nombre_completo'];
-          this.inputSucursal.nativeElement.value = res['sucursal'];
-          this.inputZona.nativeElement.value = res['zona'];
-          this.inputAgencia.nativeElement.value = res['agencia'];
+          console.log(this.editingSolicitud);
+
+          this.nombreCompleto.nativeElement.value = `${res.cliente.nombre} ${res.cliente.apellido_paterno} ${res.cliente.apellido_materno}`;
+          this.inputSucursal.nativeElement.value = res.agencia?.zona.sucursal_id;
+          this.inputZona.nativeElement.value = res.agencia.zona.nombre;
+          this.inputAgencia.nativeElement.value = res.agencia.nombre;
+          
+
+          let tipo_solicitud = null;
+
+          if(res.tipo_solicitud_credito == 2){
+            tipo_solicitud = 'MICRONEGOCIO'
+          }else{
+            tipo_solicitud = 'PERSONAL'
+          }
+
+          this.inputTipoSolicitud.nativeElement.value = tipo_solicitud;
 
           /////Populamos Selects
           const selects = {
@@ -365,8 +421,7 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
           this.id?.setValue(res.id);
           this.cliente_id.setValue(res.cliente_id);
           this.fecha_solicitud?.setValue(this.datePipe.transform(res.fecha_solicitud, 'yyyy-MM-dd', '0+100'));
-          //this.monto?.setValue(res.tarifa_id);
-          //this.tarifa_id?.setValue(res.tarifa_id);
+
           this.vivienda?.setValue(res.vivienda);
           this.vivienda_otra?.setValue(res.vivienda_otra);
           this.tiempo_vivienda_años?.setValue(res.tiempo_vivienda_años);
@@ -401,24 +456,53 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
           this.estatus_sol_id?.setValue(res.estatus_sol_id);
           this.tarifa_id?.setValue(res.tarifa_id);
 
-          this.servicios.get('luz').setValue(res.luz);
-          this.servicios.get('agua_potable').setValue(res.agua_potable);
-          this.servicios.get('auto_propio').setValue(res.auto_propio);
-          this.servicios.get('telefono_fijo').setValue(res.telefono_fijo);
-          this.servicios.get('telefono_movil').setValue(res.telefono_movil);
-          this.servicios.get('refrigerador').setValue(res.refrigerador);
-          this.servicios.get('estufa').setValue(res.estufa);
-          this.servicios.get('internet').setValue(res.internet);
-          this.servicios.get('gas').setValue(res.gas);
-          this.servicios.get('tv').setValue(res.tv);
-          this.servicios.get('alumbrado_publico').setValue(res.alumbrado_publico);
+          //Populamos datos del aval
+          this.avalForm.get('nombre').setValue(res.aval.nombre);
+          this.avalForm.get('apellido_paterno').setValue(res.aval.apellido_paterno);
+          this.avalForm.get('apellido_materno').setValue(res.aval.apellido_materno);
+          this.avalForm.get('fecha_nacimiento').setValue(res.aval.fecha_nacimiento);
+          this.avalForm.get('telefono').setValue(res.aval.telefono);
+          this.avalForm.get('calle').setValue(res.aval.calle);
+          this.avalForm.get('num_ext').setValue(res.aval.num_ext);
+          this.avalForm.get('colonia_id').setValue(res.aval.colonia.id);
+
+          console.log(res.negocio);
+
+          //Populamos datos del negocio
+          this.negocioForm.get('nombre').setValue(res.negocio.nombre);
+          this.negocioForm.get('giro').setValue(res.negocio?.giro);
+          this.negocioForm.get('telefono').setValue(res.negocio.telefono);
+          this.negocioForm.get('calle').setValue(res.negocio.calle);
+          this.negocioForm.get('num_ext').setValue(res.negocio.num_ext);
+          this.negocioForm.get('colonia_id').setValue(res.negocio.colonia.id);
+
+          let hora_formateada = res.negocio.hora_pago.toString();
+          // Crea una nueva fecha usando solo la parte de la hora, ignorando la fecha
+          const date = new Date(); // Fecha actual
+          const [hours, minutes, seconds] = hora_formateada.split(':'); // Divide para obtener la parte de la hora
+          date.setHours(+hours, +minutes, +seconds?.slice(0, 2) || 0); // Usa 0 si seconds es undefined
+          hora_formateada = this.datePipe.transform(date, 'HH:mm'); // Formato 24 horas
+
+          this.negocioForm.get('hora_pago').setValue(hora_formateada);
+
+          this.servicios.get('luz').setValue(res.solicitudServicio?.luz);
+          this.servicios.get('agua_potable').setValue(res.solicitudServicio?.agua_potable);
+          this.servicios.get('auto_propio').setValue(res.solicitudServicio?.auto_propio);
+          this.servicios.get('telefono_fijo').setValue(res.solicitudServicio?.telefono_fijo);
+          this.servicios.get('telefono_movil').setValue(res.solicitudServicio?.telefono_movil);
+          this.servicios.get('refrigerador').setValue(res.solicitudServicio?.refrigerador);
+          this.servicios.get('estufa').setValue(res.solicitudServicio?.estufa);
+          this.servicios.get('internet').setValue(res.solicitudServicio?.internet);
+          this.servicios.get('gas').setValue(res.solicitudServicio?.gas);
+          this.servicios.get('tv').setValue(res.solicitudServicio?.tv);
+          this.servicios.get('alumbrado_publico').setValue(res.solicitudServicio?.alumbrado_publico);
 
           //Cargamos los creditos del cliente - Historial
           this.loadHitorialCliente();
 
           //Datos del solicitante
-          this.populateClienteFields(res);
-          this.numCliente.nativeElement.value = res.num_cliente;
+          this.populateClienteFields(res.cliente);
+          this.numCliente.nativeElement.value = res.cliente.num_cliente;
 
           //Cargamos los eventos...
           this.solEventosService.getEventosBySolicitudId(params.id).subscribe(res => {
@@ -813,6 +897,17 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
   }
 
   //Getters
+
+  //Formularios
+
+  get avalForm() {
+    return this.solicitudForm.get('aval') as FormGroup;
+  }
+
+  get negocioForm() {
+    return this.solicitudForm.get('negocio') as FormGroup;
+  }
+
   get id() {
     return this.solicitudForm.get('id');
   }
@@ -840,6 +935,72 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
   get tarifa_id() {
     return this.solicitudForm.get('tarifa_id');
   }
+
+  //AVAL
+
+  get aval_nombre(){
+    return this.avalForm.get('nombre');
+  }
+
+  get aval_apellido_paterno(){
+    return this.avalForm.get('apellido_paterno');
+  }
+
+  get aval_apellido_materno(){
+    return this.avalForm.get('apellido_materno');
+  }
+
+  get aval_fecha_nacimiento(){
+    return this.avalForm.get('fecha_nacimiento');
+  }
+
+  get aval_telefono(){
+    return this.avalForm.get('telefono');
+  }
+
+  get aval_calle(){
+    return this.avalForm.get('calle');
+  }
+
+  get aval_num_ext(){
+    return this.avalForm.get('num_ext');
+  }
+
+  get aval_colonia_id(){
+    return this.avalForm.get('colonia_id');
+  }
+
+  //NEGOCIO
+
+  get negocio_nombre(){
+    return this.negocioForm.get('nombre');
+  }
+
+  get negocio_giro(){
+    return this.negocioForm.get('giro');
+  }
+
+  get negocio_telefono(){
+    return this.negocioForm.get('telefono');
+  }
+
+  get negocio_calle(){
+    return this.negocioForm.get('calle');
+  }
+
+  get negocio_num_ext(){
+    return this.negocioForm.get('num_ext');
+  }
+
+  get negocio_colonia_id(){
+    return this.negocioForm.get('colonia_id');
+  }
+
+  get negocio_hora_pago(){
+    return this.negocioForm.get('hora_pago');
+  }
+
+  //
 
   get parentesco_contacto1() {
     return this.solicitudForm.get('parentesco_contacto1');

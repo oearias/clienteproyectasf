@@ -1,6 +1,4 @@
-<!-- <button class="btn btn-link p-0" (click)="volver()">
-    <i style="font-size: 33px;" class="fas fa-arrow-left fw-bold"></i>
-</button> -->
+
 
 <div>
     <div id="stepper1" class="bs-stepper">
@@ -12,16 +10,16 @@
                 </button>
             </div>
             <div class="line"></div>
-            <div class="step" data-target="#test-l-2">
+            <!-- <div class="step" data-target="#test-l-2">
                 <button class="step-trigger">
                     <span class="bs-stepper-circle">2</span>
                     <span class="bs-stepper-label"></span>
                 </button>
             </div>
-            <div class="line"></div>
-            <div class="step" data-target="#test-l-3">
+            <div class="line"></div> -->
+            <div class="step" data-target="#test-l-2">
                 <button class="step-trigger">
-                    <span class="bs-stepper-circle">3</span>
+                    <span class="bs-stepper-circle">2</span>
                     <span class="bs-stepper-label"></span>
                 </button>
             </div>
@@ -67,7 +65,7 @@
                                             </td>
                                             <td class="text-center" style="font-weight: bold;">{{evento?.evento}}</td>
                                             <td>{{evento?.observacion}}</td>
-                                            <td class="text-center">{{evento?.usuario}}</td>
+                                            <td class="text-center">{{evento?.usuario.usuario}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -210,14 +208,14 @@
 
                             <div class="form-row">
 
-                                <div class="col-sm-6 col-md-2">
+                                <div class="col-sm-6 col-md-3">
                                     <div class="form-group">
                                         <label>N. de la solicitud</label>
                                         <input formControlName="id" class="form-control">
                                     </div>
                                 </div>
                                 <!-- (open)="onClickEstatus()" (change)="onChangeEstatus($event)" -->
-                                <div class="col-sm-6 col-md-3">
+                                <div class="col-sm-6 col-md-4">
                                     <div class="form-group">
                                         <label>Estatus</label>
                                         <ng-select #selectEstatus formControlName="estatus_sol_id" [items]="estatuss"
@@ -671,7 +669,7 @@
                     </div>
                 </div>
 
-                <div id="test-l-2" class="content">
+                <!-- <div id="test-l-2" class="content">
 
                     <div class="card card-default rounded-0 mb-0">
                         <div class="card-header bg-primary">
@@ -865,9 +863,9 @@
                         </div>
 
                     </div>
-                </div>
+                </div> -->
 
-                <div id="test-l-3" class="content">
+                <div id="test-l-2" class="content">
 
                     <div class="card card-default rounded-0 mb-0">
 
