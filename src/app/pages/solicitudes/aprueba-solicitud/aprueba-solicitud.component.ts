@@ -470,8 +470,6 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
           this.avalForm.get('num_ext').setValue(res.aval?.num_ext);
           this.avalForm.get('colonia_id').setValue(res.aval?.colonia.id);
 
-          console.log(res.negocio);
-
           //Populamos datos del negocio
           this.negocioForm.get('nombre').setValue(res.negocio?.nombre);
           this.negocioForm.get('giro').setValue(res.negocio?.giro);
