@@ -387,6 +387,10 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
 
           console.log(this.editingSolicitud);
 
+          console.log('entramos a aprobar');
+
+          console.log(this.editingSolicitud);
+
           this.nombreCompleto.nativeElement.value = `${res.cliente.nombre} ${res.cliente.apellido_paterno} ${res.cliente.apellido_materno}`;
           this.inputSucursal.nativeElement.value = res.agencia?.zona.sucursal_id;
           this.inputZona.nativeElement.value = res.agencia.zona.nombre;
@@ -457,33 +461,40 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
           this.tarifa_id?.setValue(res.tarifa_id);
 
           //Populamos datos del aval
-          this.avalForm.get('nombre').setValue(res.aval.nombre);
-          this.avalForm.get('apellido_paterno').setValue(res.aval.apellido_paterno);
-          this.avalForm.get('apellido_materno').setValue(res.aval.apellido_materno);
-          this.avalForm.get('fecha_nacimiento').setValue(res.aval.fecha_nacimiento);
-          this.avalForm.get('telefono').setValue(res.aval.telefono);
-          this.avalForm.get('calle').setValue(res.aval.calle);
-          this.avalForm.get('num_ext').setValue(res.aval.num_ext);
-          this.avalForm.get('colonia_id').setValue(res.aval.colonia.id);
+          this.avalForm.get('nombre').setValue(res.aval?.nombre);
+          this.avalForm.get('apellido_paterno').setValue(res.aval?.apellido_paterno);
+          this.avalForm.get('apellido_materno').setValue(res.aval?.apellido_materno);
+          this.avalForm.get('fecha_nacimiento').setValue(res.aval?.fecha_nacimiento);
+          this.avalForm.get('telefono').setValue(res.aval?.telefono);
+          this.avalForm.get('calle').setValue(res.aval?.calle);
+          this.avalForm.get('num_ext').setValue(res.aval?.num_ext);
+          this.avalForm.get('colonia_id').setValue(res.aval?.colonia.id);
 
           console.log(res.negocio);
 
           //Populamos datos del negocio
-          this.negocioForm.get('nombre').setValue(res.negocio.nombre);
+          this.negocioForm.get('nombre').setValue(res.negocio?.nombre);
           this.negocioForm.get('giro').setValue(res.negocio?.giro);
-          this.negocioForm.get('telefono').setValue(res.negocio.telefono);
-          this.negocioForm.get('calle').setValue(res.negocio.calle);
-          this.negocioForm.get('num_ext').setValue(res.negocio.num_ext);
-          this.negocioForm.get('colonia_id').setValue(res.negocio.colonia.id);
+          this.negocioForm.get('telefono').setValue(res.negocio?.telefono);
+          this.negocioForm.get('calle').setValue(res.negocio?.calle);
+          this.negocioForm.get('num_ext').setValue(res.negocio?.num_ext);
+          this.negocioForm.get('colonia_id').setValue(res.negocio?.colonia.id);
 
-          let hora_formateada = res.negocio.hora_pago.toString();
-          // Crea una nueva fecha usando solo la parte de la hora, ignorando la fecha
+          let hora_formateada = res.negocio?.hora_pago?.toString();
+
+          if(hora_formateada != null){
+
+            // Crea una nueva fecha usando solo la parte de la hora, ignorando la fecha
           const date = new Date(); // Fecha actual
           const [hours, minutes, seconds] = hora_formateada.split(':'); // Divide para obtener la parte de la hora
-          date.setHours(+hours, +minutes, +seconds?.slice(0, 2) || 0); // Usa 0 si seconds es undefined
+          date.setHours(+hours, +minutes, +seconds.slice(0, 2) || 0); // Usa 0 si seconds es undefined
           hora_formateada = this.datePipe.transform(date, 'HH:mm'); // Formato 24 horas
 
           this.negocioForm.get('hora_pago').setValue(hora_formateada);
+
+          }
+
+          
 
           this.servicios.get('luz').setValue(res.solicitudServicio?.luz);
           this.servicios.get('agua_potable').setValue(res.solicitudServicio?.agua_potable);
@@ -758,6 +769,8 @@ export class ApruebaSolicitudComponent implements AfterViewInit {
   populateClienteFields(data: Cliente) {
 
     this.cliente_id?.setValue(data.id);
+
+    console.log(data.calle);
 
     this.cliente.get('nombre')?.setValue(data.nombre);
     this.cliente.get('apellido_paterno')?.setValue(data.apellido_paterno);
