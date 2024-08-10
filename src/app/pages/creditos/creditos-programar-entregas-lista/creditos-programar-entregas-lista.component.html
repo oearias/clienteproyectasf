@@ -99,7 +99,7 @@
                             </ng-template>
 
                         </td>
-                        <td class="align-middle">{{credito?.nombre_completo}}</td>
+                        <td class="align-middle" style="min-width: 380px;">{{credito?.nombre_completo}}</td>
     
                         <td class="align-middle text-right">
                             ${{credito?.monto_otorgado | number:'1.2-2':'en-US' }}
@@ -122,7 +122,7 @@
     
     
     
-                        <td class="align-middle" style="width: 100px;"><input (keyup)="onChangeNumCheque($event, credito)" #numCheque
+                        <td class="align-middle" style="min-width: 100px;"><input (keyup)="onChangeNumCheque($event, credito)" #numCheque
                                 type="number" class="form-control text-center" [value]="credito?.num_cheque"></td>
     
                     </tr>

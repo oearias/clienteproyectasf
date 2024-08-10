@@ -240,6 +240,8 @@ export class ClienteComponent implements OnInit {
 
   saveCliente() {
 
+    console.log(this.clienteForm.value);
+
     if (this.clienteForm.valid) {
 
       if (this.clienteForm.value.id != null) {

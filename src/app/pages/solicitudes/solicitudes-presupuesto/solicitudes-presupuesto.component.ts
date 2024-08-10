@@ -50,6 +50,8 @@ export class SolicitudesPresupuestoComponent implements OnInit {
 
     this.solService.getSolicitudesParaPresupuesto().subscribe( (res) => {
 
+      console.log('entramos a las solicitudes para presupuesto');
+
 
       this.solicitudes = res.solicitudesJSON;
 
@@ -98,6 +100,7 @@ export class SolicitudesPresupuestoComponent implements OnInit {
   }
 
   changeStatus() {
+    
     this.solService.updateSolicitudEstatus(this.arrayToSend).subscribe((res: any) => {
 
       if (res) {

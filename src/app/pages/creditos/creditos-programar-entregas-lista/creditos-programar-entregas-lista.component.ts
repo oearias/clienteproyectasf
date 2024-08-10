@@ -55,7 +55,14 @@ export class CreditosProgramarEntregasListaComponent implements OnInit {
 
     this.creditoService.getCreditosProgramacionEntrega(page, limit, this.busqueda).subscribe(creditos => {
 
+      console.log('aqui entramos');
       console.log(creditos.creditosJSON);
+
+      creditos.creditosJSON.forEach(item => {
+
+        console.log(item.solicitud_credito_id);
+
+      })
 
       this.creditos = creditos.creditosJSON
         .filter(item => item.no_entregado != 1)
@@ -400,8 +407,6 @@ export class CreditosProgramarEntregasListaComponent implements OnInit {
   }
 
   limpiar() {
-
-    console.log('entramos');
 
     this.inputFechaEntrega.nativeElement.value = null;
 

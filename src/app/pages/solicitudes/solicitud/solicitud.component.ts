@@ -837,14 +837,14 @@ export class SolicitudComponent implements AfterViewInit {
       } else {
 
 
-        // this.solicitudService.insertSolicitud(this.solicitudForm.value).subscribe((res: any) => {
-        //   this.toastr.success(res);
+        this.solicitudService.insertSolicitud(this.solicitudForm.value).subscribe((res: any) => {
+          this.toastr.success(res);
 
-        //   this.router.navigateByUrl('/dashboard/solicitudes');
+          this.router.navigateByUrl('/dashboard/solicitudes');
 
-        // }, ({ error }) => {
-        //   this.toastr.error(error.errors[0]['msg']);
-        // });
+        }, ({ error }) => {
+          this.toastr.error(error.errors[0]['msg']);
+        });
 
       }
 
